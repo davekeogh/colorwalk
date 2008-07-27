@@ -8,14 +8,14 @@ python-magic by your package manager.\n"""
 
 ZIP = 0
 RAR = 1
-
-# 
+ 
 try:
 	import magic
 	MAGIC = True
 except ImportError:
 	MAGIC = False
 	print MAGIC_WARNING
+
 
 
 def is_zip_file(path):
