@@ -6,10 +6,10 @@ class Worker(threading.Thread, gobject.GObject):
 	__gsignals__ = {
 	
 		'finished' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-					  (gobject.TYPE_STRING,)),
+					  ()),
 	
 		'cancel' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-					(gobject.TYPE_STRING,))
+					())
 	}
 	
 	function = None
@@ -48,7 +48,4 @@ class Worker(threading.Thread, gobject.GObject):
 				
 				time.sleep(0.1)
 			
-			self.app.win.statusbar.progressbar.hide()
-			self.app.win.statusbar.clear_text()
-			
-			#self.emit('finished', self)
+			self.emit('finished')
