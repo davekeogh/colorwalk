@@ -79,9 +79,6 @@ class Archive(object):
 	def extract(self):
 		self.make_temp_dir()
 		
-		# TODO: Capture the output, so that we can have a log viewer
-		#		in the future.
-		
 		if self.type == ZIP:
 			command = 'unzip -j %s -d %s' % (self.path, self.temp_dir)
 		if self.type == RAR:
