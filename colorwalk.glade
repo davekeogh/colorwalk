@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Jul 25 19:19:05 2008 -->
+<!--Generated with glade3 3.4.5 on Sun Jul 27 11:52:27 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -162,6 +162,7 @@
                     <child>
                       <widget class="GtkImage" id="image3">
                         <property name="visible">True</property>
+                        <property name="stock">gtk-missing-image</property>
                       </widget>
                     </child>
                   </widget>
@@ -182,10 +183,10 @@
             <property name="visible">True</property>
             <property name="spacing">4</property>
             <child>
-              <widget class="GtkStatusbar" id="statusbar1">
+              <widget class="GtkLabel" id="label4">
                 <property name="visible">True</property>
-                <property name="spacing">2</property>
-                <property name="has_resize_grip">False</property>
+                <property name="xalign">0</property>
+                <property name="use_markup">True</property>
               </widget>
             </child>
             <child>
