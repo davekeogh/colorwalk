@@ -24,16 +24,18 @@ def main(args):
 	
 	app = Application()
 	
+	app.win = Window(app, GLADE)
+	app.worker = Worker(app)
+	
 	try:
 		app.archive = Archive(args[1])
 	except IndexError:
 		app.archive = None
 	except ArchiveError, error:
+		# TODO: Throw an error dialog or display the error text in the
+		#		statusbar.
 		print error.message
 		app.archive = None
-	
-	app.win = Window(app, GLADE)
-	app.worker = Worker(app)
 	
 	if app.archive:
 		app.worker.set_function(app.archive.extract)
