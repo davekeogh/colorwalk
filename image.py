@@ -30,16 +30,3 @@ def is_image_file(path):
 		else:
 			return False
 
-
-class Image(object):
-	
-	path = None
-	name = None
-	pixbuf = None
-	width = 0
-	height = 0
-	
-	def __init__(self, path):
-		self.path = path
-		self.name = os.path.split(path)[1]
-
