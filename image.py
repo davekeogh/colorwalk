@@ -1,9 +1,13 @@
-import subprocess
+import os, os.path, subprocess
 import gtk
 
 from archive import MAGIC
 
 IMAGES = ['JPEG image data', 'PNG image data', 'GIF image data']
+
+
+def new_pixbuf(path, width=-1, height=-1):
+	return gtk.gdk.pixbuf_new_from_file_at_size(path, width, height)
 
 
 def is_image_file(path):
@@ -13,6 +17,7 @@ def is_image_file(path):
 		p.wait()
 		stdout = p.stdout.read()
 		part = stdout.split(': ')[1]
+		print part
 		
 		found = False
 		for type in IMAGES:
@@ -36,4 +41,5 @@ class Image(object):
 	
 	def __init__(self, path):
 		self.path = path
+		self.name = os.path.split(path)[1]
 
