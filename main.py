@@ -17,6 +17,13 @@ class Application(object):
 	worker = None
 	archive = None
 	log = ['\n']
+	files = []
+	current = 1
+	size = 0
+	
+	current_pb = None
+	next_pb = None
+	previous_pb = None
 
 
 def main(args):

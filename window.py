@@ -15,6 +15,9 @@ class Window(gtk.Window):
 		self.ui = gtk.glade.XML(ui, 'vbox1')
 		self.add(self.ui.get_widget('vbox1'))
 		
+		self.image = self.ui.get_widget('image3')
+		self.menubar = self.ui.get_widget('toolbar1')
+		
 		self.statusbar = StatusBar(self, self.ui)
 		
 		self.callbacks = Callbacks(self)
@@ -22,5 +25,13 @@ class Window(gtk.Window):
 		
 		self.set_icon_name('image')
 		self.set_title('Color Walk')
-		self.resize(400, 400)
+		self.resize(600, 600)
 		self.show()
+	
+	
+	def get_view_width(self):
+		return self.window.get_size()[0] - 19
+	
+	
+	def get_view_height(self):
+		return self.window.get_size()[1] - 40
