@@ -9,14 +9,10 @@ class StatusBar(object):
 		self.resize_grip = ui.get_widget('statusbar2')
 		
 		self.progressbar = self.ui.get_widget('progressbar')
-		
-	
-	def set_markup(self, msg):
-		self.message_area.set_markup(msg)
 	
 	
 	def set_text(self, msg):
-		self.message_area.set_text(msg)
+		self.message_area.set_markup(msg)
 	
 	
 	def clear_text(self):

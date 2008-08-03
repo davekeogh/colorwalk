@@ -2,7 +2,7 @@ import os, os.path
 
 import gtk
 
-from image import Image, new_pixbuf
+from image import new_pixbuf, is_image_ext
 
 class Callbacks(object):
 	
@@ -19,29 +19,44 @@ class Callbacks(object):
 		
 		self.app.files = os.listdir(self.app.archive.temp_dir)
 		self.app.files.sort()
+		
+		for file in self.app.files:
+			if is_image_ext(file):
+				self.app.images.append(file)
+		
 		self.app.current = 0
 		
-		self.app.size = \
-		os.stat(self.app.archive.path).st_size / 1048576
+		if len(self.app.images):
+			self.app.size = \
+			os.stat(self.app.archive.path).st_size / 1048576
+			
+			self.app.current_pb = \
+			new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+					   self.app.files[self.app.current]),
+					   width=self.app.win.get_view_width())
+					   
+			self.win.image.set_from_pixbuf(self.app.current_pb)
+			
+			self.win.statusbar.set_text(
+				self.app.files[self.app.current])
+			
+			self.win.statusbar.set_pages(self.app.current + 1,
+										 len(self.app.images))
+			self.win.statusbar.set_size(self.app.size)
+			self.win.statusbar.set_res(self.app.current_pb.get_width(),
+				self.app.current_pb.get_height())
+			
+			self.app.next_pb = \
+			new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+					   self.app.files[self.app.current + 1]),
+					   width=self.app.win.get_view_width())
 		
-		self.app.current_pb = \
-		new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-				   self.app.files[self.app.current]),
-				   width=self.app.win.get_view_width())
-				   
-		self.win.image.set_from_pixbuf(self.app.current_pb)
-		
-		self.win.statusbar.set_text(self.app.files[self.app.current])
-		self.win.statusbar.set_pages(self.app.current + 1,
-									 len(self.app.files))
-		self.win.statusbar.set_size(self.app.size)
-		self.win.statusbar.set_res(self.app.current_pb.get_width(),
-								   self.app.current_pb.get_height())
-		
-		self.app.next_pb = \
-		new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-				   self.app.files[self.app.current + 1]),
-				   width=self.app.win.get_view_width())
+		else:
+			self.win.set_title('Color Walk')
+			self.win.statusbar.set_text('No images found in <b>%s</b>'
+										% self.app.archive.name)
+			self.app.archive.remove_temp_dir()
+			self.app.archive = None
 		
 		
 	

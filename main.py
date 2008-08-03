@@ -18,6 +18,7 @@ class Application(object):
 	archive = None
 	log = ['\n']
 	files = []
+	images = []
 	current = 1
 	size = 0
 	

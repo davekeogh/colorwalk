@@ -40,8 +40,8 @@ class Worker(threading.Thread, gobject.GObject):
 			self.process = self.function()
 			
 			self.app.win.statusbar.progressbar.show()
-			self.app.win.statusbar.set_markup('Opening <b>%s</b>...' %
-											  self.app.archive.name)
+			self.app.win.statusbar.set_text('Opening <b>%s</b>...' %
+											self.app.archive.name)
 			
 			while self.process.poll() == None:
 				gtk.gdk.threads_enter()
