@@ -5,11 +5,13 @@ class Worker(threading.Thread, gobject.GObject):
 	
 	__gsignals__ = {
 	
-		'finished' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-					  ()),
+		'extracting-finished' : (gobject.SIGNAL_RUN_FIRST,
+		gobject.TYPE_NONE, ()),
+		
+		'function-finished' : (gobject.SIGNAL_RUN_FIRST,
+		gobject.TYPE_NONE, ()),
 	
-		'cancel' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-					())
+		'cancel' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
 	}
 	
 	function = None
@@ -49,8 +51,11 @@ class Worker(threading.Thread, gobject.GObject):
 				gtk.gdk.threads_leave()
 				
 				time.sleep(0.1)
+			
+			self.emit('extracting-finished')
 		
 		else:
 			self.function()
 			
-		self.emit('finished')
+			self.emit('function-finished')
+			

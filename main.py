@@ -46,7 +46,7 @@ def main(args):
 		app.archive = None
 	
 	if app.archive:
-		app.worker.connect('finished',
+		app.worker.connect('extracting-finished',
 						   app.win.callbacks.extracting_finished)
 		app.worker.set_function(app.archive.extract)
 		app.worker.start()
