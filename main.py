@@ -19,8 +19,10 @@ class Application(object):
 	log = ['\n']
 	files = []
 	images = []
-	current = 1
+	current = 0
 	size = 0
+	
+	scale = 0
 	
 	current_pb = None
 	next_pb = None

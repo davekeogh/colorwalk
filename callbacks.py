@@ -40,11 +40,14 @@ class Callbacks(object):
 			self.win.statusbar.set_text(
 				self.app.files[self.app.current])
 			
-			self.win.statusbar.set_pages(self.app.current + 1,
-										 len(self.app.images))
+			self.win.set_pages(len(self.app.images))
+			self.win.set_page(self.app.current + 1)
+			
 			self.win.statusbar.set_size(self.app.size)
 			self.win.statusbar.set_res(self.app.current_pb.get_width(),
 				self.app.current_pb.get_height())
+			
+			self.win.ui.get_widget('combobox1').set_sensitive(True)
 			
 			self.app.next_pb = \
 			new_pixbuf(os.path.join(self.app.archive.temp_dir, 

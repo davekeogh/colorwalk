@@ -19,12 +19,6 @@ class StatusBar(object):
 		self.message_area.set_text('')
 	
 	
-	def set_pages(self, current, total):
-		self.ui.get_widget('label1').set_markup('Page <b>%s</b> of %s'
-												% (current, total))
-		self.ui.get_widget('frame1').show()
-	
-	
 	def set_size(self, mb):
 		self.ui.get_widget('label3').set_text('%i MB' % mb)
 		self.ui.get_widget('frame3').show()

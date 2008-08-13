@@ -16,17 +16,28 @@ class Window(gtk.Window):
 		self.add(self.ui.get_widget('vbox1'))
 		
 		self.image = self.ui.get_widget('image3')
-		self.menubar = self.ui.get_widget('toolbar1')
-		
+		self.toolbar = self.ui.get_widget('toolbar1')
 		self.statusbar = StatusBar(self, self.ui)
 		
 		self.callbacks = Callbacks(self)
 		self.connect('delete-event', self.callbacks.quit)
 		
+		self.ui.get_widget('combobox1').set_active(self.app.scale)
+		
 		self.set_icon_name('image')
 		self.set_title('Color Walk')
 		self.resize(600, 600)
 		self.show()
+	
+	
+	def set_pages(self, pages):
+		self.ui.get_widget('label6').show()
+		self.ui.get_widget('label6').set_text(' of %d' % pages)
+	
+	
+	def set_page(self, page):
+		self.ui.get_widget('entry1').show()
+		self.ui.get_widget('entry1').set_text('%d' % page)
 	
 	
 	def get_view_width(self):
