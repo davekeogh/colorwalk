@@ -38,7 +38,8 @@ class Window(gtk.Window):
 	
 	
 	def refresh(self):
-		self.statusbar.set_text(self.app.files[self.app.current])
+		self.statusbar.set_text('Current image: <i>%s</i>' % 
+								self.app.files[self.app.current])
 			
 		self.set_pages(len(self.app.images))
 		self.set_page(self.app.current + 1)
@@ -48,13 +49,20 @@ class Window(gtk.Window):
 							   self.app.current_pb.get_height())
 			
 		self.ui.get_widget('combobox1').set_sensitive(True)
-		self.ui.get_widget('toolbutton1').set_sensitive(True)
-		self.ui.get_widget('toolbutton2').set_sensitive(True)
+		
+		if self.app.current < (len(self.app.images) -1):
+			self.ui.get_widget('toolbutton2').set_sensitive(True)
+		else:
+			self.ui.get_widget('toolbutton2').set_sensitive(False)
+		if self.app.current > 0:
+			self.ui.get_widget('toolbutton1').set_sensitive(True)
+		else:
+			self.ui.get_widget('toolbutton1').set_sensitive(False)
 	
 	
 	def blank(self):
 		self.set_title('Color Walk')
-		self.statusbar.set_text('No images found in <b>%s</b>'
+		self.statusbar.set_text('No images found in <i>%s</i>'
 								% self.app.archive.name)
 								
 		self.statusbar.hide_all()

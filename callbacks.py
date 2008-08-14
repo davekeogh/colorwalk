@@ -1,8 +1,9 @@
 import os, os.path
 
-import gtk
+import gtk, gobject
 
 from image import new_pixbuf, is_image_ext
+from worker import Worker
 
 class Callbacks(object):
 	
@@ -49,45 +50,50 @@ class Callbacks(object):
 			
 			self.app.archive.remove_temp_dir()
 			self.app.archive = None
-		
-	
-	def preloading_finished(self, worker):
-		self.win.refresh()
 	
 	
 	def go_back(self, widget):
 		self.app.next_pb = self.app.current_pb
-		self.app.current_pb = self.app.previous_pb_pb
-		self.app.previous_pb = None
+		self.app.current_pb = self.app.previous_pb
 		
 		self.app.current -= 1
 		
 		self.win.image.set_from_pixbuf(self.app.current_pb)
+		self.win.refresh()
 		
-		self.app.worker.set_preload(
-			os.path.join(self.app.archive.temp_dir, 
-			self.app.files[self.app.current - 1]),
-			self.app.previous_pb, width=self.win.get_view_width(),
-			height=-1)
-		
-		self.app.worker.start()
+		gobject.idle_add(self.preload_previous)
 	
 	
 	def go_forward(self, widget):
 		self.app.previous_pb = self.app.current_pb
 		self.app.current_pb = self.app.next_pb
-		self.app.next_pb = None
 		
 		self.app.current += 1
 		
 		self.win.image.set_from_pixbuf(self.app.current_pb)
+		self.win.refresh()
 		
-		self.app.worker.set_preload(
-			os.path.join(self.app.archive.temp_dir, 
-			self.app.files[self.app.current + 1]), self.app.next_pb,
-			width=self.win.get_view_width(), height=-1)
+		gobject.idle_add(self.preload_next)
+	
+	
+	def preload_next(self):
+		if (self.app.current + 1) <= (len(self.app.images) -1):
+			self.app.next_pb = \
+				new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+					   	   self.app.files[self.app.current + 1]),
+					   	   width=self.app.win.get_view_width())
 		
-		self.app.worker.start()
+		return False
+	
+	
+	def preload_previous(self):
+		if (self.app.current - 1) >= 0:
+			self.app.previous_pb = \
+				new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+					   	   self.app.files[self.app.current - 1]),
+					   	   width=self.app.win.get_view_width())
+		
+		return False
 	
 	
 	def quit(self, widget, event=None):

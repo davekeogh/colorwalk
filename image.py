@@ -18,10 +18,6 @@ def is_image_ext(path):
 		return False
 
 
-def preload_image(path, pb, width=-1, height=-1):
-	pb = new_pixbuf(path, width=width, height=height)
-
-
 def is_image_file(path):
 	if not MAGIC:
 		p = subprocess.Popen('file %s' % path, shell=True, 

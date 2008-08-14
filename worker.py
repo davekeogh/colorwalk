@@ -11,7 +11,7 @@ class Worker(threading.Thread, gobject.GObject):
 		'extracting-finished' : (gobject.SIGNAL_RUN_FIRST,
 		gobject.TYPE_NONE, ()),
 		
-		'preload-finished' : (gobject.SIGNAL_RUN_FIRST,
+		'function-finished' : (gobject.SIGNAL_RUN_FIRST,
 		gobject.TYPE_NONE, ()),
 	
 		'cancel' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
@@ -33,13 +33,6 @@ class Worker(threading.Thread, gobject.GObject):
 		self.function = f
 		self.sub = sub
 	
-	def set_preload(self, path, pb, width=-1, height=-1):
-		self.sub = False
-		self.path = path
-		self.pb = pb
-		self.width = width
-		self.height = height
-	
 	
 	def clear(self):
 		self.function = None
@@ -52,7 +45,7 @@ class Worker(threading.Thread, gobject.GObject):
 			self.process = self.function()
 			
 			self.app.win.statusbar.progressbar.show()
-			self.app.win.statusbar.set_text('Opening <b>%s</b>...' %
+			self.app.win.statusbar.set_text('Opening <i>%s</i>...' %
 											self.app.archive.name)
 			
 			while self.process.poll() == None:
@@ -65,8 +58,7 @@ class Worker(threading.Thread, gobject.GObject):
 			self.emit('extracting-finished')
 		
 		else:
-			self.pb = new_pixbuf(self.path, width=self.width, 
-								 height=self.height)
+			self.function()
 			
-			self.emit('preload-finished')
+			self.emit('function-finished')
 			
