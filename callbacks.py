@@ -51,8 +51,26 @@ class Callbacks(object):
 			self.app.archive = None
 		
 	
+	def preloading_finished(self, worker):
+		self.win.refresh()
+	
+	
 	def go_back(self, widget):
-		return
+		self.app.next_pb = self.app.current_pb
+		self.app.current_pb = self.app.previous_pb_pb
+		self.app.previous_pb = None
+		
+		self.app.current -= 1
+		
+		self.win.image.set_from_pixbuf(self.app.current_pb)
+		
+		self.app.worker.set_preload(
+			os.path.join(self.app.archive.temp_dir, 
+			self.app.files[self.app.current - 1]),
+			self.app.previous_pb, width=self.win.get_view_width(),
+			height=-1)
+		
+		self.app.worker.start()
 	
 	
 	def go_forward(self, widget):
@@ -60,7 +78,16 @@ class Callbacks(object):
 		self.app.current_pb = self.app.next_pb
 		self.app.next_pb = None
 		
+		self.app.current += 1
+		
 		self.win.image.set_from_pixbuf(self.app.current_pb)
+		
+		self.app.worker.set_preload(
+			os.path.join(self.app.archive.temp_dir, 
+			self.app.files[self.app.current + 1]), self.app.next_pb,
+			width=self.win.get_view_width(), height=-1)
+		
+		self.app.worker.start()
 	
 	
 	def quit(self, widget, event=None):
