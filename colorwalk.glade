@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Aug 13 16:40:02 2008 -->
+<!--Generated with glade3 3.4.5 on Wed Aug 13 17:00:04 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -13,8 +13,10 @@
             <child>
               <widget class="GtkToolButton" id="toolbutton1">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="label" translatable="yes">Back</property>
                 <property name="stock_id">gtk-go-back</property>
+                <signal name="clicked" handler="on_back_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -23,8 +25,10 @@
             <child>
               <widget class="GtkToolButton" id="toolbutton2">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="label" translatable="yes">Forward</property>
                 <property name="stock_id">gtk-go-forward</property>
+                <signal name="clicked" handler="on_forward_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>

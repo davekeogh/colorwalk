@@ -37,17 +37,7 @@ class Callbacks(object):
 					   
 			self.win.image.set_from_pixbuf(self.app.current_pb)
 			
-			self.win.statusbar.set_text(
-				self.app.files[self.app.current])
-			
-			self.win.set_pages(len(self.app.images))
-			self.win.set_page(self.app.current + 1)
-			
-			self.win.statusbar.set_size(self.app.size)
-			self.win.statusbar.set_res(self.app.current_pb.get_width(),
-				self.app.current_pb.get_height())
-			
-			self.win.ui.get_widget('combobox1').set_sensitive(True)
+			self.win.refresh()
 			
 			self.app.next_pb = \
 			new_pixbuf(os.path.join(self.app.archive.temp_dir, 
@@ -55,13 +45,22 @@ class Callbacks(object):
 					   width=self.app.win.get_view_width())
 		
 		else:
-			self.win.set_title('Color Walk')
-			self.win.statusbar.set_text('No images found in <b>%s</b>'
-										% self.app.archive.name)
+			self.win.blank()
+			
 			self.app.archive.remove_temp_dir()
 			self.app.archive = None
 		
+	
+	def go_back(self, widget):
+		return
+	
+	
+	def go_forward(self, widget):
+		self.app.previous_pb = self.app.current_pb
+		self.app.current_pb = self.app.next_pb
+		self.app.next_pb = None
 		
+		self.win.image.set_from_pixbuf(self.app.current_pb)
 	
 	
 	def quit(self, widget, event=None):

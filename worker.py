@@ -1,6 +1,9 @@
 import threading, subprocess, time
 import gtk, gobject
 
+from image import new_pixbuf
+
+
 class Worker(threading.Thread, gobject.GObject):
 	
 	__gsignals__ = {
@@ -8,7 +11,7 @@ class Worker(threading.Thread, gobject.GObject):
 		'extracting-finished' : (gobject.SIGNAL_RUN_FIRST,
 		gobject.TYPE_NONE, ()),
 		
-		'function-finished' : (gobject.SIGNAL_RUN_FIRST,
+		'preload-finished' : (gobject.SIGNAL_RUN_FIRST,
 		gobject.TYPE_NONE, ()),
 	
 		'cancel' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
@@ -29,6 +32,13 @@ class Worker(threading.Thread, gobject.GObject):
 	def set_function(self, f, sub=True):
 		self.function = f
 		self.sub = sub
+	
+	def set_preload(self, path, pb, width=-1, height=-1):
+		self.sub = False
+		self.path = path
+		self.pb = pb
+		self.width = width
+		self.height = height
 	
 	
 	def clear(self):
@@ -55,7 +65,8 @@ class Worker(threading.Thread, gobject.GObject):
 			self.emit('extracting-finished')
 		
 		else:
-			self.function()
+			self.pb = new_pixbuf(self.path, width=self.width, 
+								 height=self.height)
 			
-			self.emit('function-finished')
+			self.emit('preload-finished')
 			
