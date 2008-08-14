@@ -6,6 +6,9 @@ from statusbar import StatusBar
 
 class Window(gtk.Window):
 	
+	width = 600
+	height = 600
+	
 	def __init__(self, app, ui):
 		self.app = app
 		app.win = self
@@ -22,6 +25,7 @@ class Window(gtk.Window):
 		self.callbacks = Callbacks(self)
 		
 		self.connect('delete-event', self.callbacks.quit)
+		self.connect('configure-event', self.callbacks.window_resized)
 		
 		dic = {
 			'on_back_clicked'	: self.callbacks.go_back,
@@ -33,7 +37,7 @@ class Window(gtk.Window):
 		
 		self.set_icon_name('image')
 		self.set_title('Color Walk')
-		self.resize(600, 600)
+		self.resize(self.width, self.height)
 		self.show()
 	
 	
@@ -86,8 +90,8 @@ class Window(gtk.Window):
 	
 	
 	def get_view_width(self):
-		return self.window.get_size()[0] - 19
+		return self.width - 19
 	
 	
 	def get_view_height(self):
-		return self.window.get_size()[1] - 40
+		return self.height - 40
