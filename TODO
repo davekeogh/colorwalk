@@ -1,0 +1,11 @@
+Stuff that needs doing (in random order):
+
+- Preferences (dialog, class) - Use the ConfigParser module?
+- Accelerators for EVERYTHING!
+- Other scaling options (fit page, normal size)
+- Jump to page using the entry on the toolbar
+- About dialog (low priority, or lowest?)
+- README
+- setup.py
+- Speed up the rescaling when the window changes size
+- ...
