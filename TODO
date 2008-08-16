@@ -8,4 +8,5 @@ Stuff that needs doing (in random order):
 - README
 - setup.py
 - Speed up the rescaling when the window changes size
+- Reset the scrollbar position when the page changes
 - ...
