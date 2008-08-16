@@ -9,4 +9,5 @@ Stuff that needs doing (in random order):
 - setup.py
 - Speed up the rescaling when the window changes size
 - Reset the scrollbar position when the page changes
+- Find a better background image for the webpage
 - ...
