@@ -12,7 +12,7 @@ def new_pixbuf(path, width=-1, height=-1):
 
 
 def is_image_ext(path):
-	if os.path.splitext(path)[1] in EXTENSIONS:
+	if os.path.splitext(path)[1].lower() in EXTENSIONS:
 		return True
 	else:
 		return False
