@@ -8,7 +8,6 @@ Stuff that needs doing (in random order):
 - README
 - setup.py
 - Speed up the rescaling when the window changes size
-- Reset the scrollbar position when the page changes
 - Find a better background image for the webpage
 - Test using python-magic to determine file types (time it too)
 - ...

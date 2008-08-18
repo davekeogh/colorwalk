@@ -4,6 +4,10 @@ from callbacks import Callbacks
 from statusbar import StatusBar
 
 
+SCROLL_LTR = 0
+SCROLL_RTL = 1
+
+
 class Window(gtk.Window):
 	
 	width = 600
@@ -62,6 +66,24 @@ class Window(gtk.Window):
 			self.ui.get_widget('toolbutton1').set_sensitive(True)
 		else:
 			self.ui.get_widget('toolbutton1').set_sensitive(False)
+		
+		self.reset_scrollbars()
+		
+	
+	def reset_scrollbars(self, mode=SCROLL_LTR):
+		viewport = self.ui.get_widget('scrolledwindow1')
+		hadj = viewport.get_hadjustment()
+		vadj = viewport.get_vadjustment()
+		vadj.set_value(vadj.lower)
+		
+		
+		if mode == SCROLL_RTL:
+			hadj.set_value(hadj.upper)
+		else: # RTL
+			hadj.set_value(hadj.lower)
+		
+		viewport.set_hadjustment(hadj)
+		viewport.set_vadjustment(vadj)
 	
 	
 	def blank(self):

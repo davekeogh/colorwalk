@@ -36,9 +36,8 @@ class Callbacks(object):
 					   self.app.files[self.app.current]),
 					   width=self.app.win.get_view_width())
 					   
-			self.win.image.set_from_pixbuf(self.app.current_pb)
-			
 			self.win.refresh()
+			self.win.image.set_from_pixbuf(self.app.current_pb)
 			
 			self.app.next_pb = \
 			new_pixbuf(os.path.join(self.app.archive.temp_dir, 
@@ -58,8 +57,8 @@ class Callbacks(object):
 		
 		self.app.current -= 1
 		
-		self.win.image.set_from_pixbuf(self.app.current_pb)
 		self.win.refresh()
+		self.win.image.set_from_pixbuf(self.app.current_pb)
 		
 		gobject.idle_add(self.preload_previous)
 	
@@ -70,8 +69,8 @@ class Callbacks(object):
 		
 		self.app.current += 1
 		
-		self.win.image.set_from_pixbuf(self.app.current_pb)
 		self.win.refresh()
+		self.win.image.set_from_pixbuf(self.app.current_pb)
 		
 		gobject.idle_add(self.preload_next)
 	
