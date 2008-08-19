@@ -3,15 +3,14 @@ import gtk, gtk.glade
 from callbacks import Callbacks
 from statusbar import StatusBar
 
-
 SCROLL_LTR = 0
 SCROLL_RTL = 1
 
 
 class Window(gtk.Window):
 	
-	width = 600
-	height = 600
+	width = 800
+	height = 800
 	
 	def __init__(self, app, ui):
 		self.app = app
@@ -112,8 +111,11 @@ class Window(gtk.Window):
 	
 	
 	def get_view_width(self):
+		# FIXME: Get the actual width of the scrollbar + any padding.
 		return self.width - 19
 	
 	
 	def get_view_height(self):
+		# FIXME: Get the actual height of the menubar + statusbar
+		#		 + any padding.
 		return self.height - 40
