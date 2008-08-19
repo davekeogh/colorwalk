@@ -1,0 +1,33 @@
+Color Walk - A GTK+ comicbook reader written in Python
+
+
+Description
+-----------
+Color Walk is designed to be easy on the eyes, fast, and uncomplicated.
+
+Mousepad is released under the GNU General Public License (GPL) version
+2, see the file 'COPYING' for more information.
+
+
+Getting it
+----------
+The latest stable version can always be found here:
+ 
+http://members.shaw.ca/davekeogh/colorwalk/
+
+The very latest, possibly broken version, can checked out from the 
+project's git repository:
+
+ $ git clone git://github.com/davekeogh/colorwalk.git
+
+
+Installing
+----------
+Color Walk requires Python 2.4 and the GTK+ 2.2.x bindings.
+
+Simple install procedure:
+
+ $ tar xzvf colorwalk-x.x.x.tar.gz		# Unpack the sources
+ $ cd colorwalk-x.x.x					# Move to the source directory
+ [ Become root if necessary ]
+ # python setup.py						# Install Color Walk
