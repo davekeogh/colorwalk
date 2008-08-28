@@ -80,9 +80,11 @@ class Archive(object):
 		self.make_temp_dir()
 		
 		if self.type == ZIP:
-			command = 'unzip -j %s -d %s' % (self.path, self.temp_dir)
+			command = 'unzip -j \"%s\" -d \"%s\"' % (self.path,
+													 self.temp_dir)
 		if self.type == RAR:
-			command = 'unrar e %s %s' % (self.path, self.temp_dir)
+			command = 'unrar e \"%s\" \"%s\"' % (self.path,
+												 self.temp_dir)
 		
 		return subprocess.Popen(command, shell=True, 
 								stdout=subprocess.PIPE,
