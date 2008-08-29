@@ -114,6 +114,9 @@ class Callbacks(object):
 			gobject.idle_add(self.preload_previous)
 				
 	
+	def key_pressed(self, widget, event):
+		print event.keyval
+	
 	
 	def quit(self, widget, event=None):
 		if self.app.archive:
