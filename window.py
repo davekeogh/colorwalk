@@ -39,6 +39,8 @@ class Window(gtk.Window):
 		
 		self.ui.get_widget('combobox1').set_active(self.app.scale)
 		
+		self.ui.get_widget('toolbutton2').set_flags(gtk.CAN_FOCUS)
+		
 		self.set_icon_name('image')
 		self.set_title('Color Walk')
 		self.resize(self.width, self.height)
@@ -68,6 +70,10 @@ class Window(gtk.Window):
 			self.ui.get_widget('toolbutton1').set_sensitive(False)
 		
 		self.reset_scrollbars()
+		
+		# Focus the forward button so that spacebar presses don't
+		# activate other tool buttons.
+		self.ui.get_widget('toolbutton2').grab_focus()
 		
 	
 	def reset_scrollbars(self, mode=SCROLL_LTR):
