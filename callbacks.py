@@ -43,6 +43,8 @@ class Callbacks(object):
 			new_pixbuf(os.path.join(self.app.archive.temp_dir, 
 					   self.app.files[self.app.current + 1]),
 					   width=self.app.win.get_view_width())
+			
+			self.win.connect('key-press-event', self.key_pressed)
 		
 		else:
 			self.win.blank()
@@ -115,7 +117,11 @@ class Callbacks(object):
 				
 	
 	def key_pressed(self, widget, event):
-		print event.keyval
+		if event.keyval == 32: # Spacebar
+			self.go_forward(widget)
+		
+		if event.keyval == 65288: # Backspace
+			self.go_back(widget)
 	
 	
 	def quit(self, widget, event=None):

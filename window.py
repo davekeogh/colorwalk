@@ -29,7 +29,6 @@ class Window(gtk.Window):
 		
 		self.connect('delete-event', self.callbacks.quit)
 		self.connect('configure-event', self.callbacks.window_resized)
-		self.connect('key-press-event', self.callbacks.key_pressed)
 		
 		dic = {
 			'on_back_clicked'	: self.callbacks.go_back,
