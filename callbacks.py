@@ -64,6 +64,8 @@ class Callbacks(object):
 	
 	
 	def go_forward(self, widget):
+		# TODO: Implement smart paging here. Check the preferences
+		#		value first to see if it's enabled.
 		self.app.previous_pb = self.app.current_pb
 		self.app.current_pb = self.app.next_pb
 		
