@@ -31,7 +31,6 @@ class StatusBar(object):
 	
 	
 	def hide_all(self):
-		self.ui.get_widget('frame1').show()
 		self.ui.get_widget('frame2').show()
 		self.ui.get_widget('frame3').show()
 		self.progressbar.hide()
