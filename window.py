@@ -34,7 +34,8 @@ class Window(gtk.Window):
 			'on_back_clicked'	: self.callbacks.go_back,
 			'on_forward_clicked': self.callbacks.go_forward,
 			'on_open_clicked'	: self.callbacks.open,
-			'on_close_clicked'	: self.callbacks.close
+			'on_close_clicked'	: self.callbacks.close,
+			'on_about_clicked'	: self.callbacks.about
 		}
 		self.ui.signal_autoconnect(dic)
 		

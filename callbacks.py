@@ -4,7 +4,7 @@ import gtk, gobject
 
 from image import new_pixbuf, is_image_ext
 from worker import Worker
-from dialogs import choose_file
+from dialogs import AboutDialog, choose_file
 from error import ArchiveError
 from archive import Archive
 from worker import Worker
@@ -90,6 +90,12 @@ class Callbacks(object):
 			self.win.blank()
 			self.app.archive.remove_temp_dir()
 			self.app.archive = None
+	
+	
+	def about(self, widget):
+		dialog = AboutDialog()
+		if dialog.run():
+			dialog.destroy()
 	
 	
 	def go_back(self, widget):
