@@ -32,7 +32,9 @@ class Window(gtk.Window):
 		
 		dic = {
 			'on_back_clicked'	: self.callbacks.go_back,
-			'on_forward_clicked': self.callbacks.go_forward
+			'on_forward_clicked': self.callbacks.go_forward,
+			'on_open_clicked'	: self.callbacks.open,
+			'on_close_clicked'	: self.callbacks.close
 		}
 		self.ui.signal_autoconnect(dic)
 		
@@ -58,6 +60,7 @@ class Window(gtk.Window):
 							   self.app.current_pb.get_height())
 			
 		self.ui.get_widget('combobox1').set_sensitive(True)
+		self.ui.get_widget('toolbutton13').set_sensitive(True)
 		
 		if self.app.current < (len(self.app.images) -1):
 			self.ui.get_widget('toolbutton2').set_sensitive(True)
@@ -83,6 +86,7 @@ class Window(gtk.Window):
 		
 		
 		if mode == SCROLL_RTL:
+			# TODO: Hook this up to the preferences.
 			hadj.set_value(hadj.upper)
 		else: # RTL
 			hadj.set_value(hadj.lower)
@@ -93,14 +97,16 @@ class Window(gtk.Window):
 	
 	def blank(self):
 		self.set_title('Color Walk')
-		self.statusbar.set_text('No images found in <i>%s</i>'
-								% self.app.archive.name)
+		self.statusbar.set_text('')
 								
+		self.image.clear()
+		
 		self.statusbar.hide_all()
 		
 		self.ui.get_widget('combobox1').set_sensitive(False)
 		self.ui.get_widget('toolbutton1').set_sensitive(False)
 		self.ui.get_widget('toolbutton2').set_sensitive(False)
+		self.ui.get_widget('toolbutton13').set_sensitive(False)
 		
 		self.ui.get_widget('label6').hide()
 		self.ui.get_widget('entry1').hide()

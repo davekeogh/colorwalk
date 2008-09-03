@@ -48,7 +48,19 @@ class Callbacks(object):
 		
 		else:
 			self.win.blank()
-			
+			self.win.statusbar.set_text('No images found in <i>%s</i>'
+										% self.app.archive.name)
+			self.app.archive.remove_temp_dir()
+			self.app.archive = None
+	
+	
+	def open(self, widget):
+		return
+	
+	
+	def close(self, widget):
+		if self.app.archive:
+			self.win.blank()
 			self.app.archive.remove_temp_dir()
 			self.app.archive = None
 	
