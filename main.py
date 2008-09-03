@@ -13,6 +13,12 @@ GLADE = 'colorwalk.glade'
 
 class Application(object):
 	
+	# TODO: This class is only going to become larger, better to move it
+	#		to its own module.
+	
+	# TODO: Many of these properties would probably make more sense to
+	#		reside in the Archive object
+	
 	win = None
 	worker = None
 	archive = None
