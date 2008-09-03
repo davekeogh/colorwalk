@@ -4,6 +4,10 @@ import gtk, gobject
 
 from image import new_pixbuf, is_image_ext
 from worker import Worker
+from dialogs import choose_file
+from error import ArchiveError
+from archive import Archive
+from worker import Worker
 
 class Callbacks(object):
 	
@@ -55,11 +59,34 @@ class Callbacks(object):
 	
 	
 	def open(self, widget):
-		return
+		file = choose_file()
+		
+		if file:
+			if self.app.archive:
+				self.app.reset()
+				self.app.archive.remove_temp_dir()
+				self.app.archive = None
+			
+			try:
+				self.app.archive = Archive(file)
+			except ArchiveError, error:
+				# TODO: Throw an error dialog or display the error text 
+				#		in the statusbar.
+				print error.message
+				app.archive = None
+			
+			if self.app.archive:
+				self.app.win.statusbar.hide_all()
+				self.app.worker = Worker(self.app)
+				self.app.worker.connect('extracting-finished',
+						   	 self.app.win.callbacks.extracting_finished)
+				self.app.worker.set_function(self.app.archive.extract)
+				self.app.worker.start()
 	
 	
 	def close(self, widget):
 		if self.app.archive:
+			self.app.reset()
 			self.win.blank()
 			self.app.archive.remove_temp_dir()
 			self.app.archive = None
