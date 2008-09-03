@@ -27,6 +27,16 @@ class Application(object):
 	current_pb = None
 	next_pb = None
 	previous_pb = None
+	
+	def reset(self):
+		self.files = []
+		self.images = []
+		self.current = 0
+		self.size = 0
+	
+		self.current_pb = None
+		self.next_pb = None
+		self.previous_pb = None
 
 
 def main(args):
