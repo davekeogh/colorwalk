@@ -73,7 +73,8 @@ class Archive(object):
 	
 	
 	def remove_temp_dir(self):
-		shutil.rmtree(self.temp_dir)
+		if self.temp_dir:
+			shutil.rmtree(self.temp_dir)
 	
 	
 	def extract(self):
