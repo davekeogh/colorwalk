@@ -73,7 +73,7 @@ class Callbacks(object):
 				# TODO: Throw an error dialog or display the error text 
 				#		in the statusbar.
 				print error.message
-				app.archive = None
+				self.app.archive = None
 			
 			if self.app.archive:
 				self.app.win.statusbar.hide_all()

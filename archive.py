@@ -20,7 +20,7 @@ except ImportError:
 
 def is_zip_file(path):
 	if not MAGIC:
-		p = subprocess.Popen('file %s' % path, shell=True, 
+		p = subprocess.Popen('file \"%s\"' % path, shell=True, 
 							 stdout=subprocess.PIPE)
 		p.wait()
 		stdout = p.stdout.read()
@@ -33,7 +33,7 @@ def is_zip_file(path):
 
 def is_rar_file(path):
 	if not MAGIC:
-		p = subprocess.Popen('file %s' % path, shell=True, 
+		p = subprocess.Popen('file \"%s\"' % path, shell=True, 
 							 stdout=subprocess.PIPE)
 		p.wait()
 		stdout = p.stdout.read()
