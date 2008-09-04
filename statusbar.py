@@ -12,6 +12,7 @@ class StatusBar(object):
 	
 	
 	def set_text(self, msg):
+		msg = msg.replace('&', '&amp;')
 		self.message_area.set_markup(msg)
 	
 	
