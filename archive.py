@@ -2,16 +2,14 @@ import os, os.path, tempfile, shutil, subprocess
 
 from error import ArchiveError
 
-MAGIC_WARNING = """\nInstall the python module 'magic' for improved \
-performance when opening archive files. It's probably called \
-python-magic by your package manager.\n"""
-
 ZIP = 0
 RAR = 1
  
 try:
 	import magic
 	MAGIC = True
+	MS = magic.open(magic.MAGIC_NONE)
+	MS.load()
 except ImportError:
 	MAGIC = False
 	print MAGIC_WARNING
@@ -29,6 +27,14 @@ def is_zip_file(path):
 			return True
 		else:
 			return False
+	
+	else:
+		type =  MS.file(path)
+		
+		if type.startswith('Zip archive data'):
+			return True
+		else:
+			return False
 
 
 def is_rar_file(path):
@@ -39,6 +45,14 @@ def is_rar_file(path):
 		stdout = p.stdout.read()
 		
 		if stdout.split(': ')[1].startswith('RAR archive data'):
+			return True
+		else:
+			return False
+	
+	else:
+		type =  MS.file(path)
+		
+		if type.startswith('RAR archive data'):
 			return True
 		else:
 			return False
