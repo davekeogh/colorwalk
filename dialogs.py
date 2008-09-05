@@ -19,8 +19,6 @@ You should have received a copy of the GNU General Public License along\
 def choose_file(path=None):
 	dialog = FileChooserDialog()
 	
-	print path
-	
 	if path:
 		dialog.set_current_folder(path)
 	
