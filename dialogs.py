@@ -16,8 +16,14 @@ You should have received a copy of the GNU General Public License along\
  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.
 """
 
-def choose_file():
+def choose_file(path=None):
 	dialog = FileChooserDialog()
+	
+	print path
+	
+	if path:
+		dialog.set_current_folder(path)
+	
 	response = dialog.run()
 	file = dialog.get_filename()
 	dialog.destroy()

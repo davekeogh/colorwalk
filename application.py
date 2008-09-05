@@ -23,6 +23,9 @@ class Application(object):
 	next_pb = None
 	previous_pb = None
 	
+	open_dir = None
+	
+	
 	def reset(self):
 		self.files = []
 		self.images = []
