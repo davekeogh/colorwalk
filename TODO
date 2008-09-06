@@ -12,4 +12,7 @@ Stuff that needs doing (in random order):
 - Test using python-magic to determine file types (time it too)
 - Bookmarking pages
 - Bookmarks editor
+- Using an idle handler to preload and pack the images causes the UI to
+  block for a second or so. See about doing this withing the worker
+  thread.
 - ...
