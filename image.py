@@ -1,4 +1,4 @@
-import os, os.path, subprocess
+import os, os.path, subprocess, gc
 import gtk
 
 from archive import MAGIC
@@ -9,6 +9,11 @@ EXTENSIONS = ['.jpg', '.jpeg', '.gif', '.png', '.bmp']
 
 def new_pixbuf(path, width=-1, height=-1):
 	return gtk.gdk.pixbuf_new_from_file_at_size(path, width, height)
+	
+	# gtk.gdk.Pixbuf()s don't seem to be collected properly. I'm not
+	# sure if this is the best spot to call the garbage collecter
+	# though.
+	gc.collect()
 
 
 def is_image_ext(path):
