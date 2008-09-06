@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Sep  5 21:59:40 2008 -->
+<!--Generated with glade3 3.4.5 on Fri Sep  5 22:43:09 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -28,6 +28,17 @@
                 <property name="label" translatable="yes">Close</property>
                 <property name="stock_id">gtk-close</property>
                 <signal name="clicked" handler="on_close_clicked"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="toolbutton15">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="label" translatable="yes">Bookmark</property>
+                <property name="stock_id">gtk-add</property>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>

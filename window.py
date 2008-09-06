@@ -64,6 +64,7 @@ class Window(gtk.Window):
 			
 		self.ui.get_widget('combobox1').set_sensitive(True)
 		self.ui.get_widget('toolbutton13').set_sensitive(True)
+		self.ui.get_widget('toolbutton15').set_sensitive(True)
 		
 		if self.app.current < (len(self.app.images) -1):
 			self.ui.get_widget('toolbutton2').set_sensitive(True)
@@ -113,6 +114,7 @@ class Window(gtk.Window):
 		self.ui.get_widget('toolbutton1').set_sensitive(False)
 		self.ui.get_widget('toolbutton2').set_sensitive(False)
 		self.ui.get_widget('toolbutton13').set_sensitive(False)
+		self.ui.get_widget('toolbutton15').set_sensitive(False)
 		
 		self.ui.get_widget('label6').hide()
 		self.ui.get_widget('entry1').hide()
