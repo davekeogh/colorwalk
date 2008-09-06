@@ -47,13 +47,12 @@ class Callbacks(object):
 			new_pixbuf(os.path.join(self.app.archive.temp_dir, 
 					   self.app.files[self.app.current + 1]),
 					   width=self.app.win.get_view_width())
-			
-			self.win.connect('key-press-event', self.key_pressed)
 		
 		else:
 			self.win.blank()
 			self.win.statusbar.set_text('No images found in <i>%s</i>'
 										% self.app.archive.name)
+			self.app.reset()
 			self.app.archive.remove_temp_dir()
 			self.app.archive = None
 	
