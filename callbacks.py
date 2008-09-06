@@ -37,7 +37,7 @@ class Callbacks(object):
 			
 			self.app.current_pb = \
 			new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-					   self.app.files[self.app.current]),
+					   self.app.images[self.app.current]),
 					   width=self.app.win.get_view_width())
 					   
 			self.win.refresh()
@@ -45,7 +45,7 @@ class Callbacks(object):
 			
 			self.app.next_pb = \
 			new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-					   self.app.files[self.app.current + 1]),
+					   self.app.images[self.app.current + 1]),
 					   width=self.app.win.get_view_width())
 		
 		else:
@@ -125,11 +125,47 @@ class Callbacks(object):
 		gobject.idle_add(self.preload_next)
 	
 	
+	def jump(self, widget):
+		text = widget.get_text()
+		
+		def fail():
+			self.app.win.set_page(self.app.current + 1)
+			self.win.steal_focus()
+		
+		try:
+			num = int(text)
+			
+			if num <= len(self.app.images) and num > 0:
+				self.app.current = num - 1
+				
+				self.app.current_pb = \
+					new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+					self.app.files[self.app.current]),
+					width=self.app.win.get_view_width())
+					   
+				self.win.refresh()
+				self.win.image.set_from_pixbuf(self.app.current_pb)
+			
+				self.app.next_pb = \
+					new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+					self.app.images[self.app.current + 1]),
+					width=self.app.win.get_view_width())
+					   
+				self.app.previous_pb = \
+					new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+					self.app.images[self.app.current - 1]),
+					width=self.app.win.get_view_width())
+			else:
+				fail()
+		except ValueError:
+			fail()
+	
+	
 	def preload_next(self):
 		if (self.app.current + 1) <= (len(self.app.images) -1):
 			self.app.next_pb = \
 				new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-					   	   self.app.files[self.app.current + 1]),
+					   	   self.app.images[self.app.current + 1]),
 					   	   width=self.app.win.get_view_width())
 		
 		return False
@@ -139,7 +175,7 @@ class Callbacks(object):
 		if (self.app.current - 1) >= 0:
 			self.app.previous_pb = \
 				new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-					   	   self.app.files[self.app.current - 1]),
+					   	   self.app.images[self.app.current - 1]),
 					   	   width=self.app.win.get_view_width())
 		
 		return False
@@ -155,7 +191,7 @@ class Callbacks(object):
 				
 				self.app.current_pb = \
 				new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-						   self.app.files[self.app.current]),
+						   self.app.images[self.app.current]),
 						   width=self.app.win.get_view_width())
 				self.win.image.set_from_pixbuf(self.app.current_pb)
 				

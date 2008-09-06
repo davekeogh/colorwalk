@@ -32,11 +32,12 @@ class Window(gtk.Window):
 		self.connect('key-press-event', self.callbacks.key_pressed)
 		
 		dic = {
-			'on_back_clicked'	: self.callbacks.go_back,
-			'on_forward_clicked': self.callbacks.go_forward,
-			'on_open_clicked'	: self.callbacks.open,
-			'on_close_clicked'	: self.callbacks.close,
-			'on_about_clicked'	: self.callbacks.about
+			'on_back_clicked'		: self.callbacks.go_back,
+			'on_forward_clicked'	: self.callbacks.go_forward,
+			'on_open_clicked'		: self.callbacks.open,
+			'on_close_clicked'		: self.callbacks.close,
+			'on_about_clicked'		: self.callbacks.about,
+			'on_entry_activate'		: self.callbacks.jump
 		}
 		self.ui.signal_autoconnect(dic)
 		
@@ -74,11 +75,14 @@ class Window(gtk.Window):
 			self.ui.get_widget('toolbutton1').set_sensitive(False)
 		
 		self.reset_scrollbars()
+		self.steal_focus()
 		
+	
+	def steal_focus(self):
 		# Focus the forward button so that spacebar presses don't
 		# activate other tool buttons.
 		self.ui.get_widget('toolbutton2').grab_focus()
-		
+	
 	
 	def reset_scrollbars(self, mode=SCROLL_LTR):
 		viewport = self.ui.get_widget('scrolledwindow1')

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Sep  3 05:32:47 2008 -->
+<!--Generated with glade3 3.4.5 on Fri Sep  5 21:59:40 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -76,8 +76,10 @@
                 <child>
                   <widget class="GtkEntry" id="entry1">
                     <property name="can_focus">True</property>
+                    <property name="max_length">3</property>
                     <property name="width_chars">3</property>
                     <property name="xalign">1</property>
+                    <signal name="activate" handler="on_entry_activate"/>
                   </widget>
                 </child>
               </widget>
