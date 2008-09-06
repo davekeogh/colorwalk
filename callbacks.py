@@ -146,20 +146,21 @@ class Callbacks(object):
 	
 	
 	def window_resized(self, widget, allocation):
-		if (self.win.width != allocation.width or
-			self.win.height != allocation.height):
+		if self.app.archive:
+			if (self.win.width != allocation.width or
+				self.win.height != allocation.height):
+					
+				self.win.width = allocation.width
+				self.win.height = allocation.height
 				
-			self.win.width = allocation.width
-			self.win.height = allocation.height
-			
-			self.app.current_pb = \
-			new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-					   self.app.files[self.app.current]),
-					   width=self.app.win.get_view_width())
-			self.win.image.set_from_pixbuf(self.app.current_pb)
-			
-			gobject.idle_add(self.preload_next)
-			gobject.idle_add(self.preload_previous)
+				self.app.current_pb = \
+				new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+						   self.app.files[self.app.current]),
+						   width=self.app.win.get_view_width())
+				self.win.image.set_from_pixbuf(self.app.current_pb)
+				
+				gobject.idle_add(self.preload_next)
+				gobject.idle_add(self.preload_previous)
 				
 	
 	def key_pressed(self, widget, event):
