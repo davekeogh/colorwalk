@@ -163,11 +163,12 @@ class Callbacks(object):
 				
 	
 	def key_pressed(self, widget, event):
-		if event.keyval == 32: # Spacebar
-			self.go_forward(widget)
-		
-		if event.keyval == 65288: # Backspace
-			self.go_back(widget)
+		if self.app.archive:
+			if event.keyval == 32: # Spacebar
+				self.go_forward(widget)
+			
+			if event.keyval == 65288: # Backspace
+				self.go_back(widget)
 	
 	
 	def quit(self, widget, event=None):
