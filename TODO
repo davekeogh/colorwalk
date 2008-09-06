@@ -3,7 +3,6 @@ Stuff that needs doing (in random order):
 - Preferences (dialog, class) - Use the ConfigParser module?
 - Accelerators for EVERYTHING!
 - Other scaling options (fit page, normal size)
-- Jump to page using the entry on the toolbar
 - setup.py
 - Speed up the rescaling when the window changes size
 - Find a better background image for the webpage
