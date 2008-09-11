@@ -182,12 +182,12 @@ class Callbacks(object):
 	
 	
 	def window_resized(self, widget, allocation):
+		self.win.width = allocation.width
+		self.win.height = allocation.height
+		
 		if self.app.archive:
 			if (self.win.width != allocation.width or
 				self.win.height != allocation.height):
-					
-				self.win.width = allocation.width
-				self.win.height = allocation.height
 				
 				self.app.current_pb = \
 				new_pixbuf(os.path.join(self.app.archive.temp_dir, 
