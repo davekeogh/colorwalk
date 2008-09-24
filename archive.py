@@ -31,6 +31,8 @@ def is_zip_file(path):
 	else:
 		type =  MS.file(path)
 		
+		print type
+		
 		if type.startswith('Zip archive data'):
 			return True
 		else:

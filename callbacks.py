@@ -65,6 +65,7 @@ class Callbacks(object):
 			
 			if self.app.archive:
 				self.app.reset()
+				self.win.blank()
 				self.app.archive.remove_temp_dir()
 				self.app.archive = None
 			
