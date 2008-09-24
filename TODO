@@ -11,4 +11,7 @@ Stuff that needs doing (in random order):
 - Using an idle handler to preload and pack the images causes the UI to
   block for a second or so. See about doing this withing the worker
   thread.
+- The file command (and python library) sometimes identifies (zip) files
+  as simply "data" instead of "Zip archive data...". Figure out what's
+  causing this or work around it somehow.
 - ...
