@@ -101,29 +101,32 @@ class Callbacks(object):
 	
 	
 	def go_back(self, widget):
-		self.app.next_pb = self.app.current_pb
-		self.app.current_pb = self.app.previous_pb
-		
-		self.app.current -= 1
-		
-		self.win.refresh()
-		self.win.image.set_from_pixbuf(self.app.current_pb)
-		
-		gobject.idle_add(self.preload_previous)
+		if self.app.current > 0:
+			self.app.next_pb = self.app.current_pb
+			self.app.current_pb = self.app.previous_pb
+			
+			self.app.current -= 1
+			
+			self.win.refresh()
+			self.win.image.set_from_pixbuf(self.app.current_pb)
+			
+			gobject.idle_add(self.preload_previous)
 	
 	
 	def go_forward(self, widget):
 		# TODO: Implement smart paging here. Check the preferences
 		#		value first to see if it's enabled.
-		self.app.previous_pb = self.app.current_pb
-		self.app.current_pb = self.app.next_pb
 		
-		self.app.current += 1
-		
-		self.win.refresh()
-		self.win.image.set_from_pixbuf(self.app.current_pb)
-		
-		gobject.idle_add(self.preload_next)
+		if self.app.current < len(self.app.images) - 1:
+			self.app.previous_pb = self.app.current_pb
+			self.app.current_pb = self.app.next_pb
+			
+			self.app.current += 1
+			
+			self.win.refresh()
+			self.win.image.set_from_pixbuf(self.app.current_pb)
+			
+			gobject.idle_add(self.preload_next)
 	
 	
 	def jump(self, widget):
