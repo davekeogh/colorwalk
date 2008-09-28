@@ -143,23 +143,30 @@ class Callbacks(object):
 				self.app.current = num - 1
 				
 				self.app.current_pb = \
-					new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-					self.app.files[self.app.current]),
-					width=self.app.win.get_view_width())
-					   
+				new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+				self.app.files[self.app.current]),
+				width=self.app.win.get_view_width())
+				
 				self.win.refresh()
 				self.win.steal_focus()
 				self.win.image.set_from_pixbuf(self.app.current_pb)
-			
-				self.app.next_pb = \
+				
+				try:
+					self.app.next_pb = \
 					new_pixbuf(os.path.join(self.app.archive.temp_dir, 
 					self.app.images[self.app.current + 1]),
 					width=self.app.win.get_view_width())
-					   
-				self.app.previous_pb = \
+				except IndexError:
+					self.app.next_pb = None
+				
+				try:
+					self.app.previous_pb = \
 					new_pixbuf(os.path.join(self.app.archive.temp_dir, 
 					self.app.images[self.app.current - 1]),
 					width=self.app.win.get_view_width())
+				except IndexError:
+					self.app.previous_pb = None
+				
 			else:
 				fail()
 		except ValueError:
