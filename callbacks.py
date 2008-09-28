@@ -148,6 +148,7 @@ class Callbacks(object):
 					width=self.app.win.get_view_width())
 					   
 				self.win.refresh()
+				self.win.steal_focus()
 				self.win.image.set_from_pixbuf(self.app.current_pb)
 			
 				self.app.next_pb = \
