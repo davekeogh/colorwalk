@@ -4,7 +4,10 @@ from error import ArchiveError
 
 ZIP = 0
 RAR = 1
- 
+
+ZIP_MIMES = ('application/x-zip', 'application/x-cbz')
+RAR_MIMES = ('application/x-rar', 'application/x-cbr')
+
 try:
 	import magic
 	MAGIC = True
@@ -26,7 +29,7 @@ def is_zip_file(path):
 		if stdout.split(': ')[1].startswith('Zip archive data'):
 			return True
 		else:
-			return False
+			return is_mime_correct(path, ZIP_MIMES)
 	
 	else:
 		type =  MS.file(path)
@@ -34,7 +37,7 @@ def is_zip_file(path):
 		if type.startswith('Zip archive data'):
 			return True
 		else:
-			return False
+			return is_mime_correct(path, ZIP_MIMES)
 
 
 def is_rar_file(path):
@@ -47,7 +50,7 @@ def is_rar_file(path):
 		if stdout.split(': ')[1].startswith('RAR archive data'):
 			return True
 		else:
-			return False
+			return is_mime_correct(path, RAR_MIMES)
 	
 	else:
 		type =  MS.file(path)
@@ -55,7 +58,16 @@ def is_rar_file(path):
 		if type.startswith('RAR archive data'):
 			return True
 		else:
-			return False
+			return is_mime_correct(path, RAR_MIMES)
+
+
+def is_mime_correct(name, mimes):
+	import mimetypes
+	
+	if mimetypes.guess_type(name, strict=False)[0] in mimes:
+		return True
+	else:
+		return False
 
 
 class Archive(object):
