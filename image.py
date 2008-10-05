@@ -3,8 +3,33 @@ import gtk
 
 from archive import MAGIC
 
+try:
+	import hashlib
+	NEW_MD5 = hashlib.md5
+except ImportError:
+	import md5
+	NEW_MD5 = md5.new
+
+
 IMAGES = ['JPEG image data', 'PNG image data', 'GIF image data']
 EXTENSIONS = ['.jpg', '.jpeg', '.gif', '.png', '.bmp']
+
+
+def get_thumbnail(path):
+	uri = 'file://%s' % path
+	
+	m = NEW_MD5()
+	m.update(uri)
+	
+	thumb_dir = os.path.join(os.environ['HOME'], '.thumbnails/normal')
+	thumb_file = '%s.png' % m.hexdigest()
+	thumb_path = os.path.join(thumb_dir, thumb_file)
+	
+	if os.path.isfile(thumb_path):
+		return new_pixbuf(thumb_path)
+	else:
+		return None
+	
 
 
 def new_pixbuf(path, width=-1, height=-1):
