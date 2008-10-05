@@ -15,9 +15,7 @@ IMAGES = ['JPEG image data', 'PNG image data', 'GIF image data']
 EXTENSIONS = ['.jpg', '.jpeg', '.gif', '.png', '.bmp']
 
 
-def get_thumbnail(path):
-	uri = 'file://%s' % path
-	
+def get_thumbnail(uri):
 	m = NEW_MD5()
 	m.update(uri)
 	
