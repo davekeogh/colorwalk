@@ -1,5 +1,7 @@
 import gtk
 
+from image import get_thumbnail
+
 # TODO: Find a better place for this?
 GPL_V2 = """This program is free software; you can redistribute it\
  and/or modify it under the terms of the GNU General Public License as\
@@ -42,6 +44,10 @@ class FileChooserDialog(gtk.FileChooserDialog):
 									   			gtk.STOCK_OK,
 									   			gtk.RESPONSE_ACCEPT))
 		
+		self.connect('selection-changed', self.set_preview)
+		
+		self.set_preview_widget(gtk.Image())
+		
 		self.set_icon_name('fileopen')
 		
 		main_filter = gtk.FileFilter()
@@ -69,6 +75,17 @@ class FileChooserDialog(gtk.FileChooserDialog):
 		self.add_filter(comic_filter)
 		self.add_filter(arc_filter)
 		self.add_filter(all_filter)
+	
+	
+	def set_preview(self, chooser):
+		if self.get_uri():
+			pb = get_thumbnail(self.get_uri())
+		
+			if pb:
+				self.get_preview_widget().set_from_pixbuf(pb)
+				self.set_preview_widget_active(True)
+			else:
+				self.set_preview_widget_active(False)
 		
 
 class AboutDialog(gtk.AboutDialog):
