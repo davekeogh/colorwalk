@@ -23,7 +23,7 @@ class Callbacks(object):
 		self.win.set_title(self.app.archive.name)
 		
 		self.app.files = os.listdir(self.app.archive.temp_dir)
-		self.app.files.sort()
+		self.app.files.sort(key=str.lower)
 		
 		for file in self.app.files:
 			if is_image_ext(file):
