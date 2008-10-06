@@ -20,7 +20,7 @@ size=width
 quality=bilinear
 
 [Behavior]
-scrolling=ltr
+direction=ltr
 turn_page_by_scroll=false
 smart_scrolling=true
 
