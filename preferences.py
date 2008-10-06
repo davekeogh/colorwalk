@@ -49,6 +49,7 @@ class Preferences(SafeConfigParser):
 			fb = open(PREFS_PATH)
 		
 		self.readfp(fb, PREFS_FILE)
+		fb.close()
 		
 	
 	def save(self):
