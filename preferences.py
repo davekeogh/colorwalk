@@ -53,7 +53,7 @@ class Preferences(SafeConfigParser):
 		
 	
 	def save(self):
-		fb = fb = open(PREFS_PATH, 'w')
+		fb = open(PREFS_PATH, 'w')
 		self.write(fb)
 		fb.close()
 	
