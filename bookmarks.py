@@ -33,12 +33,13 @@ class Bookmarks(dict):
 	
 	
 	def save(self):
-		fb = open(PREFS_PATH, 'w')
-		
-		for key in self:
-			fb.writeline('%s\t%s' % (key, self[key]))
-		
-		fb.close()
+		if len(self):
+			fb = open(PREFS_PATH, 'w')
+			
+			for key in self:
+				fb.writeline('%s\t%s' % (key, self[key]))
+			
+			fb.close()
 	
 	
 	def __del__(self):
