@@ -27,7 +27,7 @@ smart_scrolling=true
 [Bookmarks]
 open_last_on_start=false
 bookmark_page_on_exit=false
-max=200
+max=0
 
 """
 
