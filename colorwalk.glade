@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Oct  7 18:12:19 2008 -->
+<!--Generated with glade3 3.4.5 on Tue Oct  7 18:16:22 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -40,7 +40,8 @@
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="tooltip" translatable="yes">Bookmark this page</property>
-                <property name="label" translatable="yes">Bookmark</property>
+                <property name="is_important">True</property>
+                <property name="label" translatable="yes">Bookmark this page</property>
                 <property name="stock_id">gtk-add</property>
               </widget>
               <packing>
