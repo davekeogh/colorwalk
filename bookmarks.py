@@ -29,7 +29,7 @@ class Bookmarks(dict):
 	
 	
 	def remove(self, file):
-		self.__delitem__(self)
+		self.__delitem__(file)
 	
 	
 	def save(self):
