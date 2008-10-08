@@ -28,6 +28,12 @@ class Bookmarks(dict):
 			self[file] = page
 	
 	
+	def prune(self):
+		for key in self:
+			if not os.path.isfile(key):
+				self.remove(key)
+	
+	
 	def remove(self, file):
 		self.__delitem__(file)
 	
