@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Sep  5 22:43:09 2008 -->
+<!--Generated with glade3 3.4.5 on Tue Oct  7 18:12:19 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -13,6 +13,7 @@
             <child>
               <widget class="GtkToolButton" id="toolbutton10">
                 <property name="visible">True</property>
+                <property name="tooltip" translatable="yes">Open a file</property>
                 <property name="label" translatable="yes">Open</property>
                 <property name="stock_id">gtk-open</property>
                 <signal name="clicked" handler="on_open_clicked"/>
@@ -25,6 +26,7 @@
               <widget class="GtkToolButton" id="toolbutton13">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
+                <property name="tooltip" translatable="yes">Close current file</property>
                 <property name="label" translatable="yes">Close</property>
                 <property name="stock_id">gtk-close</property>
                 <signal name="clicked" handler="on_close_clicked"/>
@@ -37,6 +39,7 @@
               <widget class="GtkToolButton" id="toolbutton15">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
+                <property name="tooltip" translatable="yes">Bookmark this page</property>
                 <property name="label" translatable="yes">Bookmark</property>
                 <property name="stock_id">gtk-add</property>
               </widget>
@@ -56,6 +59,7 @@
               <widget class="GtkToolButton" id="toolbutton1">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
+                <property name="tooltip" translatable="yes">Go back one page</property>
                 <property name="label" translatable="yes">Back</property>
                 <property name="stock_id">gtk-go-back</property>
                 <signal name="clicked" handler="on_back_clicked"/>
@@ -68,6 +72,7 @@
               <widget class="GtkToolButton" id="toolbutton2">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
+                <property name="tooltip" translatable="yes">Go forward one page</property>
                 <property name="label" translatable="yes">Forward</property>
                 <property name="stock_id">gtk-go-forward</property>
                 <signal name="clicked" handler="on_forward_clicked"/>
@@ -132,6 +137,7 @@ Normal size</property>
             <child>
               <widget class="GtkToolButton" id="toolbutton4">
                 <property name="visible">True</property>
+                <property name="tooltip" translatable="yes">Color Walk preferences</property>
                 <property name="label" translatable="yes">Preferences</property>
                 <property name="stock_id">gtk-preferences</property>
               </widget>
@@ -142,6 +148,7 @@ Normal size</property>
             <child>
               <widget class="GtkToolButton" id="toolbutton5">
                 <property name="visible">True</property>
+                <property name="tooltip" translatable="yes">Help contents</property>
                 <property name="label" translatable="yes">Help</property>
                 <property name="stock_id">gtk-help</property>
               </widget>
@@ -152,6 +159,7 @@ Normal size</property>
             <child>
               <widget class="GtkToolButton" id="toolbutton6">
                 <property name="visible">True</property>
+                <property name="tooltip" translatable="yes">About Color Walk</property>
                 <property name="label" translatable="yes">About</property>
                 <property name="stock_id">gtk-about</property>
                 <signal name="clicked" handler="on_about_clicked"/>
