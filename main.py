@@ -18,9 +18,9 @@ def main(args):
 	
 	app = Application()
 	
+	app.prefs = Preferences()
 	app.win = Window(app, GLADE)
 	app.worker = Worker(app)
-	app.prefs = Preferences()
 	
 	try:
 		app.archive = Archive(args[1])
