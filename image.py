@@ -15,6 +15,11 @@ IMAGES = ['JPEG image data', 'PNG image data', 'GIF image data']
 EXTENSIONS = ['.jpg', '.jpeg', '.gif', '.png', '.bmp']
 
 
+FIT_BY_WIDTH = 0
+FIT_WINDOW = 1
+DEFAULT_SIZE = 2
+
+
 def get_thumbnail(uri):
 	m = NEW_MD5()
 	m.update(uri)
