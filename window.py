@@ -2,6 +2,7 @@ import gtk, gtk.glade
 
 from callbacks import Callbacks
 from statusbar import StatusBar
+from image import FIT_BY_WIDTH, FIT_WINDOW, DEFAULT_SIZE
 
 SCROLL_LTR = 0
 SCROLL_RTL = 1
@@ -26,6 +27,8 @@ class Window(gtk.Window):
 		self.statusbar = StatusBar(self, self.ui)
 		
 		self.callbacks = Callbacks(self)
+		
+		self.get_preferences()
 		
 		self.connect('delete-event', self.callbacks.quit)
 		self.connect('configure-event', self.callbacks.window_resized)
@@ -139,3 +142,12 @@ class Window(gtk.Window):
 		# FIXME: Get the actual height of the menubar + statusbar
 		#		 + any padding.
 		return self.height - 40
+	
+	
+	def get_preferences(self):
+		if self.app.prefs.get('Image', 'size') == 'width':
+			self.app.scale = FIT_BY_WIDTH
+		elif self.app.prefs.get('Image', 'size') == 'fit':
+			self.app.scale = FIT_WINDOW
+		elif self.app.prefs.get('Image', 'size') == 'default':
+			self.app.scale = DEFAULT_SIZE
