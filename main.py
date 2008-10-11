@@ -8,6 +8,7 @@ from worker import Worker
 from archive import Archive
 from error import ArchiveError
 from application import Application
+from preferences import Preferences
 
 GLADE = 'colorwalk.glade'
 
@@ -19,6 +20,7 @@ def main(args):
 	
 	app.win = Window(app, GLADE)
 	app.worker = Worker(app)
+	app.prefs = Preferences()
 	
 	try:
 		app.archive = Archive(args[1])
