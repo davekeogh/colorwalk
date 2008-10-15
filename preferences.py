@@ -32,32 +32,32 @@ max=0
 """
 
 class Preferences(SafeConfigParser):
-	
-	def __init__(self):
-		
-		SafeConfigParser.__init__(self)
-		
-		if not os.path.isdir(PREFS_DIR):
-			os.mkdir(PREFS_DIR)
-		
-		try:
-			fb = open(PREFS_PATH)
-		except IOError:
-			fb = open(PREFS_PATH, 'w')
-			fb.write(DEFAULTS)
-			fb.close()
-			fb = open(PREFS_PATH)
-		
-		self.readfp(fb, PREFS_FILE)
-		fb.close()
-		
-	
-	def save(self):
-		fb = open(PREFS_PATH, 'w')
-		self.write(fb)
-		fb.close()
-	
-	
-	def __del__(self):
-		self.save()
-		
+    
+    def __init__(self):
+        
+        SafeConfigParser.__init__(self)
+        
+        if not os.path.isdir(PREFS_DIR):
+            os.mkdir(PREFS_DIR)
+        
+        try:
+            fb = open(PREFS_PATH)
+        except IOError:
+            fb = open(PREFS_PATH, 'w')
+            fb.write(DEFAULTS)
+            fb.close()
+            fb = open(PREFS_PATH)
+        
+        self.readfp(fb, PREFS_FILE)
+        fb.close()
+        
+    
+    def save(self):
+        fb = open(PREFS_PATH, 'w')
+        self.write(fb)
+        fb.close()
+    
+    
+    def __del__(self):
+        self.save()
+        

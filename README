@@ -27,7 +27,7 @@ Color Walk requires Python 2.4 and the GTK+ 2.2.x bindings.
 
 Simple install procedure:
 
- $ tar xzvf colorwalk-x.x.x.tar.gz		# Unpack the sources
- $ cd colorwalk-x.x.x					# Move to the source directory
+ $ tar xzvf colorwalk-x.x.x.tar.gz      # Unpack the sources
+ $ cd colorwalk-x.x.x                   # Move to the source directory
  [ Become root if necessary ]
- # python setup.py						# Install Color Walk
+ # python setup.py                      # Install Color Walk
