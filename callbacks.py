@@ -225,7 +225,23 @@ class Callbacks(object):
         
         self.win.width = allocation.width
         self.win.height = allocation.height
-                
+    
+    
+    def rescale(self, widget):
+        if self.app.archive:
+            self.app.scale = widget.get_active()
+            
+            self.app.current_pb = \
+            new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+                       self.app.images[self.app.current]),
+                       self.app.scale,
+                       width=self.app.win.get_view_width(),
+                       height=self.app.win.get_view_height())
+            self.win.image.set_from_pixbuf(self.app.current_pb)
+            
+            gobject.idle_add(self.preload_next)
+            gobject.idle_add(self.preload_previous)
+    
     
     def key_pressed(self, widget, event):
         if self.app.archive:

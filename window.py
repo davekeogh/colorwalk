@@ -40,7 +40,8 @@ class Window(gtk.Window):
             'on_open_clicked'       : self.callbacks.open,
             'on_close_clicked'      : self.callbacks.close,
             'on_about_clicked'      : self.callbacks.about,
-            'on_entry_activate'     : self.callbacks.jump
+            'on_entry_activate'     : self.callbacks.jump,
+            'on_combobox_changed'   : self.callbacks.rescale
         }
         self.ui.signal_autoconnect(dic)
         
