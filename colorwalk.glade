@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Oct  7 18:16:22 2008 -->
+<!--Generated with glade3 3.4.5 on Fri Oct 17 14:13:41 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -93,6 +93,7 @@
                 <child>
                   <widget class="GtkEntry" id="entry1">
                     <property name="can_focus">True</property>
+                    <property name="tooltip" translatable="yes">Move to a specific page</property>
                     <property name="max_length">3</property>
                     <property name="width_chars">3</property>
                     <property name="xalign">1</property>
@@ -106,6 +107,7 @@
                 <property name="visible">True</property>
                 <child>
                   <widget class="GtkLabel" id="label6">
+                    <property name="tooltip" translatable="yes">Move to a specific page</property>
                     <property name="label" translatable="yes"> of 24</property>
                   </widget>
                 </child>
@@ -123,9 +125,12 @@
                   <widget class="GtkComboBox" id="combobox1">
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
+                    <property name="tooltip" translatable="yes">Change the way the images are displayed</property>
+                    <property name="has_frame">False</property>
                     <property name="items" translatable="yes">Fit by page width
 FIt entire page
 Normal size</property>
+                    <signal name="changed" handler="on_combobox_changed"/>
                   </widget>
                 </child>
               </widget>
