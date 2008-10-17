@@ -18,7 +18,7 @@ try:
     CLIENT.get_string('/desktop/gnome/thumbnailers/application@x-cbr')
     CBZ_THUMBNAILER = \
     CLIENT.get_string('/desktop/gnome/thumbnailers/application@x-cbz')
-except Import Error:
+except ImportError:
     CBR_THUMBNAILER = None
     CBZ_THUMBNAILER = None
 
