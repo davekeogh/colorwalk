@@ -141,7 +141,7 @@ class Window(gtk.Window):
     def get_view_height(self):
         # FIXME: Get the actual height of the menubar + statusbar
         #        + any padding.
-        return self.height - 40
+        return self.height - 62
     
     
     def get_preferences(self):
