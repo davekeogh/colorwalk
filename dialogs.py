@@ -83,9 +83,9 @@ class FileChooserDialog(gtk.FileChooserDialog):
         
             if pb:
                 self.get_preview_widget().set_from_pixbuf(pb)
-                self.set_preview_widget_active(True)
+                
             else:
-                self.set_preview_widget_active(False)
+                self.get_preview_widget().clear()
         
 
 class AboutDialog(gtk.AboutDialog):
