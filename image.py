@@ -32,7 +32,7 @@ FIT_WINDOW = 1
 DEFAULT_SIZE = 2
 
 
-def create_thumbnail(path):
+def create_thumbnail(uri):
     return
 
 
