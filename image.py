@@ -11,6 +11,16 @@ except ImportError:
     NEW_MD5 = md5.new
 
 
+try:
+    import gconf
+    GCONF_CLIENT = gconf.client_get_default()
+    CBR_THUMBNAILER = GCONF_CLIENT.get_string('/desktop/gnome/thumbnailers/application@x-cbr')
+    CBZ_THUMBNAILER = GCONF_CLIENT.get_string('/desktop/gnome/thumbnailers/application@x-cbz')
+except Import Error:
+    CBR_THUMBNAILER = None
+    CBZ_THUMBNAILER = None
+
+
 IMAGES = ['JPEG image data', 'PNG image data', 'GIF image data']
 EXTENSIONS = ['.jpg', '.jpeg', '.gif', '.png', '.bmp']
 
@@ -18,6 +28,10 @@ EXTENSIONS = ['.jpg', '.jpeg', '.gif', '.png', '.bmp']
 FIT_BY_WIDTH = 0
 FIT_WINDOW = 1
 DEFAULT_SIZE = 2
+
+
+def create_thumbnail(path):
+    return
 
 
 def get_thumbnail(uri):
@@ -31,8 +45,7 @@ def get_thumbnail(uri):
     if os.path.isfile(thumb_path):
         return new_pixbuf(thumb_path)
     else:
-        return None
-    
+        return None    
 
 
 def new_pixbuf(path, width=-1, height=-1):
