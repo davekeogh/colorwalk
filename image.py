@@ -14,10 +14,10 @@ except ImportError:
 try:
     import gconf
     CLIENT = gconf.client_get_default()
-    CBR_THUMBNAILER = \
-    CLIENT.get_string('/desktop/gnome/thumbnailers/application@x-cbr')
-    CBZ_THUMBNAILER = \
-    CLIENT.get_string('/desktop/gnome/thumbnailers/application@x-cbz')
+    CBR_THUMBNAILER = CLIENT.get_string \
+    ('/desktop/gnome/thumbnailers/application@x-cbr/command')
+    CBZ_THUMBNAILER = CLIENT.get_string \
+    ('/desktop/gnome/thumbnailers/application@x-cbz/command')
 except ImportError:
     CBR_THUMBNAILER = None
     CBZ_THUMBNAILER = None
