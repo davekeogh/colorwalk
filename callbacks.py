@@ -38,7 +38,9 @@ class Callbacks(object):
             self.app.current_pb = \
             new_pixbuf(os.path.join(self.app.archive.temp_dir, 
                        self.app.images[self.app.current]),
-                       width=self.app.win.get_view_width())
+                       self.app.scale,
+                       width=self.app.win.get_view_width(),
+                       height=self.app.win.get_view_height())
                        
             self.win.refresh()
             self.win.image.set_from_pixbuf(self.app.current_pb)
@@ -46,7 +48,9 @@ class Callbacks(object):
             self.app.next_pb = \
             new_pixbuf(os.path.join(self.app.archive.temp_dir, 
                        self.app.images[self.app.current + 1]),
-                       width=self.app.win.get_view_width())
+                       self.app.scale,
+                       width=self.app.win.get_view_width(),
+                       height=self.app.win.get_view_height())
         
         else:
             self.win.blank()
@@ -145,7 +149,9 @@ class Callbacks(object):
                 self.app.current_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
                 self.app.files[self.app.current]),
-                width=self.app.win.get_view_width())
+                self.app.scale,
+                width=self.app.win.get_view_width(),
+                height=self.app.win.get_view_height())
                 
                 self.win.refresh()
                 self.win.steal_focus()
@@ -155,7 +161,9 @@ class Callbacks(object):
                     self.app.next_pb = \
                     new_pixbuf(os.path.join(self.app.archive.temp_dir, 
                     self.app.images[self.app.current + 1]),
-                    width=self.app.win.get_view_width())
+                    self.app.scale,
+                    width=self.app.win.get_view_width(),
+                    height=self.app.win.get_view_height())
                 except IndexError:
                     self.app.next_pb = None
                 
@@ -163,7 +171,9 @@ class Callbacks(object):
                     self.app.previous_pb = \
                     new_pixbuf(os.path.join(self.app.archive.temp_dir, 
                     self.app.images[self.app.current - 1]),
-                    width=self.app.win.get_view_width())
+                    self.app.scale,
+                    width=self.app.win.get_view_width(),
+                    height=self.app.win.get_view_height())
                 except IndexError:
                     self.app.previous_pb = None
                 
@@ -178,7 +188,9 @@ class Callbacks(object):
             self.app.next_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
                            self.app.images[self.app.current + 1]),
-                           width=self.app.win.get_view_width())
+                           self.app.scale,
+                           width=self.app.win.get_view_width(),
+                           height=self.app.win.get_view_height())
         
         return False
     
@@ -188,7 +200,9 @@ class Callbacks(object):
             self.app.previous_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
                            self.app.images[self.app.current - 1]),
-                           width=self.app.win.get_view_width())
+                           self.app.scale,
+                           width=self.app.win.get_view_width(),
+                           height=self.app.win.get_view_height())
         
         return False
     
@@ -201,7 +215,9 @@ class Callbacks(object):
                 self.app.current_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
                            self.app.images[self.app.current]),
-                           width=self.app.win.get_view_width())
+                           self.app.scale,
+                           width=self.app.win.get_view_width(),
+                           height=self.app.win.get_view_height())
                 self.win.image.set_from_pixbuf(self.app.current_pb)
                 
                 gobject.idle_add(self.preload_next)
