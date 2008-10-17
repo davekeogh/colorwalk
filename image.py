@@ -45,13 +45,25 @@ def get_thumbnail(uri):
     thumb_path = os.path.join(thumb_dir, thumb_file)
     
     if os.path.isfile(thumb_path):
-        return new_pixbuf(thumb_path)
+        return new_pixbuf(thumb_path, DEFAULT_SIZE)
     else:
         return None    
 
 
-def new_pixbuf(path, width=-1, height=-1):
-    return gtk.gdk.pixbuf_new_from_file_at_size(path, width, height)
+def new_pixbuf(path, mode, width=-1, height=-1):
+    if mode == DEFAULT_SIZE:
+        return gtk.gdk.pixbuf_new_from_file_at_size(path, -1, -1)
+    elif mode == FIT_BY_WIDTH:
+        return gtk.gdk.pixbuf_new_from_file_at_size(path, width, -1)
+    elif mode == FIT_WINDOW:
+        if width > height:
+            return gtk.gdk.pixbuf_new_from_file_at_size(path, -1, height)
+        elif height > width:
+            return gtk.gdk.pixbuf_new_from_file_at_size(path, width, 
+                                                        -1)
+        else:
+            return gtk.gdk.pixbuf_new_from_file_at_size(path, width,
+                                                        height)
     
     # gtk.gdk.Pixbuf()s don't seem to be collected properly. I'm not
     # sure if this is the best spot to call the garbage collecter
