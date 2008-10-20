@@ -81,14 +81,15 @@ class Archive(object):
         self.path = path
         
         if not os.path.isfile(path):
-            raise ArchiveError('%s does not exist.' % path)
+            raise ArchiveError('<i>%s</i> does not exist.' % path)
         
         if is_zip_file(path):
             self.type = ZIP
         elif is_rar_file(path):
             self.type = RAR
         else:
-            raise ArchiveError('%s is not a valid file type.' % path)
+            raise ArchiveError('<i>%s</i> is not a valid file type.' 
+                               % path)
         
         self.name = os.path.split(path)[1]
         
