@@ -76,9 +76,7 @@ class Callbacks(object):
             try:
                 self.app.archive = Archive(file)
             except ArchiveError, error:
-                # TODO: Throw an error dialog or display the error text 
-                #       in the statusbar.
-                print error.message
+                self.win.statusbar.set_text(error.message)
                 self.app.archive = None
             
             if self.app.archive:

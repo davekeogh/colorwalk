@@ -27,9 +27,7 @@ def main(args):
     except IndexError:
         app.archive = None
     except ArchiveError, error:
-        # TODO: Throw an error dialog or display the error text in the
-        #       statusbar.
-        print error.message
+        self.app.win.statusbar.set_text(error.message)
         app.archive = None
     
     if app.archive:
