@@ -27,7 +27,8 @@ def main(args):
     except IndexError:
         app.archive = None
     except ArchiveError, error:
-        self.app.win.statusbar.set_text(error.message)
+        app.win.statusbar.set_text(error.message)
+        app.win.statusbar.set_error_icon()
         app.archive = None
     
     if app.archive:

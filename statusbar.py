@@ -16,6 +16,10 @@ class StatusBar(object):
         self.message_area.set_markup(msg)
     
     
+    def set_error_icon(self):
+        self.ui.get_widget('image4').show()
+    
+    
     def clear_text(self):
         self.message_area.set_text('')
     
@@ -32,6 +36,7 @@ class StatusBar(object):
     
     
     def hide_all(self):
+        self.ui.get_widget('image4').hide()
         self.ui.get_widget('frame2').hide()
         self.ui.get_widget('frame3').hide()
         self.progressbar.hide()

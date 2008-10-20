@@ -56,6 +56,7 @@ class Callbacks(object):
             self.win.blank()
             self.win.statusbar.set_text('No images found in <i>%s</i>'
                                         % self.app.archive.name)
+            self.win.statusbar.set_error_icon()
             self.app.reset()
             self.app.archive.remove_temp_dir()
             self.app.archive = None
@@ -77,6 +78,7 @@ class Callbacks(object):
                 self.app.archive = Archive(file)
             except ArchiveError, error:
                 self.win.statusbar.set_text(error.message)
+                self.win.statusbar.set_error_icon()
                 self.app.archive = None
             
             if self.app.archive:
