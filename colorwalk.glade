@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sun Oct 19 22:12:10 2008 -->
+<!--Generated with glade3 3.4.5 on Tue Oct 21 14:35:52 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -157,6 +157,7 @@ Normal size</property>
                 <property name="tooltip" translatable="yes">Help contents</property>
                 <property name="label" translatable="yes">Help</property>
                 <property name="stock_id">gtk-help</property>
+                <signal name="clicked" handler="on_help_clicked"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>

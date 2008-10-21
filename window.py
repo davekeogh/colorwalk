@@ -41,7 +41,8 @@ class Window(gtk.Window):
             'on_close_clicked'      : self.callbacks.close,
             'on_about_clicked'      : self.callbacks.about,
             'on_entry_activate'     : self.callbacks.jump,
-            'on_combobox_changed'   : self.callbacks.rescale
+            'on_combobox_changed'   : self.callbacks.rescale,
+            'on_help_clicked'       : self.callbacks.help
         }
         self.ui.signal_autoconnect(dic)
         

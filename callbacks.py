@@ -1,4 +1,4 @@
-import os, os.path
+import os, os.path, subprocess
 
 import gtk, gobject
 
@@ -250,6 +250,13 @@ class Callbacks(object):
             
             if event.keyval == 65288: # Backspace
                 self.go_back(widget)
+    
+    
+    def help(self, widget):
+        try:
+            subprocess.call(['xdg-open', 'manual.html'])
+        except OSError:
+            return
     
     
     def quit(self, widget, event=None):
