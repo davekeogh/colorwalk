@@ -212,6 +212,9 @@ class Callbacks(object):
             if (self.win.width != allocation.width or
                 self.win.height != allocation.height):
                 
+                self.win.width = allocation.width
+                self.win.height = allocation.height
+                
                 self.app.current_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
                            self.app.images[self.app.current]),
@@ -222,9 +225,6 @@ class Callbacks(object):
                 
                 gobject.idle_add(self.preload_next)
                 gobject.idle_add(self.preload_previous)
-        
-        self.win.width = allocation.width
-        self.win.height = allocation.height
     
     
     def rescale(self, widget):
