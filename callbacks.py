@@ -248,8 +248,25 @@ class Callbacks(object):
             if event.keyval == 32: # Spacebar
                 self.go_forward(widget)
             
-            if event.keyval == 65288: # Backspace
+            elif event.keyval == 65288: # Backspace
                 self.go_back(widget)
+            
+            elif event.keyval == 65480: # F11
+                self.toggle_fullscreen(widget)
+    
+    
+    def toggle_fullscreen(self, widget):
+        if self.win.is_fullscreen:
+            self.win.is_fullscreen = False
+            self.win.ui.get_widget('toolbar1').show()
+            self.win.ui.get_widget('hbox1').show()
+            self.win.unfullscreen()
+        
+        elif not self.win.is_fullscreen:
+            self.win.is_fullscreen = True
+            self.win.ui.get_widget('toolbar1').hide()
+            self.win.ui.get_widget('hbox1').hide()
+            self.win.fullscreen()
     
     
     def help(self, widget):

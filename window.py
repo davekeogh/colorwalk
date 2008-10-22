@@ -10,6 +10,7 @@ SCROLL_RTL = 1
 
 class Window(gtk.Window):
     
+    is_fullscreen = False
     width = 800
     height = 800
     
