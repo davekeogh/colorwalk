@@ -4,7 +4,6 @@ Stuff that needs doing (in random order):
 - Accelerators for EVERYTHING!
 - setup.py
 - Speed up the rescaling when the window changes size
-- Find a better background image for the webpage
 - Bookmarking pages
 - Bookmarks editor
 - Using an idle handler to preload and pack the images causes the UI to
