@@ -43,7 +43,8 @@ class Window(gtk.Window):
             'on_about_clicked'      : self.callbacks.about,
             'on_entry_activate'     : self.callbacks.jump,
             'on_combobox_changed'   : self.callbacks.rescale,
-            'on_help_clicked'       : self.callbacks.help
+            'on_help_clicked'       : self.callbacks.help,
+            'on_fullscreen_clicked' : self.callbacks.toggle_fullscreen
         }
         self.ui.signal_autoconnect(dic)
         
@@ -71,6 +72,7 @@ class Window(gtk.Window):
         self.ui.get_widget('combobox1').set_sensitive(True)
         self.ui.get_widget('toolbutton13').set_sensitive(True)
         self.ui.get_widget('toolbutton15').set_sensitive(True)
+        self.ui.get_widget('toolbutton16').set_sensitive(True)
         
         if self.app.current < (len(self.app.images) -1):
             self.ui.get_widget('toolbutton2').set_sensitive(True)
@@ -121,6 +123,7 @@ class Window(gtk.Window):
         self.ui.get_widget('toolbutton2').set_sensitive(False)
         self.ui.get_widget('toolbutton13').set_sensitive(False)
         self.ui.get_widget('toolbutton15').set_sensitive(False)
+        self.ui.get_widget('toolbutton16').set_sensitive(False)
         
         self.ui.get_widget('label6').hide()
         self.ui.get_widget('entry1').hide()
