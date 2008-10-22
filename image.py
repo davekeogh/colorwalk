@@ -57,7 +57,8 @@ def new_pixbuf(path, mode, width=-1, height=-1):
         return gtk.gdk.pixbuf_new_from_file_at_size(path, width, -1)
     elif mode == FIT_WINDOW:
         if width > height:
-            return gtk.gdk.pixbuf_new_from_file_at_size(path, -1, height)
+            return gtk.gdk.pixbuf_new_from_file_at_size(path, -1,
+                                                        height)
         elif height > width:
             return gtk.gdk.pixbuf_new_from_file_at_size(path, width, 
                                                         -1)
