@@ -60,7 +60,7 @@ class Window(gtk.Window):
     
     def refresh(self):
         self.statusbar.set_text('Current image: <i>%s</i>' % 
-                                self.app.files[self.app.current])
+                                self.app.images[self.app.current])
             
         self.set_pages(len(self.app.images))
         self.set_page(self.app.current + 1)

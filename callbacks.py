@@ -148,7 +148,7 @@ class Callbacks(object):
                 
                 self.app.current_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                self.app.files[self.app.current]),
+                self.app.images[self.app.current]),
                 self.app.scale,
                 width=self.app.win.get_view_width(),
                 height=self.app.win.get_view_height())
