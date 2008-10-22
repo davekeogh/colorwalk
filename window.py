@@ -69,6 +69,8 @@ class Window(gtk.Window):
         self.statusbar.set_res(self.app.current_pb.get_width(),
                                self.app.current_pb.get_height())
             
+        self.ui.get_widget('toolbutton7').show()
+        
         self.ui.get_widget('combobox1').set_sensitive(True)
         self.ui.get_widget('toolbutton13').set_sensitive(True)
         self.ui.get_widget('toolbutton15').set_sensitive(True)
@@ -127,6 +129,7 @@ class Window(gtk.Window):
         
         self.ui.get_widget('label6').hide()
         self.ui.get_widget('entry1').hide()
+        self.ui.get_widget('toolbutton7').hide()
     
     
     def set_pages(self, pages):
