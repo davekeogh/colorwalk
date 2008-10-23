@@ -10,9 +10,9 @@ class Bookmarks(dict):
     
     def __init__(self):
         if os.path.isfile(self.file):
-            fb = open(PREFS_PATH)
+            fb = open(self.file)
             lines = ()
-            lines = fb.read().chop('\n').split('\n')
+            lines = fb.read().strip('\n').split('\n')
             fb.close()
             
             for line in lines:
@@ -40,10 +40,10 @@ class Bookmarks(dict):
     
     def save(self):
         if len(self):
-            fb = open(PREFS_PATH, 'w')
+            fb = open(self.file, 'w')
             
             for key in self:
-                fb.writeline('%s\t%s' % (key, self[key]))
+                fb.write('%s\t%s\n' % (key, self[key]))
             
             fb.close()
     
