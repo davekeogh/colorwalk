@@ -35,6 +35,9 @@ class Callbacks(object):
                 self.app.archive.text.append(file)
         
         if len(self.app.archive.images):
+            self.app.recent.add(self.app.archive.path)
+            self.app.win.set_recent_files()
+            
             self.app.archive.size = \
             os.stat(self.app.archive.path).st_size / 1048576
             
@@ -67,8 +70,11 @@ class Callbacks(object):
             self.app.archive = None
     
     
-    def open(self, widget):
-        file = choose_file(self.app.open_dir)
+    def open(self, widget, choose=True, path=None):
+        if choose:
+            file = choose_file(self.app.open_dir)
+        else:
+            file = path
         
         if file:
             self.app.open_dir = os.path.split(file)[0]
@@ -89,6 +95,10 @@ class Callbacks(object):
                              self.app.win.callbacks.extracting_finished)
                 self.app.worker.set_function(self.app.archive.extract)
                 self.app.worker.start()
+    
+    
+    def open_recent(self, widget, path):
+        self.open(widget, choose=False, path=path)
     
     
     def close(self, widget):

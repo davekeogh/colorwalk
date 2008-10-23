@@ -1,3 +1,5 @@
+import os, os.path
+
 import gtk, gtk.glade
 
 from callbacks import Callbacks
@@ -30,6 +32,7 @@ class Window(gtk.Window):
         self.callbacks = Callbacks(self)
         
         self.get_preferences()
+        self.set_recent_files()
         
         self.connect('delete-event', self.callbacks.quit)
         self.connect('configure-event', self.callbacks.window_resized)
@@ -160,3 +163,17 @@ class Window(gtk.Window):
             self.app.scale = FIT_WINDOW
         elif self.app.prefs.get('Image', 'size') == 'default':
             self.app.scale = DEFAULT_SIZE
+    
+    
+    def set_recent_files(self):
+        menu = gtk.Menu()
+        self.ui.get_widget('toolbutton10').set_menu(menu)
+        
+        for file in self.app.recent.read():
+            item = gtk.MenuItem(label=os.path.split(file)[1],
+                                use_underline=False)
+            item.connect('activate', self.callbacks.open_recent, file)
+            menu.append(item)
+        
+        menu.show_all()
+        

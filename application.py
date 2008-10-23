@@ -5,6 +5,7 @@ class Application(object):
     worker = None
     archive = None
     prefs = None
+    recent = None
     
     open_dir = None
     log = ['\n']
