@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Oct 21 22:21:46 2008 -->
+<!--Generated with glade3 3.4.5 on Wed Oct 22 20:17:51 2008 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -234,6 +234,7 @@ Normal size</property>
             <property name="spacing">4</property>
             <child>
               <widget class="GtkImage" id="image4">
+                <property name="tooltip" translatable="yes">An error occured while opening the archive</property>
                 <property name="stock">gtk-dialog-error</property>
                 <property name="icon_size">1</property>
               </widget>
@@ -254,6 +255,7 @@ Normal size</property>
             </child>
             <child>
               <widget class="GtkFrame" id="frame2">
+                <property name="tooltip" translatable="yes">Resolution of the displayed image</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">GTK_SHADOW_NONE</property>
                 <child>
@@ -299,6 +301,7 @@ Normal size</property>
             </child>
             <child>
               <widget class="GtkFrame" id="frame3">
+                <property name="tooltip" translatable="yes">Total size of the archive</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">GTK_SHADOW_NONE</property>
                 <child>
