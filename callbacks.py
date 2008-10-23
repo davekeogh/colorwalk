@@ -6,7 +6,7 @@ from image import new_pixbuf, is_image_ext
 from worker import Worker
 from dialogs import AboutDialog, choose_file
 from error import ArchiveError
-from archive import Archive
+from archive import Archive, is_text_file
 from worker import Worker
 
 class Callbacks(object):
@@ -31,6 +31,10 @@ class Callbacks(object):
         for file in self.app.archive.files:
             if is_image_ext(file):
                 self.app.archive.images.append(file)
+            if is_text_file(file):
+                self.app.archive.text.append(file)
+        
+        print self.app.archive.text
         
         if len(self.app.archive.images):
             self.app.archive.size = \
