@@ -77,6 +77,11 @@ class Archive(object):
     type = None
     temp_dir = None
     
+    files = []
+    images = []
+    current = 0
+    size = 0
+    
     def __init__(self, path):
         self.path = path
         

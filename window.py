@@ -60,12 +60,12 @@ class Window(gtk.Window):
     
     def refresh(self):
         self.statusbar.set_text('Current image: <i>%s</i>' % 
-                                self.app.images[self.app.current])
+                                self.app.archive.images[self.app.archive.current])
             
-        self.set_pages(len(self.app.images))
-        self.set_page(self.app.current + 1)
+        self.set_pages(len(self.app.archive.images))
+        self.set_page(self.app.archive.current + 1)
             
-        self.statusbar.set_size(self.app.size)
+        self.statusbar.set_size(self.app.archive.size)
         self.statusbar.set_res(self.app.current_pb.get_width(),
                                self.app.current_pb.get_height())
             
@@ -76,11 +76,11 @@ class Window(gtk.Window):
         self.ui.get_widget('toolbutton15').set_sensitive(True)
         self.ui.get_widget('toolbutton16').set_sensitive(True)
         
-        if self.app.current < (len(self.app.images) -1):
+        if self.app.archive.current < (len(self.app.archive.images) -1):
             self.ui.get_widget('toolbutton2').set_sensitive(True)
         else:
             self.ui.get_widget('toolbutton2').set_sensitive(False)
-        if self.app.current > 0:
+        if self.app.archive.current > 0:
             self.ui.get_widget('toolbutton1').set_sensitive(True)
         else:
             self.ui.get_widget('toolbutton1').set_sensitive(False)

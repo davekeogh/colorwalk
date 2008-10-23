@@ -22,22 +22,25 @@ class Callbacks(object):
         
         self.win.set_title(self.app.archive.name)
         
-        self.app.files = os.listdir(self.app.archive.temp_dir)
-        self.app.files.sort(key=str.lower)
+        self.app.archive.files = os.listdir(self.app.archive.temp_dir)
+        self.app.archive.files.sort(key=str.lower)
         
-        for file in self.app.files:
+        for file in self.app.archive.files:
             if is_image_ext(file):
-                self.app.images.append(file)
+                self.app.archive.images.append(file)
         
-        self.app.current = 0
+        self.app.archive.current = 0
         
-        if len(self.app.images):
-            self.app.size = \
+        if len(self.app.archive.images):
+            self.app.archive.size = \
             os.stat(self.app.archive.path).st_size / 1048576
+            
+            
             
             self.app.current_pb = \
             new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                       self.app.images[self.app.current]),
+                       self.app.archive.images
+                       [self.app.archive.current]),
                        self.app.scale,
                        width=self.app.win.get_view_width(),
                        height=self.app.win.get_view_height())
@@ -47,7 +50,8 @@ class Callbacks(object):
             
             self.app.next_pb = \
             new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                       self.app.images[self.app.current + 1]),
+                       self.app.archive.images
+                       [self.app.archive.current + 1]),
                        self.app.scale,
                        width=self.app.win.get_view_width(),
                        height=self.app.win.get_view_height())
@@ -65,14 +69,11 @@ class Callbacks(object):
     def open(self, widget):
         file = choose_file(self.app.open_dir)
         
+        
         if file:
             self.app.open_dir = os.path.split(file)[0]
             
-            if self.app.archive:
-                self.app.reset()
-                self.win.blank()
-                self.app.archive.remove_temp_dir()
-                self.app.archive = None
+            self.close(widget)
             
             try:
                 self.app.archive = Archive(file)
@@ -82,6 +83,7 @@ class Callbacks(object):
                 self.app.archive = None
             
             if self.app.archive:
+                self.app.archive.images = []
                 self.app.win.statusbar.hide_all()
                 self.app.worker = Worker(self.app)
                 self.app.worker.connect('extracting-finished',
@@ -105,11 +107,11 @@ class Callbacks(object):
     
     
     def go_back(self, widget):
-        if self.app.current > 0:
+        if self.app.archive.current > 0:
             self.app.next_pb = self.app.current_pb
             self.app.current_pb = self.app.previous_pb
             
-            self.app.current -= 1
+            self.app.archive.current -= 1
             
             self.win.refresh()
             self.win.image.set_from_pixbuf(self.app.current_pb)
@@ -121,11 +123,11 @@ class Callbacks(object):
         # TODO: Implement smart paging here. Check the preferences
         #       value first to see if it's enabled.
         
-        if self.app.current < len(self.app.images) - 1:
+        if self.app.archive.current < len(self.app.archive.images) - 1:
             self.app.previous_pb = self.app.current_pb
             self.app.current_pb = self.app.next_pb
             
-            self.app.current += 1
+            self.app.archive.current += 1
             
             self.win.refresh()
             self.win.image.set_from_pixbuf(self.app.current_pb)
@@ -137,18 +139,18 @@ class Callbacks(object):
         text = widget.get_text()
         
         def fail():
-            self.app.win.set_page(self.app.current + 1)
+            self.app.win.set_page(self.app.archive.current + 1)
             self.win.steal_focus()
         
         try:
             num = int(text)
             
-            if num <= len(self.app.images) and num > 0:
-                self.app.current = num - 1
+            if num <= len(self.app.archive.images) and num > 0:
+                self.app.archive.current = num - 1
                 
                 self.app.current_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                self.app.images[self.app.current]),
+                self.app.archive.images[self.app.archive.current]),
                 self.app.scale,
                 width=self.app.win.get_view_width(),
                 height=self.app.win.get_view_height())
@@ -160,7 +162,8 @@ class Callbacks(object):
                 try:
                     self.app.next_pb = \
                     new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                    self.app.images[self.app.current + 1]),
+                    self.app.archive.images[self.app.archive.current \
+                    + 1]),
                     self.app.scale,
                     width=self.app.win.get_view_width(),
                     height=self.app.win.get_view_height())
@@ -170,7 +173,8 @@ class Callbacks(object):
                 try:
                     self.app.previous_pb = \
                     new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                    self.app.images[self.app.current - 1]),
+                    self.app.archive.images[self.app.archive.current \
+                    - 1]),
                     self.app.scale,
                     width=self.app.win.get_view_width(),
                     height=self.app.win.get_view_height())
@@ -184,10 +188,12 @@ class Callbacks(object):
     
     
     def preload_next(self):
-        if (self.app.current + 1) <= (len(self.app.images) -1):
+        if (self.app.archive.current + 1) <= \
+        (len(self.app.archive.images) -1):
             self.app.next_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                           self.app.images[self.app.current + 1]),
+                           self.app.archive.images
+                           [self.app.archive.current + 1]),
                            self.app.scale,
                            width=self.app.win.get_view_width(),
                            height=self.app.win.get_view_height())
@@ -196,10 +202,11 @@ class Callbacks(object):
     
     
     def preload_previous(self):
-        if (self.app.current - 1) >= 0:
+        if (self.app.archive.current - 1) >= 0:
             self.app.previous_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                           self.app.images[self.app.current - 1]),
+                           self.app.archive.images
+                           [self.app.archive.current - 1]),
                            self.app.scale,
                            width=self.app.win.get_view_width(),
                            height=self.app.win.get_view_height())
@@ -215,10 +222,11 @@ class Callbacks(object):
                 self.win.width = allocation.width
                 self.win.height = allocation.height
                 
-                if self.app.images:
+                if self.app.archive.images:
                     self.app.current_pb = \
                     new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                               self.app.images[self.app.current]),
+                               self.app.archive.images
+                               [self.app.archive.current]),
                                self.app.scale,
                                width=self.app.win.get_view_width(),
                                height=self.app.win.get_view_height())
@@ -234,7 +242,8 @@ class Callbacks(object):
             
             self.app.current_pb = \
             new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                       self.app.images[self.app.current]),
+                       self.app.archive.images
+                       [self.app.archive.current]),
                        self.app.scale,
                        width=self.app.win.get_view_width(),
                        height=self.app.win.get_view_height())
