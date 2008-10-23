@@ -34,8 +34,6 @@ class Callbacks(object):
             if is_text_file(file):
                 self.app.archive.text.append(file)
         
-        print self.app.archive.text
-        
         if len(self.app.archive.images):
             self.app.archive.size = \
             os.stat(self.app.archive.path).st_size / 1048576
