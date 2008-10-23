@@ -25,17 +25,16 @@ class Callbacks(object):
         self.app.archive.files = os.listdir(self.app.archive.temp_dir)
         self.app.archive.files.sort(key=str.lower)
         
+        self.app.archive.images = []
+        self.app.archive.current = 0
+        
         for file in self.app.archive.files:
             if is_image_ext(file):
                 self.app.archive.images.append(file)
         
-        self.app.archive.current = 0
-        
         if len(self.app.archive.images):
             self.app.archive.size = \
             os.stat(self.app.archive.path).st_size / 1048576
-            
-            
             
             self.app.current_pb = \
             new_pixbuf(os.path.join(self.app.archive.temp_dir, 
@@ -82,7 +81,6 @@ class Callbacks(object):
                 self.app.archive = None
             
             if self.app.archive:
-                self.app.archive.images = []
                 self.app.win.statusbar.hide_all()
                 self.app.worker = Worker(self.app)
                 self.app.worker.connect('extracting-finished',
