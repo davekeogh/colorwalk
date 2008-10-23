@@ -69,7 +69,6 @@ class Callbacks(object):
     def open(self, widget):
         file = choose_file(self.app.open_dir)
         
-        
         if file:
             self.app.open_dir = os.path.split(file)[0]
             
