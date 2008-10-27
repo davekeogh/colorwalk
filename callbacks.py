@@ -243,6 +243,10 @@ class Callbacks(object):
                     
                     gobject.idle_add(self.preload_next)
                     gobject.idle_add(self.preload_previous)
+        
+        else:
+            self.win.width = allocation.width
+            self.win.height = allocation.height
     
     
     def rescale(self, widget):
