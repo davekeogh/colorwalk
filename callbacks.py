@@ -144,8 +144,11 @@ class Callbacks(object):
             gobject.idle_add(self.preload_next)
     
     
-    def jump(self, widget):
-        text = widget.get_text()
+    def jump(self, widget, page=None):
+        if page:
+            text = page
+        else:
+            text = widget.get_text()
         
         def fail():
             self.app.win.set_page(self.app.archive.current + 1)
@@ -271,11 +274,23 @@ class Callbacks(object):
             if event.keyval == 32: # Spacebar
                 self.go_forward(widget)
             
+            elif event.keyval == 65366: # Page Down
+                self.go_forward(widget)
+            
             elif event.keyval == 65288: # Backspace
+                self.go_back(widget)
+            
+            if event.keyval == 65365: # Page Up
                 self.go_back(widget)
             
             elif event.keyval == 65480: # F11
                 self.toggle_fullscreen(widget)
+            
+            elif event.keyval == 65360: # Home
+                self.jump(widget, 1)
+            
+            elif event.keyval == 65367: # End
+                self.jump(widget, len(self.app.archive.images))
     
     
     def toggle_fullscreen(self, widget):
