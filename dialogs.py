@@ -3,6 +3,7 @@ import subprocess
 import gtk
 
 from image import get_thumbnail
+from utils import open_url
 
 # TODO: Find a better place for this?
 GPL_V2 = """This program is free software; you can redistribute it\
@@ -112,8 +113,5 @@ class AboutDialog(gtk.AboutDialog):
         self.set_wrap_license(True)
     
     
-    def url_hook(self, dailog, link, data):
-        try:
-            subprocess.call(['xdg-open', link])
-        except OSError:
-            return
+    def url_hook(self, dialog, link, data):
+        open_url(link)

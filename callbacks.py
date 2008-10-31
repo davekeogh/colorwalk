@@ -8,6 +8,7 @@ from dialogs import AboutDialog, choose_file
 from error import ArchiveError
 from archive import Archive, is_text_file
 from worker import Worker
+from utils import open_url
 
 class Callbacks(object):
     
@@ -308,10 +309,7 @@ class Callbacks(object):
     
     
     def help(self, widget):
-        try:
-            subprocess.call(['xdg-open', 'manual.html'])
-        except OSError:
-            return
+        open_url('manual.html')
     
     
     def quit(self, widget, event=None):
