@@ -1,3 +1,5 @@
+import subprocess
+
 import gtk
 
 from image import get_thumbnail
@@ -90,15 +92,28 @@ class FileChooserDialog(gtk.FileChooserDialog):
 
 class AboutDialog(gtk.AboutDialog):
     
+    website = 'http://members.shaw.ca/davekeogh/colorwalk/'
+    copyright = 'Copyright (c) 2008 David Keogh'
+    authors = ['David Keogh <davekeogh@shaw.ca>']
+    
     def __init__(self):
         # TODO: Set the version here from the build script.
         # TODO: Detect the user's browser for the url hook.
         
+        gtk.about_dialog_set_url_hook(self.url_hook, data=None)
+        
         gtk.AboutDialog.__init__(self)
         self.set_icon_name('help-about')
         self.set_name('Color Walk')
-        self.set_copyright('Copyright (c) 2008 David Keogh')
-        self.set_authors(['David Keogh <davekeogh@shaw.ca>'])
-        self.set_website('http://members.shaw.ca/davekeogh/colorwalk/')
+        self.set_copyright(self.copyright)
+        self.set_authors(self.authors)
+        self.set_website(self.website)
         self.set_license(GPL_V2)
         self.set_wrap_license(True)
+    
+    
+    def url_hook(self, dailog, link, data):
+        try:
+            subprocess.call(['xdg-open', link])
+        except OSError:
+            return
