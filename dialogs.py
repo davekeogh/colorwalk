@@ -105,7 +105,7 @@ class AboutDialog(gtk.AboutDialog):
             open_url(link)
         
         def email_hook(dialog, link, data):
-            open_url('mailto:%s' link)
+            open_url('mailto:%s' % link)
         
         gtk.about_dialog_set_url_hook(url_hook, data=None)
         gtk.about_dialog_set_email_hook(email_hook, data=None)
