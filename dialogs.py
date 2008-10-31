@@ -101,7 +101,14 @@ class AboutDialog(gtk.AboutDialog):
         # TODO: Set the version here from the build script.
         # TODO: Detect the user's browser for the url hook.
         
-        gtk.about_dialog_set_url_hook(self.url_hook, data=None)
+        def url_hook(dialog, link, data):
+            open_url(link)
+        
+        def email_hook(dialog, link, data):
+            open_url('mailto:%s' link)
+        
+        gtk.about_dialog_set_url_hook(url_hook, data=None)
+        gtk.about_dialog_set_email_hook(email_hook, data=None)
         
         gtk.AboutDialog.__init__(self)
         self.set_icon_name('help-about')
@@ -112,6 +119,3 @@ class AboutDialog(gtk.AboutDialog):
         self.set_license(GPL_V2)
         self.set_wrap_license(True)
     
-    
-    def url_hook(self, dialog, link, data):
-        open_url(link)
