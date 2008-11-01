@@ -1,5 +1,3 @@
-import subprocess
-
 import gtk
 
 from image import get_thumbnail

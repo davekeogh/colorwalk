@@ -1,4 +1,4 @@
-import os, os.path, subprocess, mimetypes
+import os, os.path, subprocess
 
 try:
     import magic

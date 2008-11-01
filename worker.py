@@ -1,4 +1,4 @@
-import threading, subprocess, time
+import threading, time
 import gtk, gobject
 
 from image import new_pixbuf

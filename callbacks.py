@@ -7,7 +7,6 @@ from worker import Worker
 from dialogs import AboutDialog, choose_file
 from error import ArchiveError
 from archive import Archive
-from worker import Worker
 from utils import open_url, is_text_file
 
 class Callbacks(object):

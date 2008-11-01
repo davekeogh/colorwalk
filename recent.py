@@ -1,7 +1,5 @@
 import os, os.path
 
-import gtk
-
 from preferences import PREFS_DIR
 
 

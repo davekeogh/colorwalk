@@ -22,7 +22,7 @@ class Bookmarks(dict):
     
     def add(self, file, page):
         if self.has_key(file):
-            raise BookmarkError(os.path.split(file)[1], self[file]
+            raise BookmarkError(os.path.split(file)[1], self[file],
                                 page)
         else:
             self[file] = page
