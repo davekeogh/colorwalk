@@ -99,7 +99,6 @@ class AboutDialog(gtk.AboutDialog):
     
     def __init__(self):
         # TODO: Set the version here from the build script.
-        # TODO: Detect the user's browser for the url hook.
         
         def url_hook(dialog, link, data):
             open_url(link)
