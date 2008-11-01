@@ -18,47 +18,33 @@ except ImportError:
     print MAGIC_WARNING
 
 
-
 def is_zip_file(path):
-    if not MAGIC:
-        p = subprocess.Popen('file \"%s\"' % path, shell=True, 
-                             stdout=subprocess.PIPE)
-        p.wait()
-        stdout = p.stdout.read()
-        
-        if stdout.split(': ')[1].startswith('Zip archive data'):
-            return True
-        else:
-            return is_mime_correct(path, ZIP_MIMES)
-    
-    else:
-        type =  MS.file(path)
-        
-        if type.startswith('Zip archive data'):
-            return True
-        else:
-            return is_mime_correct(path, ZIP_MIMES)
+    return check_type(path, 'Zip archive data', ZIP_MIMES)
 
 
 def is_rar_file(path):
+    return check_type(path, 'RAR archive data', RAR_MIMES)
+
+
+def check_type(path, string, mimes):
     if not MAGIC:
         p = subprocess.Popen('file \"%s\"' % path, shell=True, 
                              stdout=subprocess.PIPE)
         p.wait()
         stdout = p.stdout.read()
         
-        if stdout.split(': ')[1].startswith('RAR archive data'):
+        if stdout.split(': ')[1].startswith(string):
             return True
         else:
-            return is_mime_correct(path, RAR_MIMES)
+            return is_mime_correct(path, mimes)
     
     else:
         type =  MS.file(path)
         
-        if type.startswith('RAR archive data'):
+        if type.startswith(string):
             return True
         else:
-            return is_mime_correct(path, RAR_MIMES)
+            return is_mime_correct(path, mimes)
 
 
 def is_mime_correct(name, mimes):
@@ -68,7 +54,6 @@ def is_mime_correct(name, mimes):
         return True
     else:
         return False
-
 
 
 class Archive(object):
