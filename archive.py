@@ -1,21 +1,13 @@
 import os, os.path, tempfile, shutil, subprocess
 
 from error import ArchiveError
+from utils import check_type
 
 ZIP = 0
 RAR = 1
 
 ZIP_MIMES = ('application/x-zip', 'application/x-cbz')
 RAR_MIMES = ('application/x-rar', 'application/x-cbr')
-
-try:
-    import magic
-    MAGIC = True
-    MS = magic.open(magic.MAGIC_NONE)
-    MS.load()
-except ImportError:
-    MAGIC = False
-    print MAGIC_WARNING
 
 
 def is_zip_file(path):
@@ -24,36 +16,6 @@ def is_zip_file(path):
 
 def is_rar_file(path):
     return check_type(path, 'RAR archive data', RAR_MIMES)
-
-
-def check_type(path, string, mimes):
-    if not MAGIC:
-        p = subprocess.Popen('file \"%s\"' % path, shell=True, 
-                             stdout=subprocess.PIPE)
-        p.wait()
-        stdout = p.stdout.read()
-        
-        if stdout.split(': ')[1].startswith(string):
-            return True
-        else:
-            return is_mime_correct(path, mimes)
-    
-    else:
-        type =  MS.file(path)
-        
-        if type.startswith(string):
-            return True
-        else:
-            return is_mime_correct(path, mimes)
-
-
-def is_mime_correct(name, mimes):
-    import mimetypes
-    
-    if mimetypes.guess_type(name, strict=False)[0] in mimes:
-        return True
-    else:
-        return False
 
 
 class Archive(object):

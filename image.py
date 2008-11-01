@@ -1,7 +1,7 @@
 import os, os.path, subprocess, gc
 import gtk
 
-from archive import MAGIC
+from utils import MAGIC
 
 try:
     import hashlib
