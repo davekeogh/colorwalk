@@ -70,10 +70,6 @@ def is_mime_correct(name, mimes):
         return False
 
 
-def is_text_file(path):
-    if os.path.splitext(path.lower())[1] == '.txt':
-        return True
-
 
 class Archive(object):
     

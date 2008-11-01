@@ -6,9 +6,9 @@ from image import new_pixbuf, is_image_ext
 from worker import Worker
 from dialogs import AboutDialog, choose_file
 from error import ArchiveError
-from archive import Archive, is_text_file
+from archive import Archive
 from worker import Worker
-from utils import open_url
+from utils import open_url, is_text_file
 
 class Callbacks(object):
     
@@ -309,6 +309,7 @@ class Callbacks(object):
     
     
     def help(self, widget):
+        # TODO: Full path to manual.html
         open_url('manual.html')
     
     
