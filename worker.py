@@ -55,6 +55,12 @@ class Worker(threading.Thread, gobject.GObject):
                 
                 time.sleep(0.1)
             
+            for line in self.process.stdout.readlines():
+                self.app.log.stdout.append(line)
+                
+            for line in self.process.stderr.readlines():
+                self.app.log.stderr.append(line)
+            
             self.emit('extracting-finished')
         
         else:

@@ -70,4 +70,4 @@ class Archive(object):
         
         return subprocess.Popen(command, shell=True, 
                                 stdout=subprocess.PIPE,
-                                stderr=subprocess.STDOUT)
+                                stderr=subprocess.PIPE)

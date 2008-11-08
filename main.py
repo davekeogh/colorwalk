@@ -10,6 +10,7 @@ from error import ArchiveError
 from application import Application
 from preferences import Preferences
 from recent import RecentFiles
+from log import Log
 
 GLADE = 'colorwalk.glade'
 
@@ -21,6 +22,7 @@ def main(args):
     
     app.prefs = Preferences()
     app.recent = RecentFiles()
+    app.log = Log()
     app.win = Window(app, GLADE)
     app.worker = Worker(app)
     
