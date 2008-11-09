@@ -61,10 +61,13 @@ class Callbacks(object):
                        height=self.app.win.get_view_height())
         
         else:
+            message = 'No images found in <i>%s</i>' \
+            % self.app.archive.name
+            
             self.win.blank()
-            self.win.statusbar.set_text('No images found in <i>%s</i>'
-                                        % self.app.archive.name)
+            self.win.statusbar.set_text(message)
             self.win.statusbar.set_error_icon()
+            self.app.log.errors.append(message)
             self.app.reset()
             self.app.archive.remove_temp_dir()
             self.app.archive = None
@@ -86,6 +89,7 @@ class Callbacks(object):
             except ArchiveError, error:
                 self.win.statusbar.set_text(error.message)
                 self.win.statusbar.set_error_icon()
+                self.app.log.errors.append(error.message)
                 self.app.archive = None
             
             if self.app.archive:

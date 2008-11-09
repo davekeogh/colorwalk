@@ -33,6 +33,7 @@ def main(args):
     except ArchiveError, error:
         app.win.statusbar.set_text(error.message)
         app.win.statusbar.set_error_icon()
+        app.log.errors.append(error.message)
         app.archive = None
     
     if app.archive:
