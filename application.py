@@ -20,3 +20,4 @@ class Application(object):
         self.current_pb = None
         self.next_pb = None
         self.previous_pb = None
+    
