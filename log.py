@@ -9,7 +9,7 @@ class Log(object):
     messages = []
     errors = []
     
-    def clear(self:
+    def clear(self):
         self.stdout = []
         self.stderr = []
         
