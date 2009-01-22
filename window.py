@@ -4,7 +4,7 @@ import gtk, gtk.glade, pango
 
 from callbacks import Callbacks
 from statusbar import StatusBar
-from image import FIT_BY_WIDTH, FIT_WINDOW, DEFAULT_SIZE
+from image import get_thumbnail, FIT_BY_WIDTH, FIT_WINDOW, DEFAULT_SIZE
 
 SCROLL_LTR = 0
 SCROLL_RTL = 1
@@ -181,7 +181,20 @@ class Window(gtk.Window):
             item = gtk.ImageMenuItem(stock_id=None, accel_group=None)
             item.set_image(img)
             item.add(label)
+            item.set_has_tooltip(True)
             item.connect('activate', self.callbacks.open_recent, file)
+            
+            def show_tip(widget, x, y, keyboard_mode, tooltip, file):
+                thumb = get_thumbnail('file://' + file)
+                
+                if thumb:
+                    tooltip.set_icon(thumb)
+                    return True
+                else:
+                    return False
+                
+            
+            item.connect('query-tooltip', show_tip, file)
             
             menu.append(item)
         
