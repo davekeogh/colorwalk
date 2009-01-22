@@ -1,6 +1,6 @@
 import os, os.path
 
-import gtk, gtk.glade
+import gtk, gtk.glade, pango
 
 from callbacks import Callbacks
 from statusbar import StatusBar
@@ -170,9 +170,19 @@ class Window(gtk.Window):
         self.ui.get_widget('toolbutton10').set_menu(menu)
         
         for file in self.app.recent.read():
-            item = gtk.MenuItem(label=os.path.split(file)[1],
-                                use_underline=False)
+            # TODO: Use the thumbnail instead of a generic icon
+            img = gtk.image_new_from_icon_name('package', 1)
+            
+            label = gtk.Label(os.path.split(file)[1])
+            label.set_alignment(0, 0)
+            label.set_width_chars(50)
+            label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+            
+            item = gtk.ImageMenuItem(stock_id=None, accel_group=None)
+            item.set_image(img)
+            item.add(label)
             item.connect('activate', self.callbacks.open_recent, file)
+            
             menu.append(item)
         
         menu.show_all()
