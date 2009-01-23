@@ -12,4 +12,6 @@ Stuff that needs doing (in random order):
 - Don't try to go forward/backward if the image isn't preloaded yet.
   Perhaps figure out someway to defer the callback so that the button
   press isn't lost though.
-- ...
+- Log all command line output, files opened, errors thrown. 
+- Create a log file viewer as well.
+...
