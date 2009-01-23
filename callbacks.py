@@ -52,13 +52,7 @@ class Callbacks(object):
             self.win.refresh()
             self.win.image.set_from_pixbuf(self.app.current_pb)
             
-            self.app.next_pb = \
-            new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                       self.app.archive.images
-                       [self.app.archive.current + 1]),
-                       self.app.scale,
-                       width=self.app.win.get_view_width(),
-                       height=self.app.win.get_view_height())
+            gobject.idle_add(self.preload_next)
         
         else:
             message = 'No images found in <i>%s</i>' \
