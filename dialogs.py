@@ -40,32 +40,38 @@ def choose_file(path=None):
 class Preview(gtk.VBox):
     
     def __init__(self):
-        gtk.VBox.__init__(self, homogeneous=False, spacing=0)
+        gtk.VBox.__init__(self, homogeneous=False, spacing=8)
         
         self.image = gtk.Image()
-        
-        self.file_label = gtk.Label()
-        self.file_label.set_alignment(0, 0)
-        self.file_label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+        align1 = gtk.Alignment(xalign=0.5)
+        align1.set_padding(padding_top=4, padding_bottom=4,
+                           padding_left=0, padding_right=0)
+        align1.add(self.image)
+        frame1 = gtk.Frame(label=None)
+        frame1.set_shadow_type(gtk.SHADOW_IN)
+        frame1.set_label('Thumbnail')
+        frame1.add(align1)
         
         self.size_label = gtk.Label()
         self.size_label.set_alignment(0, 0)
+        align2 = gtk.Alignment(xscale=1)
+        align2.set_padding(padding_top=4, padding_bottom=4,
+                           padding_left=4, padding_right=4)
+        align2.add(self.size_label)
+        frame2 = gtk.Frame(label=None)
+        frame2.set_shadow_type(gtk.SHADOW_IN)
+        frame2.set_label('File size')
+        frame2.add(align2)
         
-        self.pack_start(self.image, expand=False, fill=False, padding=8)
-        self.pack_start(self.file_label, expand=False, fill=False,
-                        padding=8)
-        self.pack_start(self.size_label, expand=False, fill=False,
-                        padding=0)
+        self.pack_start(frame1, expand=False, fill=False, padding=0)
+        self.pack_start(frame2, expand=False, fill=False, padding=0)
+        
         self.set_size_request(0, -1)
         self.hide_all()
     
     
     def set_size(self, mb):
         self.size_label.set_text('%i MB' % mb)
-    
-    
-    def set_file(self, file):
-        self.file_label.set_text(file)
     
     
     def set_from_pixbuf(self, pb):
@@ -124,8 +130,6 @@ class FileChooserDialog(gtk.FileChooserDialog):
         if self.get_uri():
             pb = get_thumbnail(self.get_uri())
             
-            self.get_preview_widget().set_file(
-                                  os.path.split(self.get_filename())[1])
             self.get_preview_widget().set_size(
                          os.stat(self.get_filename()).st_size / 1048576)
             
