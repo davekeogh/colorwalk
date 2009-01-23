@@ -1,4 +1,6 @@
-import gtk
+import os
+
+import gtk, pango
 
 from image import get_thumbnail
 from utils import open_url
@@ -35,6 +37,45 @@ def choose_file(path=None):
         return None
 
 
+class Preview(gtk.VBox):
+    
+    def __init__(self):
+        gtk.VBox.__init__(self, homogeneous=False, spacing=0)
+        
+        self.image = gtk.Image()
+        
+        self.file_label = gtk.Label()
+        self.file_label.set_alignment(0, 0)
+        self.file_label.set_ellipsize(pango.ELLIPSIZE_MIDDLE)
+        
+        self.size_label = gtk.Label()
+        self.size_label.set_alignment(0, 0)
+        
+        self.pack_start(self.image, expand=False, fill=False, padding=8)
+        self.pack_start(self.file_label, expand=False, fill=False,
+                        padding=8)
+        self.pack_start(self.size_label, expand=False, fill=False,
+                        padding=0)
+        self.set_size_request(0, -1)
+        self.hide_all()
+    
+    
+    def set_size(self, mb):
+        self.size_label.set_text('%i MB' % mb)
+    
+    
+    def set_file(self, file):
+        self.file_label.set_text(file)
+    
+    
+    def set_from_pixbuf(self, pb):
+        self.image.set_from_pixbuf(pb)
+    
+    
+    def clear(self):
+        self.image.clear()
+
+
 class FileChooserDialog(gtk.FileChooserDialog):
     
     def __init__(self):
@@ -45,9 +86,10 @@ class FileChooserDialog(gtk.FileChooserDialog):
                                                 gtk.STOCK_OK,
                                                 gtk.RESPONSE_ACCEPT))
         
-        self.connect('selection-changed', self.set_preview)
+        self.set_preview_widget(Preview())
+        self.set_use_preview_label(False)
         
-        self.set_preview_widget(gtk.Image())
+        self.connect('selection-changed', self.set_preview)
         
         self.set_icon_name('fileopen')
         
@@ -81,12 +123,21 @@ class FileChooserDialog(gtk.FileChooserDialog):
     def set_preview(self, chooser):
         if self.get_uri():
             pb = get_thumbnail(self.get_uri())
-        
+            
+            self.get_preview_widget().set_file(
+                                  os.path.split(self.get_filename())[1])
+            self.get_preview_widget().set_size(
+                         os.stat(self.get_filename()).st_size / 1048576)
+            
             if pb:
+                self.get_preview_widget().set_size_request(150, -1)
                 self.get_preview_widget().set_from_pixbuf(pb)
+                self.get_preview_widget().show_all()
                 
             else:
+                self.get_preview_widget().set_size_request(0, -1)
                 self.get_preview_widget().clear()
+                self.get_preview_widget().hide()
         
 
 class AboutDialog(gtk.AboutDialog):
