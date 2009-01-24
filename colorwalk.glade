@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sat Nov  8 17:19:28 2008 -->
+<!--Generated with glade3 3.4.5 on Fri Jan 23 21:47:48 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -43,6 +43,7 @@
                 <property name="is_important">True</property>
                 <property name="label" translatable="yes">Add Bookmark</property>
                 <property name="icon_name">bookmark_add</property>
+                <signal name="clicked" handler="on_bookmark_clicked"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
@@ -159,6 +160,7 @@ Normal size</property>
                 <property name="tooltip" translatable="yes">Color Walk preferences</property>
                 <property name="label" translatable="yes">Preferences</property>
                 <property name="stock_id">gtk-preferences</property>
+                <signal name="clicked" handler="on_preferences_clicked"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
