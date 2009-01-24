@@ -107,6 +107,18 @@ class Callbacks(object):
             self.app.archive = None
     
     
+    def add_bookmark(self, widget):
+        return
+    
+    
+    def go_to_bookmark(self, widget):
+        return
+    
+    
+    def preferences(self, widget):
+        return
+    
+    
     def about(self, widget):
         dialog = AboutDialog()
         if dialog.run():
