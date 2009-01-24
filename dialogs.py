@@ -103,14 +103,14 @@ class FileChooserDialog(gtk.FileChooserDialog):
         self.set_icon_name('fileopen')
         
         main_filter = gtk.FileFilter()
-        main_filter.set_name('All Supported Files')
+        main_filter.set_name('All supported files')
         main_filter.add_pattern('*.cbz')
         main_filter.add_pattern('*.cbr')
         main_filter.add_pattern('*.zip')
         main_filter.add_pattern('*.rar')
         
         comic_filter = gtk.FileFilter()
-        comic_filter.set_name('Comic Book Archives')
+        comic_filter.set_name('Comic book archives')
         comic_filter.add_pattern('*.cbz')
         comic_filter.add_pattern('*.cbr')
         
@@ -120,7 +120,7 @@ class FileChooserDialog(gtk.FileChooserDialog):
         arc_filter.add_pattern('*.rar')
         
         all_filter = gtk.FileFilter()
-        all_filter.set_name('All Files')
+        all_filter.set_name('All files')
         all_filter.add_pattern('*')
         
         self.add_filter(main_filter)
