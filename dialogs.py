@@ -43,14 +43,14 @@ class Preview(gtk.VBox):
         gtk.VBox.__init__(self, homogeneous=False, spacing=8)
         
         self.image = gtk.Image()
-        align1 = gtk.Alignment(xalign=0.5)
-        align1.set_padding(padding_top=4, padding_bottom=4,
-                           padding_left=0, padding_right=0)
-        align1.add(self.image)
+        self.align1 = gtk.Alignment(xalign=0.5)
+        self.align1.set_padding(padding_top=4, padding_bottom=4,
+                                padding_left=0, padding_right=0)
+        self.align1.add(self.image)
         frame1 = gtk.Frame(label=None)
         frame1.set_shadow_type(gtk.SHADOW_IN)
         frame1.set_label('Thumbnail')
-        frame1.add(align1)
+        frame1.add(self.align1)
         
         self.size_label = gtk.Label()
         self.size_label.set_alignment(0, 0)
@@ -74,8 +74,12 @@ class Preview(gtk.VBox):
         self.size_label.set_text('%i MB' % mb)
     
     
-    def set_from_pixbuf(self, pb):
-        self.image.set_from_pixbuf(pb)
+    def set_image(self, img):
+        if img:
+            self.image.destroy()
+            self.image = img
+            self.align1.add(self.image)
+            self.image.show()
     
     
     def clear(self):
@@ -130,12 +134,23 @@ class FileChooserDialog(gtk.FileChooserDialog):
         if self.get_uri():
             pb = get_thumbnail(self.get_uri())
             
+            if pb:
+                img = gtk.Image()
+                img.set_from_pixbuf(pb)
+            
+            else:
+                if os.path.isdir(self.get_filename()):
+                    img = gtk.image_new_from_icon_name('folder', 6)
+                
+                else:
+                    img = gtk.image_new_from_icon_name('package', 6)
+            
             self.get_preview_widget().set_size(
                          os.stat(self.get_filename()).st_size / 1048576)
             
-            if pb:
+            if img:
                 self.get_preview_widget().set_size_request(150, -1)
-                self.get_preview_widget().set_from_pixbuf(pb)
+                self.get_preview_widget().set_image(img)
                 self.get_preview_widget().show_all()
                 
             else:
