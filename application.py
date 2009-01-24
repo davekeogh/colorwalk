@@ -6,6 +6,7 @@ class Application(object):
     archive = None
     prefs = None
     recent = None
+    bookmarks = None
     
     open_dir = None
     log = ['\n']
