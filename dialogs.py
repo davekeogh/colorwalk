@@ -75,11 +75,10 @@ class Preview(gtk.VBox):
     
     
     def set_image(self, img):
-        if img:
-            self.image.destroy()
-            self.image = img
-            self.align1.add(self.image)
-            self.image.show()
+        self.image.destroy()
+        self.image = img
+        self.align1.add(self.image)
+        self.image.show()
     
     
     def clear(self):
