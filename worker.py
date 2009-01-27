@@ -9,10 +9,10 @@ class Worker(threading.Thread, gobject.GObject):
     __gsignals__ = {
     
         'extracting-finished' : (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, ()),
+                                 gobject.TYPE_NONE, ()),
         
         'function-finished' : (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, ()),
+                               gobject.TYPE_NONE, ()),
     
         'cancel' : (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
     }

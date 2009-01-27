@@ -55,8 +55,7 @@ class Callbacks(object):
             gobject.idle_add(self.preload_next)
         
         else:
-            message = 'No images found in <i>%s</i>' \
-            % self.app.archive.name
+            message = 'No images found in <i>%s</i>' % self.app.archive.name
             
             self.win.blank()
             self.win.statusbar.set_text(message)
@@ -90,7 +89,7 @@ class Callbacks(object):
                 self.app.win.statusbar.hide_all()
                 self.app.worker = Worker(self.app)
                 self.app.worker.connect('extracting-finished',
-                             self.app.win.callbacks.extracting_finished)
+                                     self.app.win.callbacks.extracting_finished)
                 self.app.worker.set_function(self.app.archive.extract)
                 self.app.worker.start()
     
@@ -172,10 +171,10 @@ class Callbacks(object):
                 
                 self.app.current_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                self.app.archive.images[self.app.archive.current]),
-                self.app.scale,
-                width=self.app.win.get_view_width(),
-                height=self.app.win.get_view_height())
+                           self.app.archive.images[self.app.archive.current]),
+                           self.app.scale,
+                           width=self.app.win.get_view_width(),
+                           height=self.app.win.get_view_height())
                 
                 self.win.refresh()
                 self.win.steal_focus()
@@ -184,8 +183,7 @@ class Callbacks(object):
                 try:
                     self.app.next_pb = \
                     new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                    self.app.archive.images[self.app.archive.current \
-                    + 1]),
+                    self.app.archive.images[self.app.archive.current + 1]),
                     self.app.scale,
                     width=self.app.win.get_view_width(),
                     height=self.app.win.get_view_height())
@@ -194,12 +192,11 @@ class Callbacks(object):
                 
                 try:
                     self.app.previous_pb = \
-                    new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                    self.app.archive.images[self.app.archive.current \
-                    - 1]),
-                    self.app.scale,
-                    width=self.app.win.get_view_width(),
-                    height=self.app.win.get_view_height())
+                        new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+                        self.app.archive.images[self.app.archive.current - 1]),
+                        self.app.scale,
+                        width=self.app.win.get_view_width(),
+                        height=self.app.win.get_view_height())
                 except IndexError:
                     self.app.previous_pb = None
                 
@@ -210,13 +207,11 @@ class Callbacks(object):
     
     
     def preload_next(self):
-        if (self.app.archive.current + 1) <= \
-        (len(self.app.archive.images) -1):
+        if (self.app.archive.current + 1) <= (len(self.app.archive.images) -1):
             self.app.next_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                           self.app.archive.images
-                           [self.app.archive.current + 1]),
-                           self.app.scale,
+                           self.app.archive.images[self.app.archive.current \
+                           + 1]), self.app.scale,
                            width=self.app.win.get_view_width(),
                            height=self.app.win.get_view_height())
         
@@ -227,9 +222,8 @@ class Callbacks(object):
         if (self.app.archive.current - 1) >= 0:
             self.app.previous_pb = \
                 new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                           self.app.archive.images
-                           [self.app.archive.current - 1]),
-                           self.app.scale,
+                           self.app.archive.images[self.app.archive.current \
+                           - 1]), self.app.scale,
                            width=self.app.win.get_view_width(),
                            height=self.app.win.get_view_height())
         
@@ -246,12 +240,12 @@ class Callbacks(object):
                 
                 if self.app.archive.images:
                     self.app.current_pb = \
-                    new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                               self.app.archive.images
-                               [self.app.archive.current]),
-                               self.app.scale,
-                               width=self.app.win.get_view_width(),
-                               height=self.app.win.get_view_height())
+                        new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+                                   self.app.archive.images
+                                   [self.app.archive.current]),
+                                   self.app.scale,
+                                   width=self.app.win.get_view_width(),
+                                   height=self.app.win.get_view_height())
                     self.win.image.set_from_pixbuf(self.app.current_pb)
                     
                     gobject.idle_add(self.preload_next)
@@ -268,10 +262,8 @@ class Callbacks(object):
             
             self.app.current_pb = \
             new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                       self.app.archive.images
-                       [self.app.archive.current]),
-                       self.app.scale,
-                       width=self.app.win.get_view_width(),
+                       self.app.archive.images[self.app.archive.current]),
+                       self.app.scale, width=self.app.win.get_view_width(),
                        height=self.app.win.get_view_height())
             self.win.image.set_from_pixbuf(self.app.current_pb)
             
@@ -326,3 +318,4 @@ class Callbacks(object):
         if self.app.archive:
             self.app.archive.remove_temp_dir()
         gtk.main_quit()
+

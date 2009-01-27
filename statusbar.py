@@ -30,8 +30,7 @@ class StatusBar(object):
     
     
     def set_res(self, width, height):
-        self.ui.get_widget('label2').set_text('%i x %i'
-                                              % (width, height))
+        self.ui.get_widget('label2').set_text('%i x %i' % (width, height))
         self.ui.get_widget('frame2').show()
     
     
@@ -40,3 +39,4 @@ class StatusBar(object):
         self.ui.get_widget('frame2').hide()
         self.ui.get_widget('frame3').hide()
         self.progressbar.hide()
+

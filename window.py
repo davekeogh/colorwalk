@@ -64,7 +64,7 @@ class Window(gtk.Window):
     
     def refresh(self):
         self.statusbar.set_text('Current image: <i>%s</i>' % 
-                                self.app.archive.images[self.app.archive.current])
+                              self.app.archive.images[self.app.archive.current])
             
         self.set_pages(len(self.app.archive.images))
         self.set_page(self.app.archive.current + 1)
@@ -94,8 +94,8 @@ class Window(gtk.Window):
         
     
     def steal_focus(self):
-        # Focus the forward button so that spacebar presses don't
-        # activate other tool buttons.
+        # Focus the forward button so that spacebar presses don't activate 
+        # other tool buttons.
         self.ui.get_widget('toolbutton2').grab_focus()
     
     

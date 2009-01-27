@@ -15,9 +15,9 @@ try:
     import gconf
     CLIENT = gconf.client_get_default()
     CBR_THUMBNAILER = CLIENT.get_string \
-    ('/desktop/gnome/thumbnailers/application@x-cbr/command')
+                       ('/desktop/gnome/thumbnailers/application@x-cbr/command')
     CBZ_THUMBNAILER = CLIENT.get_string \
-    ('/desktop/gnome/thumbnailers/application@x-cbz/command')
+                       ('/desktop/gnome/thumbnailers/application@x-cbz/command')
 except ImportError:
     CBR_THUMBNAILER = None
     CBZ_THUMBNAILER = None
@@ -57,18 +57,14 @@ def new_pixbuf(path, mode, width=-1, height=-1):
         return gtk.gdk.pixbuf_new_from_file_at_size(path, width, -1)
     elif mode == FIT_WINDOW:
         if width > height:
-            return gtk.gdk.pixbuf_new_from_file_at_size(path, -1,
-                                                        height)
+            return gtk.gdk.pixbuf_new_from_file_at_size(path, -1, height)
         elif height > width:
-            return gtk.gdk.pixbuf_new_from_file_at_size(path, width, 
-                                                        -1)
+            return gtk.gdk.pixbuf_new_from_file_at_size(path, width, -1)
         else:
-            return gtk.gdk.pixbuf_new_from_file_at_size(path, width,
-                                                        height)
+            return gtk.gdk.pixbuf_new_from_file_at_size(path, width, height)
     
-    # gtk.gdk.Pixbuf()s don't seem to be collected properly. I'm not
-    # sure if this is the best spot to call the garbage collecter
-    # though.
+    # gtk.gdk.Pixbuf()s don't seem to be collected properly. I'm not sure if 
+    # this is the best spot to call the garbage collecter though.
     gc.collect()
 
 

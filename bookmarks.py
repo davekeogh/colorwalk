@@ -22,8 +22,7 @@ class Bookmarks(dict):
     
     def add(self, file, page):
         if self.has_key(file):
-            raise BookmarkError(os.path.split(file)[1], self[file],
-                                page)
+            raise BookmarkError(os.path.split(file)[1], self[file], page)
         else:
             self[file] = page
     
@@ -50,3 +49,4 @@ class Bookmarks(dict):
     
     def __del__(self):
         self.save()
+

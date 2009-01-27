@@ -44,8 +44,8 @@ class Preview(gtk.VBox):
         
         self.image = gtk.Image()
         self.align1 = gtk.Alignment(xalign=0.5)
-        self.align1.set_padding(padding_top=4, padding_bottom=4,
-                                padding_left=0, padding_right=0)
+        self.align1.set_padding(padding_top=4, padding_bottom=4, padding_left=0,
+                                padding_right=0)
         self.align1.add(self.image)
         frame1 = gtk.Frame(label=None)
         frame1.set_shadow_type(gtk.SHADOW_IN)
@@ -55,8 +55,8 @@ class Preview(gtk.VBox):
         self.size_label = gtk.Label()
         self.size_label.set_alignment(0, 0)
         align2 = gtk.Alignment(xscale=1)
-        align2.set_padding(padding_top=4, padding_bottom=4,
-                           padding_left=4, padding_right=4)
+        align2.set_padding(padding_top=4, padding_bottom=4, padding_left=4, 
+                           padding_right=4)
         align2.add(self.size_label)
         frame2 = gtk.Frame(label=None)
         frame2.set_shadow_type(gtk.SHADOW_IN)
