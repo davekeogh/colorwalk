@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Jan 23 21:47:48 2009 -->
+<!--Generated with glade3 3.4.5 on Sun Feb  1 13:39:12 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -14,6 +14,7 @@
               <widget class="GtkMenuToolButton" id="toolbutton10">
                 <property name="visible">True</property>
                 <property name="tooltip" translatable="yes">Open a file</property>
+                <property name="is_important">True</property>
                 <property name="label" translatable="yes">Open</property>
                 <property name="stock_id">gtk-open</property>
                 <signal name="clicked" handler="on_open_clicked"/>
