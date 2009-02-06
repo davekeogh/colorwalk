@@ -17,7 +17,6 @@ class Callbacks(object):
     
     
     def extracting_finished(self, worker):
-        self.win.statusbar.clear_text()
         self.win.statusbar.progressbar.hide()
         
         self.win.set_title(self.app.archive.name)
@@ -33,6 +32,9 @@ class Callbacks(object):
                 self.app.archive.images.append(file)
             if is_text_file(file):
                 self.app.archive.text.append(file)
+        
+        self.win.statusbar.set_text('Loading image: <i>%s</i>' %
+                                    self.app.archive.images[0])
         
         if len(self.app.archive.images):
             self.app.recent.add(self.app.archive.path)
