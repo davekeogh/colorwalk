@@ -33,10 +33,10 @@ class Callbacks(object):
             if is_text_file(file):
                 self.app.archive.text.append(file)
         
-        self.win.statusbar.set_text('Loading image: <i>%s</i>' %
-                                    self.app.archive.images[0])
-        
         if len(self.app.archive.images):
+            self.win.statusbar.set_text('Loading image: <i>%s</i>' %
+                                        self.app.archive.images[0])
+            
             self.app.recent.add(self.app.archive.path)
             self.app.win.set_recent_files()
             
