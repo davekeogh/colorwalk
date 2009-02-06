@@ -5,6 +5,7 @@ import gtk, gtk.glade, pango
 from callbacks import Callbacks
 from statusbar import StatusBar
 from image import get_thumbnail, FIT_BY_WIDTH, FIT_WINDOW, DEFAULT_SIZE
+from utils import get_uri_for_path
 
 SCROLL_LTR = 0
 SCROLL_RTL = 1
@@ -186,7 +187,7 @@ class Window(gtk.Window):
             item.connect('activate', self.callbacks.open_recent, file)
             
             def show_tip(widget, x, y, keyboard_mode, tooltip, file):
-                thumb = get_thumbnail('file://' + file)
+                thumb = get_thumbnail(get_uri_for_path(file))
                 
                 if thumb:
                     tooltip.set_icon(thumb)
