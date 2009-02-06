@@ -95,6 +95,8 @@ class FileChooserDialog(gtk.FileChooserDialog):
                                                 gtk.STOCK_OK,
                                                 gtk.RESPONSE_ACCEPT))
         
+        self.set_property('skip-taskbar-hint', True)
+        
         self.set_preview_widget(Preview())
         self.set_use_preview_label(False)
         
@@ -184,4 +186,6 @@ class AboutDialog(gtk.AboutDialog):
         self.set_website(self.website)
         self.set_license(GPL_V2)
         self.set_wrap_license(True)
+        
+        self.set_property('skip-taskbar-hint', True)
     
