@@ -50,3 +50,21 @@ def is_mime_correct(name, mimes):
     else:
         return False
 
+
+def get_uri_for_path(path, hostname='localhost'):
+    if hostname == 'localhost' or hostname == os.uname()[1]:
+        hostname = None
+    
+    path = os.path.abspath(path)
+    if not os.path.isfile(path) or os.path.isdir(path):
+        path = None
+    
+    if hostname and path:
+        return 'file://' + hostname + path
+    
+    elif path:
+        return 'file://' + path
+    
+    else:
+        return None
+
