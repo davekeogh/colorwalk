@@ -37,6 +37,12 @@ class RecentFiles(object):
             fb.close()
     
     
+    def prune(self):
+        for file in self.files:
+            if not os.path.isfile(file):
+                self.files.remove(file)
+    
+    
     def __del__(self):
         self.save()
 

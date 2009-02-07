@@ -171,6 +171,8 @@ class Window(gtk.Window):
         menu = gtk.Menu()
         self.ui.get_widget('toolbutton10').set_menu(menu)
         
+        self.app.recent.prune()
+        
         for file in self.app.recent.read():
             # TODO: Use the thumbnail instead of a generic icon
             img = gtk.image_new_from_icon_name('package', 1)
