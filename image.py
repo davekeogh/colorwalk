@@ -37,17 +37,21 @@ def create_thumbnail(uri):
 
 
 def get_thumbnail(uri):
-    m = NEW_MD5()
-    m.update(uri)
+    if uri:
+        m = NEW_MD5()
+        m.update(uri)
+        
+        thumb_dir = os.path.join(os.environ['HOME'], '.thumbnails/normal')
+        thumb_file = '%s.png' % m.hexdigest()
+        thumb_path = os.path.join(thumb_dir, thumb_file)
+        
+        if os.path.isfile(thumb_path):
+            return new_pixbuf(thumb_path, DEFAULT_SIZE)
+        else:
+            return None 
     
-    thumb_dir = os.path.join(os.environ['HOME'], '.thumbnails/normal')
-    thumb_file = '%s.png' % m.hexdigest()
-    thumb_path = os.path.join(thumb_dir, thumb_file)
-    
-    if os.path.isfile(thumb_path):
-        return new_pixbuf(thumb_path, DEFAULT_SIZE)
     else:
-        return None    
+        return None
 
 
 def new_pixbuf(path, mode, width=-1, height=-1):
