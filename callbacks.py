@@ -286,10 +286,10 @@ class Callbacks(object):
                 self.toggle_fullscreen(widget)
             
             elif event.keyval == 65360: # Home
-                self.jump(widget, 1)
+                self.jump(widget, page=1)
             
             elif event.keyval == 65367: # End
-                self.jump(widget, len(self.app.archive.images))
+                self.jump(widget, page=len(self.app.archive.images))
     
     
     def toggle_fullscreen(self, widget):
