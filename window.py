@@ -83,6 +83,11 @@ class Window(gtk.Window):
         self.ui.get_widget('toolbutton15').set_sensitive(True)
         self.ui.get_widget('toolbutton16').set_sensitive(True)
         
+        if self.app.bookmarks.has_key(self.app.archive.path):
+            self.ui.get_widget('toolbutton21').set_sensitive(True)
+        else:
+            self.ui.get_widget('toolbutton21').set_sensitive(False)
+        
         if self.app.archive.current < (len(self.app.archive.images) -1):
             self.ui.get_widget('toolbutton2').set_sensitive(True)
         else:
