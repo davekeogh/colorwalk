@@ -49,7 +49,9 @@ class Window(gtk.Window):
             'on_combobox_changed'   : self.callbacks.rescale,
             'on_help_clicked'       : self.callbacks.help,
             'on_fullscreen_clicked' : self.callbacks.toggle_fullscreen,
-            'on_preferences_clicked': self.callbacks.preferences
+            'on_preferences_clicked': self.callbacks.preferences,
+            'on_bookmark_clicked'   : self.callbacks.add_bookmark,
+            'on_go_clicked'         : self.callbacks.go_to_bookmark
         }
         self.ui.signal_autoconnect(dic)
         
