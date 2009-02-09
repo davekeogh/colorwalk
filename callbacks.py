@@ -164,6 +164,9 @@ class Callbacks(object):
     
     
     def jump(self, widget, page=None):
+        # TODO: Use preload_next, _previous instead of loading the images in the
+        # main thread. This method takes 3x too long to return.
+        
         if page:
             text = page
         else:
