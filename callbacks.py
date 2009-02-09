@@ -163,10 +163,7 @@ class Callbacks(object):
             gobject.idle_add(self.preload_next)
     
     
-    def jump(self, widget, page=None):
-        # TODO: Use preload_next, _previous instead of loading the images in the
-        # main thread. This method takes 3x too long to return.
-        
+    def jump(self, widget, page=None):      
         if page:
             text = page
         else:
@@ -193,25 +190,8 @@ class Callbacks(object):
                 self.win.steal_focus()
                 self.win.image.set_from_pixbuf(self.app.current_pb)
                 
-                try:
-                    self.app.next_pb = \
-                    new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                    self.app.archive.images[self.app.archive.current + 1]),
-                    self.app.scale,
-                    width=self.app.win.get_view_width(),
-                    height=self.app.win.get_view_height())
-                except IndexError:
-                    self.app.next_pb = None
-                
-                try:
-                    self.app.previous_pb = \
-                        new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                        self.app.archive.images[self.app.archive.current - 1]),
-                        self.app.scale,
-                        width=self.app.win.get_view_width(),
-                        height=self.app.win.get_view_height())
-                except IndexError:
-                    self.app.previous_pb = None
+                gobject.idle_add(self.preload_next)
+                gobject.idle_add(self.preload_previous)
                 
             else:
                 fail()
