@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sun Feb  1 13:39:12 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Feb  9 00:21:42 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -27,10 +27,18 @@
               <widget class="GtkToolButton" id="toolbutton13">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
-                <property name="tooltip" translatable="yes">Close current file</property>
+                <property name="tooltip" translatable="yes">Close the current file</property>
                 <property name="label" translatable="yes">Close</property>
                 <property name="stock_id">gtk-close</property>
                 <signal name="clicked" handler="on_close_clicked"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkSeparatorToolItem" id="toolbutton19">
+                <property name="visible">True</property>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
@@ -42,7 +50,7 @@
                 <property name="sensitive">False</property>
                 <property name="tooltip" translatable="yes">Bookmark this page</property>
                 <property name="is_important">True</property>
-                <property name="label" translatable="yes">Add Bookmark</property>
+                <property name="label" translatable="yes">Bookmark</property>
                 <property name="icon_name">bookmark_add</property>
                 <signal name="clicked" handler="on_bookmark_clicked"/>
               </widget>
@@ -51,14 +59,12 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="toolbutton16">
+              <widget class="GtkToolButton" id="toolbutton21">
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
-                <property name="tooltip" translatable="yes">Fullscreen</property>
-                <property name="is_important">True</property>
-                <property name="label" translatable="yes">Fullscreen</property>
-                <property name="stock_id">gtk-fullscreen</property>
-                <signal name="clicked" handler="on_fullscreen_clicked"/>
+                <property name="tooltip" translatable="yes">Go to the bookmarked page</property>
+                <property name="label" translatable="yes">Go</property>
+                <property name="stock_id">gtk-jump-to</property>
+                <signal name="clicked" handler="on_go_clicked"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
@@ -140,7 +146,7 @@
                   <widget class="GtkComboBox" id="combobox1">
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
-                    <property name="tooltip" translatable="yes">Change the way the images are displayed</property>
+                    <property name="tooltip" translatable="yes">Change the way images are displayed</property>
                     <property name="has_frame">False</property>
                     <property name="items" translatable="yes">Fit by page width
 FIt entire page
@@ -154,6 +160,19 @@ Normal size</property>
               <widget class="GtkSeparatorToolItem" id="toolbutton9">
                 <property name="visible">True</property>
               </widget>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="toolbutton16">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="tooltip" translatable="yes">Fullscreen</property>
+                <property name="label" translatable="yes">Fullscreen</property>
+                <property name="stock_id">gtk-fullscreen</property>
+                <signal name="clicked" handler="on_fullscreen_clicked"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
             </child>
             <child>
               <widget class="GtkToolButton" id="toolbutton4">
