@@ -125,7 +125,7 @@ class Callbacks(object):
             bookmark = self.app.bookmarks[self.app.archive.path]
             
             if bookmark != self.app.archive.current:
-                self.jump(widget, page=(bookmark +1))
+                self.jump(widget, page=(bookmark + 1))
         except KeyError:
             self.jump.fail()
     
