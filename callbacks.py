@@ -5,7 +5,7 @@ import gtk, gobject
 from image import new_pixbuf, is_image_ext
 from worker import Worker
 from dialogs import AboutDialog, choose_file
-from error import ArchiveError
+from error import ArchiveError, BookmarkError
 from archive import Archive
 from utils import open_url, is_text_file
 
@@ -109,7 +109,15 @@ class Callbacks(object):
     
     
     def add_bookmark(self, widget):
-        return
+        try:
+            self.app.bookmarks.add(self.app.archive.path,
+                                   self.app.archive.current)
+            self.win.ui.get_widget('toolbutton21').set_sensitive(True)
+        except BookmarkError, error:
+            # TODO: Throw a dialog asking if they really want to move the 
+            # bookmark.
+            print 'You sure you want to move the bookmark from page %s to %s?' \
+            % (error.old_page, error.new_page)
     
     
     def go_to_bookmark(self, widget):
