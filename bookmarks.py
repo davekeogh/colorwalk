@@ -17,7 +17,7 @@ class Bookmarks(dict):
             
             for line in lines:
                 (key, value) = line.split('\t')
-                self[key] = int(value)
+                self[key] = value
     
     
     def add(self, file, page):

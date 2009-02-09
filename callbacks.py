@@ -121,11 +121,7 @@ class Callbacks(object):
     
     
     def go_to_bookmark(self, widget):
-        try:
-            self.jump(widget,
-                      page=self.app.bookmarks[self.app.archive.path] + 1)
-        except KeyError:
-            self.jump.fail()
+        return
     
     
     def preferences(self, widget):
