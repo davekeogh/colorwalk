@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Feb  9 00:21:42 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Feb  9 00:25:18 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -61,6 +61,7 @@
             <child>
               <widget class="GtkToolButton" id="toolbutton21">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="tooltip" translatable="yes">Go to the bookmarked page</property>
                 <property name="label" translatable="yes">Go</property>
                 <property name="stock_id">gtk-jump-to</property>
