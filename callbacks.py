@@ -122,8 +122,10 @@ class Callbacks(object):
     
     def go_to_bookmark(self, widget):
         try:
-            self.jump(widget,
-                      page=self.app.bookmarks[self.app.archive.path] + 1)
+            bookmark = self.app.bookmarks[self.app.archive.path]
+            
+            if bookmark != self.app.archive.current:
+                self.jump(widget, page=(bookmark +1))
         except KeyError:
             self.jump.fail()
     
@@ -167,7 +169,7 @@ class Callbacks(object):
             gobject.idle_add(self.preload_next)
     
     
-    def jump(self, widget, page=None):      
+    def jump(self, widget, page=0):      
         if page:
             text = page
         else:
