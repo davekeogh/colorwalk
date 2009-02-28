@@ -156,13 +156,13 @@ class Window(gtk.Window):
     
     def get_view_width(self):
         # FIXME: Get the actual width of the scrollbar + any padding.
-        return self.width - 19
+        return self.width - 21
     
     
     def get_view_height(self):
         # FIXME: Get the actual height of the menubar + statusbar
         #        + any padding.
-        return self.height - 62
+        return self.height - 64
     
     
     def get_preferences(self):
