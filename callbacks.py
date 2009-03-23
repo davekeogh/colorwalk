@@ -140,6 +140,7 @@ class Callbacks(object):
                 self.app.archive.current -= 1
                 
                 self.win.image.set_from_pixbuf(self.app.current_pb)
+                self.win.reset_scrollbars()
                 
                 threading.Thread(target=self.win.load_previous).start()
     
@@ -156,6 +157,7 @@ class Callbacks(object):
                 self.app.archive.current += 1
                 
                 self.win.image.set_from_pixbuf(self.app.current_pb)
+                self.win.reset_scrollbars()
                 
                 threading.Thread(target=self.win.load_next).start()
     
@@ -180,6 +182,7 @@ class Callbacks(object):
                 
                 self.win.steal_focus()
                 self.win.image.set_from_pixbuf(self.app.current_pb)
+                self.win.reset_scrollbars()
                 
                 threading.Thread(target=self.win.load_next).start()
                 threading.Thread(target=self.win.load_previous).start()
