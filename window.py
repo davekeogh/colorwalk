@@ -4,7 +4,7 @@ import gtk, gtk.glade, pango
 
 from callbacks import Callbacks
 from statusbar import StatusBar
-from image import get_thumbnail, FIT_BY_WIDTH, FIT_WINDOW, DEFAULT_SIZE
+from image import get_thumbnail, new_pixbuf, FIT_BY_WIDTH, FIT_WINDOW, DEFAULT_SIZE
 from utils import get_uri_for_path
 
 SCROLL_LTR = 0
@@ -81,7 +81,6 @@ class Window(gtk.Window):
         self.ui.get_widget('combobox1').set_sensitive(True)
         self.ui.get_widget('toolbutton13').set_sensitive(True)
         self.ui.get_widget('toolbutton15').set_sensitive(True)
-        self.ui.get_widget('toolbutton16').set_sensitive(True)
         
         if self.app.bookmarks.has_key(self.app.archive.path):
             self.ui.get_widget('toolbutton21').set_sensitive(True)
@@ -137,7 +136,6 @@ class Window(gtk.Window):
         self.ui.get_widget('toolbutton2').set_sensitive(False)
         self.ui.get_widget('toolbutton13').set_sensitive(False)
         self.ui.get_widget('toolbutton15').set_sensitive(False)
-        self.ui.get_widget('toolbutton16').set_sensitive(False)
         
         self.ui.get_widget('label6').hide()
         self.ui.get_widget('entry1').hide()
@@ -163,6 +161,37 @@ class Window(gtk.Window):
         # FIXME: Get the actual height of the menubar + statusbar
         #        + any padding.
         return self.height - 64
+    
+    
+    def load_current(self):
+        self.app.current_pb = new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+                                         self.app.archive.images
+                                         [self.app.archive.current]),
+                                         self.app.scale,
+                                         width=self.get_view_width(),
+                                         height=self.get_view_height())
+        self.image.set_from_pixbuf(self.app.current_pb)
+        self.refresh()
+    
+    
+    def load_previous(self):
+        self.app.previous_pb = new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+                                         self.app.archive.images
+                                         [self.app.archive.current - 1]),
+                                         self.app.scale,
+                                         width=self.get_view_width(),
+                                         height=self.get_view_height())
+        self.refresh()
+    
+    
+    def load_next(self):
+        self.app.next_pb = new_pixbuf(os.path.join(self.app.archive.temp_dir, 
+                                         self.app.archive.images
+                                         [self.app.archive.current + 1]),
+                                         self.app.scale,
+                                         width=self.get_view_width(),
+                                         height=self.get_view_height())
+        self.refresh()
     
     
     def get_preferences(self):

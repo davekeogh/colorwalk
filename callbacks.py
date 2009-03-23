@@ -1,4 +1,4 @@
-import os, os.path, subprocess
+import os, os.path, subprocess, threading
 
 import gtk, gobject
 
@@ -43,18 +43,9 @@ class Callbacks(object):
             self.app.archive.size = \
             os.stat(self.app.archive.path).st_size / 1048576
             
-            self.app.current_pb = \
-            new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                       self.app.archive.images
-                       [self.app.archive.current]),
-                       self.app.scale,
-                       width=self.app.win.get_view_width(),
-                       height=self.app.win.get_view_height())
-                       
-            self.win.refresh()
-            self.win.image.set_from_pixbuf(self.app.current_pb)
+            threading.Thread(target=self.win.load_current).start()
             
-            gobject.idle_add(self.preload_next)
+            threading.Thread(target=self.win.load_next).start()
         
         else:
             message = 'No images found in <i>%s</i>' % self.app.archive.name
@@ -142,15 +133,15 @@ class Callbacks(object):
     
     def go_back(self, widget):
         if self.app.archive.current > 0:
-            self.app.next_pb = self.app.current_pb
-            self.app.current_pb = self.app.previous_pb
-            
-            self.app.archive.current -= 1
-            
-            self.win.refresh()
-            self.win.image.set_from_pixbuf(self.app.current_pb)
-            
-            gobject.idle_add(self.preload_previous)
+            if self.app.previous_pb:
+                self.app.next_pb = self.app.current_pb
+                self.app.current_pb = self.app.previous_pb
+                
+                self.app.archive.current -= 1
+                
+                self.win.image.set_from_pixbuf(self.app.current_pb)
+                
+                threading.Thread(target=self.win.load_previous).start()
     
     
     def go_forward(self, widget):
@@ -158,15 +149,15 @@ class Callbacks(object):
         #       value first to see if it's enabled.
         
         if self.app.archive.current < len(self.app.archive.images) - 1:
-            self.app.previous_pb = self.app.current_pb
-            self.app.current_pb = self.app.next_pb
-            
-            self.app.archive.current += 1
-            
-            self.win.refresh()
-            self.win.image.set_from_pixbuf(self.app.current_pb)
-            
-            gobject.idle_add(self.preload_next)
+            if self.app.next_pb:
+                self.app.previous_pb = self.app.current_pb
+                self.app.current_pb = self.app.next_pb
+                
+                self.app.archive.current += 1
+                
+                self.win.image.set_from_pixbuf(self.app.current_pb)
+                
+                threading.Thread(target=self.win.load_next).start()
     
     
     def jump(self, widget, page=0):      
@@ -185,48 +176,18 @@ class Callbacks(object):
             if num <= len(self.app.archive.images) and num > 0:
                 self.app.archive.current = num - 1
                 
-                self.app.current_pb = \
-                new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                           self.app.archive.images[self.app.archive.current]),
-                           self.app.scale,
-                           width=self.app.win.get_view_width(),
-                           height=self.app.win.get_view_height())
+                threading.Thread(target=self.win.load_current).start()
                 
-                self.win.refresh()
                 self.win.steal_focus()
                 self.win.image.set_from_pixbuf(self.app.current_pb)
                 
-                gobject.idle_add(self.preload_next)
-                gobject.idle_add(self.preload_previous)
+                threading.Thread(target=self.win.load_next).start()
+                threading.Thread(target=self.win.load_previous).start()
                 
             else:
                 fail()
         except ValueError:
             fail()
-    
-    
-    def preload_next(self):
-        if (self.app.archive.current + 1) <= (len(self.app.archive.images) -1):
-            self.app.next_pb = \
-                new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                           self.app.archive.images[self.app.archive.current \
-                           + 1]), self.app.scale,
-                           width=self.app.win.get_view_width(),
-                           height=self.app.win.get_view_height())
-        
-        return False
-    
-    
-    def preload_previous(self):
-        if (self.app.archive.current - 1) >= 0:
-            self.app.previous_pb = \
-                new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                           self.app.archive.images[self.app.archive.current \
-                           - 1]), self.app.scale,
-                           width=self.app.win.get_view_width(),
-                           height=self.app.win.get_view_height())
-        
-        return False
     
     
     def window_resized(self, widget, allocation):
@@ -238,17 +199,12 @@ class Callbacks(object):
                 self.win.height = allocation.height
                 
                 if self.app.archive.images:
-                    self.app.current_pb = \
-                        new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                                   self.app.archive.images
-                                   [self.app.archive.current]),
-                                   self.app.scale,
-                                   width=self.app.win.get_view_width(),
-                                   height=self.app.win.get_view_height())
+                    threading.Thread(target=self.win.load_current).start()
+                    
                     self.win.image.set_from_pixbuf(self.app.current_pb)
                     
-                    gobject.idle_add(self.preload_next)
-                    gobject.idle_add(self.preload_previous)
+                    threading.Thread(target=self.load_next).start()
+                    threading.Thread(target=self.win.load_previous).start()
         
         else:
             self.win.width = allocation.width
@@ -259,15 +215,11 @@ class Callbacks(object):
         if self.app.archive:
             self.app.scale = widget.get_active()
             
-            self.app.current_pb = \
-            new_pixbuf(os.path.join(self.app.archive.temp_dir, 
-                       self.app.archive.images[self.app.archive.current]),
-                       self.app.scale, width=self.app.win.get_view_width(),
-                       height=self.app.win.get_view_height())
+            threading.Thread(target=self.win.load_current).start()
             self.win.image.set_from_pixbuf(self.app.current_pb)
             
-            gobject.idle_add(self.preload_next)
-            gobject.idle_add(self.preload_previous)
+            threading.Thread(target=self.win.load_next).start()
+            threading.Thread(target=self.win.load_previous).start()
     
     
     def key_pressed(self, widget, event):
