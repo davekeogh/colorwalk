@@ -1,0 +1,434 @@
+#!/usr/bin/env python
+
+import sys, os, subprocess, threading, tempfile, shutil, time, gc
+
+import glib, gobject, gtk
+
+
+IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.gif', '.png', '.bmp']
+DEFAULT_SIZE = 123
+FIT_BY_WIDTH = 456
+
+
+def find_ui_definition():
+    '''Tries to find the XML GtkBuilder file in all the usual places. The last
+    place checked is the current working directory. If the file can't be found
+    this function returns None.'''
+    
+    paths = os.environ['XDG_DATA_DIRS'].split(':')
+    return_value = None
+    
+    for path in paths:
+        full_path = os.path.join(path, 'colorwalk/colorwalk.ui')
+        
+        if os.path.exists(full_path):
+            return_value = full_path
+            break
+    
+    if not return_value:
+        # This is mostly so that debugging isn't a pain in the ass.
+        
+        last_chance = os.path.join(os.getcwd(), 'colorwalk.ui')
+        
+        if os.path.exists(last_chance):
+            return_value = last_chance
+    
+    return return_value
+
+
+def new_pixbuf(path, mode, width=-1, height=-1):
+    '''Returns a gtk.gdk.Pixbuf object at the appropriate size.'''
+    
+    if mode == DEFAULT_SIZE:
+        return gtk.gdk.pixbuf_new_from_file(path)
+    elif mode == FIT_BY_WIDTH:
+        temp = gtk.gdk.pixbuf_new_from_file(path)
+        
+        if temp.get_width() > width:
+            del temp
+            return gtk.gdk.pixbuf_new_from_file_at_size(path, width, -1)
+        else:
+            return temp
+    
+    # gtk.gdk.Pixbufs don't seem to be collected properly. I'm not sure if this
+    # is the best spot to call the garbage collecter though.
+    gc.collect()
+
+
+class Window(gtk.Window):
+    
+    widgets = None
+    worker = None
+    
+    current_pixbuf = None
+    prev_pixbuf = None
+    next_pixbuf = None
+    
+    open_file = None
+    index = 0
+    images = []
+    temp_dir = None
+    browse_dir = None
+    
+    scale = FIT_BY_WIDTH
+    is_fullscreen = False
+    width = 800
+    height = 800
+    
+    def __init__(self, ui, file=None):
+        gtk.Window.__init__(self)
+        
+        self.widgets = gtk.Builder()
+        self.widgets.add_from_file(ui)
+        
+        # Window events:
+        self.connect('delete-event', self.quit)
+        self.connect('configure-event', self.window_resized)
+        self.connect('key-press-event', self.key_pressed)
+        
+        # Tool button signals:
+        self.widgets.get_object('open_button').connect('clicked', self.open)
+        self.widgets.get_object('forward_button').connect('clicked', self.go_forward)
+        self.widgets.get_object('back_button').connect('clicked', self.go_back)
+        self.widgets.get_object('normal_button').connect('toggled', self.toggle_scale)
+        self.widgets.get_object('fit_button').connect('toggled', self.toggle_scale)
+        
+        self.widgets.get_object('entry').connect('insert-text', self.entry_contents_changed)
+        self.widgets.get_object('entry').connect('activate', self.entry_activated)
+        
+        self.set_icon_name('image')
+        self.set_title('Color Walk')
+        self.resize(self.width, self.height)
+        self.add(self.widgets.get_object('vbox'))
+        self.set_toolbar_button_sensitivity(False)
+        self.show()
+        
+        if file:
+            self.open(self.widgets.get_object('open_button'), file=file)
+    
+    def set_toolbar_button_sensitivity(self, bool):
+        self.widgets.get_object('back_button').set_sensitive(bool)
+        self.widgets.get_object('forward_button').set_sensitive(bool)
+        self.widgets.get_object('normal_button').set_sensitive(bool)
+        self.widgets.get_object('fit_button').set_sensitive(bool)
+        self.widgets.get_object('entry').set_sensitive(bool)
+        self.widgets.get_object('label').set_sensitive(bool)
+    
+    def set_widget_state(self):
+        self.set_title('%s - %s' % (os.path.split(self.open_file)[1], self.images[self.index]))
+        self.widgets.get_object('entry').set_text(str(self.index + 1))
+        self.widgets.get_object('label').set_text('of %d' % len(self.images))
+        
+        self.unfocus()
+        
+        if self.index == 0:
+            self.widgets.get_object('back_button').set_sensitive(False)
+        else:
+            self.widgets.get_object('back_button').set_sensitive(True)
+        
+        if self.index == len(self.images) - 1:
+            self.widgets.get_object('forward_button').set_sensitive(False)
+        else:
+            self.widgets.get_object('forward_button').set_sensitive(True)
+    
+    def get_available_space(self):
+        # TODO: Find a way to get the scrollbar's actual width.
+        scrollbar = 20
+        
+        height = self.height - self.widgets.get_object('toolbar').size_request()[0]
+        width = self.width - scrollbar
+        
+        return (width, height)
+    
+    def reset_scrollbars(self):
+        viewport = self.widgets.get_object('scrolledwindow')
+        hadj = viewport.get_hadjustment()
+        vadj = viewport.get_vadjustment()
+        vadj.set_value(vadj.lower)
+        hadj.set_value(hadj.lower)
+        viewport.set_hadjustment(hadj)
+        viewport.set_vadjustment(vadj)
+    
+    def toggle_fullscreen(self):
+        if self.is_fullscreen:
+            self.unfullscreen()
+            self.is_fullscreen = False
+        else:
+            self.fullscreen()
+            self.is_fullscreen = True
+    
+    def unfocus(self):
+        '''Focus the forward button so that spacebar presses don't activate any
+        other widget.'''
+        self.widgets.get_object('forward_button').grab_focus()
+    
+    def entry_contents_changed(self, entry, text, text_length, pointer):
+        '''Prevent any non numerical characters from being entered into the
+        entry.'''
+        try:
+            int(text)
+        except ValueError:
+            entry.stop_emission('insert-text')
+    
+    def entry_activated(self, entry):
+        def fail():
+            entry.set_text(str(self.index + 1))
+            self.unfocus()
+        
+        try:
+            index = int(entry.get_text()) - 1
+            
+            if index >= 0 and index < len(self.images):
+                self.index = index
+                
+                def worker():
+                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
+                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                    
+                    self.reset_scrollbars()
+                    self.set_widget_state()
+                    
+                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
+                    self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
+                    
+                self.worker = threading.Thread(target=worker)
+                self.worker.start()
+            else:
+                # The number falls outside the actual number of images.
+                fail()
+        except ValueError:
+            # Non-numerical value.
+            fail()
+    
+    def toggle_scale(self, button):
+        if button.get_active():
+            if button is self.widgets.get_object('normal_button'):
+                self.scale = DEFAULT_SIZE
+            else:
+                self.scale = FIT_BY_WIDTH
+    
+    def key_pressed(self, widget, event):
+        if self.open_file:
+            if event.keyval == 32: # Spacebar
+                self.go_forward(widget)
+            
+            elif event.keyval == 65366: # Page Down
+                self.go_forward(widget)
+            
+            elif event.keyval == 65288: # Backspace
+                self.go_back(widget)
+            
+            if event.keyval == 65365: # Page Up
+                self.go_back(widget)
+            
+            elif event.keyval == 65480: # F11
+                self.toggle_fullscreen()
+            
+            elif event.keyval == 65360: # Home
+                self.go_to_index(widget, 0)
+            
+            elif event.keyval == 65367: # End
+                self.go_to_index(widget, len(self.images) - 1)
+    
+    def window_resized(self, window, allocation):
+        if (self.width != allocation.width or self.height != allocation.height):
+            self.width = allocation.width
+            self.height = allocation.height
+            
+            if self.open_file:
+                def worker():
+                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
+                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                    
+                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
+                    self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
+                    
+                self.worker = threading.Thread(target=worker)
+                self.worker.start()
+    
+    def quit(self, window, event):
+        if self.temp_dir:
+            shutil.rmtree(self.temp_dir)
+        
+        gtk.main_quit()
+        sys.exit(0)
+    
+    def open(self, button, file=None):
+        if file:
+            file = os.path.abspath(file)
+            self.browse_dir = os.path.split(file)[0]
+            
+            if not os.path.exists(file):
+                file = None
+                response = gtk.RESPONSE_REJECT
+            else:
+                response = gtk.RESPONSE_ACCEPT
+        
+        button.set_sensitive(False)
+        
+        if not file:
+            dialog = gtk.FileChooserDialog(title='Open File', buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+            
+            if self.browse_dir:
+                dialog.set_current_folder(self.browse_dir)
+            
+            filter = gtk.FileFilter()
+            filter.set_name('All supported files')
+            filter.add_pattern('*.cbz')
+            filter.add_pattern('*.cbr')
+            filter.add_pattern('*.zip')
+            filter.add_pattern('*.rar')
+            dialog.add_filter(filter)
+            filter = gtk.FileFilter()
+            filter.set_name('All files')
+            filter.add_pattern('*')
+            dialog.add_filter(filter)
+            
+            response = dialog.run()
+            file = dialog.get_filename()
+            self.browse_dir = dialog.get_current_folder()
+            dialog.destroy()
+    
+        if response == gtk.RESPONSE_ACCEPT:
+            ext = os.path.splitext(file)[1]
+            
+            if self.open_file:
+                # Close the old file.
+                self.index = 0
+                self.images = []
+                self.open_file = None
+                shutil.rmtree(self.temp_dir)
+            
+            if ext == '.zip' or ext == '.cbz':
+                self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
+                command = 'unzip -j \"%s\" -d \"%s\"' % (file, self.temp_dir)
+            
+            elif ext == '.rar' or ext == '.cbr':
+                self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
+                command = 'unrar e \"%s\" \"%s\"' % (file, self.temp_dir)
+            
+            else:
+                command = None
+            
+            if command:
+                def worker():
+                    # This is all run in a new thread to avoid blocking the UI.
+                    
+                    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    
+                    self.widgets.get_object('toolbutton6').show()
+                    self.widgets.get_object('toolbutton7').show()
+                    self.widgets.get_object('progressbar').set_text('Opening %s' % os.path.split(file)[1])
+                    
+                    while p.poll() == None:
+                        # Wait until the archive is done extracting before we do
+                        # anything else.
+                        self.widgets.get_object('progressbar').pulse()
+                        time.sleep(0.1)
+                    
+                    for f in os.listdir(self.temp_dir):
+                        # Only add files with a valid extension to the list of
+                        # images.
+                        if os.path.splitext(f)[1].lower() in IMAGE_EXTENSIONS:
+                            self.images.append(f)
+                    
+                    self.images.sort(key=str.lower)
+                    self.open_file = file
+                    
+                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[0]), self.scale, *self.get_available_space())
+                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                    
+                    self.widgets.get_object('toolbutton6').hide()
+                    self.widgets.get_object('toolbutton7').hide()
+                    self.set_toolbar_button_sensitivity(True)
+                    self.set_widget_state()
+                    button.set_sensitive(True)
+                    
+                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[1]), self.scale, *self.get_available_space())
+                
+                self.worker = threading.Thread(target=worker)
+                self.worker.start()
+            
+            else:
+                button.set_sensitive(True)
+        
+        else:
+            button.set_sensitive(True)
+        
+    def go_forward(self, button):
+        if self.index < len(self.images):
+            if self.next_pixbuf:
+                self.index += 1
+                
+                self.prev_pixbuf = self.current_pixbuf
+                self.current_pixbuf = self.next_pixbuf
+                self.next_pixbuf = None
+                
+                self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                
+                self.reset_scrollbars()
+                self.set_widget_state()
+                
+                if self.index != len(self.images) - 1:
+                    def worker():
+                        self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
+                    
+                    self.worker = threading.Thread(target=worker)
+                    self.worker.start()
+    
+    def go_back(self, button):
+        if self.index >= 0:
+            if self.prev_pixbuf:
+                self.index -= 1
+                
+                self.next_pixbuf = self.current_pixbuf
+                self.current_pixbuf = self.prev_pixbuf
+                self.prev_pixbuf = None
+                
+                self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                
+                self.reset_scrollbars()
+                self.set_widget_state()
+                
+                def worker():
+                    self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
+                
+                self.worker = threading.Thread(target=worker)
+                self.worker.start()
+    
+    def go_to_index(self, index):
+        '''This is only used internally with safe values for index, so we don't
+        need to check the value of index here.'''
+        
+        self.index = index
+        
+        def worker():
+            self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
+            self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+            
+            self.reset_scrollbars()
+            self.set_widget_state()
+            
+            self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
+            self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
+        
+        self.worker = threading.Thread(target=worker)
+        self.worker.start()
+    
+
+if __name__ == '__main__':
+    ui = find_ui_definition()
+    
+    if not ui:
+        print 'A required file, colorwalk.ui, is missing. Unable to continue.'
+        sys.exit(1)
+    
+    gtk.gdk.threads_init()
+    
+    if len(sys.argv) > 1:
+        Window(ui, file=sys.argv[1])
+    
+    else:
+        Window(ui)
+    
+    gtk.main()

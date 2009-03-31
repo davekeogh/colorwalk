@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkVBox" id="vbox">
+    <property name="visible">True</property>
+    <child>
+      <object class="GtkToolbar" id="toolbar">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkToolButton" id="open_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Open a comic book</property>
+            <property name="is_important">True</property>
+            <property name="label" translatable="yes">Open</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-open</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton" id="back_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Go to the previous page</property>
+            <property name="is_important">True</property>
+            <property name="label" translatable="yes">Back</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-go-back</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton" id="forward_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="tooltip_text" translatable="yes">Go to the next page</property>
+            <property name="is_important">True</property>
+            <property name="label" translatable="yes">Forward</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-go-forward</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparatorToolItem" id="toolbutton5">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkRadioToolButton" id="normal_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Display the image at it's normal size</property>
+            <property name="label" translatable="yes">Normal Size</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-zoom-100</property>
+            <property name="group">fit_button</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkRadioToolButton" id="fit_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">FIt the image to the window so as to avoid horizontal scrolling</property>
+            <property name="label" translatable="yes">Fit To WIndow</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-zoom-fit</property>
+            <property name="active">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparatorToolItem" id="toolbutton4">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolItem" id="toolbutton1">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkHBox" id="hbox1">
+                <property name="visible">True</property>
+                <property name="spacing">3</property>
+                <child>
+                  <object class="GtkEntry" id="entry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Go to page</property>
+                    <property name="max_length">3</property>
+                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="width_chars">3</property>
+                    <property name="xalign">1</property>
+                    <property name="primary_icon_activatable">True</property>
+                    <property name="primary_icon_sensitive">True</property>
+                    <property name="primary_icon_tooltip_text">Go to page</property>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparatorToolItem" id="toolbutton6"/>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolItem" id="toolbutton7">
+            <child>
+              <object class="GtkAlignment" id="alignment1">
+                <property name="visible">True</property>
+                <property name="top_padding">8</property>
+                <property name="bottom_padding">8</property>
+                <child>
+                  <object class="GtkProgressBar" id="progressbar">
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkScrolledWindow" id="scrolledwindow">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="hscrollbar_policy">automatic</property>
+        <property name="vscrollbar_policy">automatic</property>
+        <child>
+          <object class="GtkViewport" id="viewport">
+            <property name="visible">True</property>
+            <property name="resize_mode">queue</property>
+            <child>
+              <object class="GtkImage" id="image">
+                <property name="visible">True</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
+</interface>
