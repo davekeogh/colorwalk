@@ -1,12 +1,12 @@
 [Desktop Entry]
-Encoding=UTF-8
-Type=Application
 Name=Color Walk
+GenericName=Comic Book Viewer
 Comment=A simple GTK+ comic book viewer
 TryExec=colorwalk
 Exec=colorwalk %F
 Icon=image
 StartupNotify=true
 Terminal=false
+Type=Application
+Categories=Graphics;Viewer;
 MimeType=application/x-cbz;application/x-cbr;application/x-zip;application/zip;application/x-rar;
-Patterns=*.cbr;*.cbz;*.rar;*.zip
