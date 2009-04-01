@@ -85,15 +85,27 @@ class Window(gtk.Window):
         self.connect('configure-event', self.window_resized)
         self.connect('key-press-event', self.key_pressed)
         
-        # Tool button signals:
+        # Tool button events:
         self.widgets.get_object('open_button').connect('clicked', self.open)
         self.widgets.get_object('forward_button').connect('clicked', self.go_forward)
         self.widgets.get_object('back_button').connect('clicked', self.go_back)
         self.widgets.get_object('normal_button').connect('toggled', self.toggle_scale)
         self.widgets.get_object('fit_button').connect('toggled', self.toggle_scale)
         
+        # Entry events:
         self.widgets.get_object('entry').connect('insert-text', self.entry_contents_changed)
         self.widgets.get_object('entry').connect('activate', self.entry_activated)
+        
+        accel_group = gtk.AccelGroup()
+        self.add_accel_group(accel_group)
+        
+        # Key values = backspace, page up:
+        self.widgets.get_object('back_button').add_accelerator('clicked', accel_group, 65288, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('back_button').add_accelerator('clicked', accel_group, 65365, 0, (gtk.ACCEL_LOCKED))
+        
+        # Key values = spacebar, page down
+        self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 32, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 65366, 0, (gtk.ACCEL_LOCKED))
         
         self.set_icon_name('image')
         self.set_title('Color Walk')
@@ -208,19 +220,7 @@ class Window(gtk.Window):
     
     def key_pressed(self, widget, event):
         if self.open_file:
-            if event.keyval == 32: # Spacebar
-                self.go_forward(widget)
-            
-            elif event.keyval == 65366: # Page Down
-                self.go_forward(widget)
-            
-            elif event.keyval == 65288: # Backspace
-                self.go_back(widget)
-            
-            if event.keyval == 65365: # Page Up
-                self.go_back(widget)
-            
-            elif event.keyval == 65480: # F11
+            if event.keyval == 65480: # F11
                 self.toggle_fullscreen()
             
             elif event.keyval == 65360: # Home
