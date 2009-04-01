@@ -18,20 +18,19 @@ def find_ui_definition():
     paths = os.environ['XDG_DATA_DIRS'].split(':')
     return_value = None
     
-    for path in paths:
-        full_path = os.path.join(path, 'colorwalk/colorwalk.ui')
-        
-        if os.path.exists(full_path):
-            return_value = full_path
-            break
+    # This is mostly so that debugging isn't a pain in the ass.
+    local = os.path.join(os.getcwd(), 'colorwalk.ui')
+    
+    if os.path.exists(local):
+        return_value = local
     
     if not return_value:
-        # This is mostly so that debugging isn't a pain in the ass.
-        
-        last_chance = os.path.join(os.getcwd(), 'colorwalk.ui')
-        
-        if os.path.exists(last_chance):
-            return_value = last_chance
+        for path in paths:
+            full_path = os.path.join(path, 'colorwalk/colorwalk.ui')
+            
+            if os.path.exists(full_path):
+                return_value = full_path
+                break
     
     return return_value
 
