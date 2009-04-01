@@ -5,7 +5,7 @@ version="0.1.0"
 
 echo "Installing Color Walk $version\n"
 
-mkdir "$prefix/share/colorwalk"
+mkdir -p "$prefix/share/colorwalk"
 
 echo "Copying colorwalk.ui to $prefix/share/colorwalk..."
 install colorwalk.ui "$prefix/share/colorwalk/colorwalk.ui"
