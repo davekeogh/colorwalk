@@ -70,7 +70,6 @@ class Window(gtk.Window):
     browse_dir = None
     
     scale = FIT_BY_WIDTH
-    is_fullscreen = False
     width = 800
     height = 800
     
@@ -88,6 +87,7 @@ class Window(gtk.Window):
         # Tool button events:
         self.widgets.get_object('open_button').connect('clicked', self.open)
         self.widgets.get_object('forward_button').connect('clicked', self.go_forward)
+        self.widgets.get_object('fullscreen_button').connect('toggled', self.toggle_fullscreen)
         self.widgets.get_object('back_button').connect('clicked', self.go_back)
         self.widgets.get_object('normal_button').connect('toggled', self.toggle_scale)
         self.widgets.get_object('fit_button').connect('toggled', self.toggle_scale)
@@ -103,7 +103,7 @@ class Window(gtk.Window):
         self.widgets.get_object('back_button').add_accelerator('clicked', accel_group, 65288, 0, (gtk.ACCEL_LOCKED))
         self.widgets.get_object('back_button').add_accelerator('clicked', accel_group, 65365, 0, (gtk.ACCEL_LOCKED))
         
-        # Key values = spacebar, page down
+        # Key values = spacebar, page down:
         self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 32, 0, (gtk.ACCEL_LOCKED))
         self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 65366, 0, (gtk.ACCEL_LOCKED))
         
@@ -160,13 +160,11 @@ class Window(gtk.Window):
         viewport.set_hadjustment(hadj)
         viewport.set_vadjustment(vadj)
     
-    def toggle_fullscreen(self):
-        if self.is_fullscreen:
-            self.unfullscreen()
-            self.is_fullscreen = False
-        else:
+    def toggle_fullscreen(self, button):
+        if button.get_active():
             self.fullscreen()
-            self.is_fullscreen = True
+        else:
+            self.unfullscreen()
     
     def unfocus(self):
         '''Focus the forward button so that spacebar presses don't activate any
@@ -219,11 +217,11 @@ class Window(gtk.Window):
                 self.scale = FIT_BY_WIDTH
     
     def key_pressed(self, widget, event):
+        if event.keyval == 65480: # F11
+            self.widgets.get_object('fullscreen_button').set_active(not self.widgets.get_object('fullscreen_button').get_active())
+        
         if self.open_file:
-            if event.keyval == 65480: # F11
-                self.toggle_fullscreen()
-            
-            elif event.keyval == 65360: # Home
+            if event.keyval == 65360: # Home
                 self.go_to_index(widget, 0)
             
             elif event.keyval == 65367: # End

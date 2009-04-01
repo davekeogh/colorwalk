@@ -51,6 +51,19 @@
           </packing>
         </child>
         <child>
+          <object class="GtkToggleToolButton" id="fullscreen_button">
+            <property name="visible">True</property>
+            <property name="is_important">True</property>
+            <property name="label" translatable="yes">Fullscreen</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-fullscreen</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkSeparatorToolItem" id="toolbutton5">
             <property name="visible">True</property>
           </object>
