@@ -165,6 +165,8 @@
                 <child>
                   <object class="GtkProgressBar" id="progressbar">
                     <property name="visible">True</property>
+                    <property name="activity_mode">True</property>
+                    <property name="pulse_step">0.25</property>
                     <property name="ellipsize">middle</property>
                   </object>
                 </child>
@@ -172,7 +174,7 @@
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
           </packing>
         </child>
       </object>
