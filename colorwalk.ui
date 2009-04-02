@@ -164,9 +164,9 @@
                 <property name="bottom_padding">8</property>
                 <child>
                   <object class="GtkProgressBar" id="progressbar">
+                    <property name="width_request">250</property>
                     <property name="visible">True</property>
                     <property name="activity_mode">True</property>
-                    <property name="pulse_step">0.25</property>
                     <property name="ellipsize">middle</property>
                   </object>
                 </child>
