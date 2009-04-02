@@ -17,8 +17,7 @@ print 'Installing Color Walk %s :\n' % VERSION
 subprocess.call(['mkdir', '-p', os.path.join(PREFIX, 'share/colorwalk')])
 
 print 'Copying colorwalk.ui to %s/share/colorwalk ...' % PREFIX ,
-retval = subprocess.call(['install', 'colorwalk.ui', os.path.join(PREFIX, 'share/colorwalk/colorwalk.ui')])
-if retval:
+if subprocess.call(['install', 'colorwalk.ui', os.path.join(PREFIX, 'share/colorwalk/colorwalk.ui')]):
     print 'Failed'
     print '\nColor Walk failed to install.'
     sys.exit(1)
@@ -26,8 +25,7 @@ else:
     print 'Done'
 
 print 'Copying colorwalk.desktop to %s/share/applications ...' % PREFIX ,
-retval = subprocess.call(['install', 'colorwalk.desktop', os.path.join(PREFIX, 'share/applications/colorwalk.desktop')])
-if retval:
+if subprocess.call(['install', 'colorwalk.desktop', os.path.join(PREFIX, 'share/applications/colorwalk.desktop')]):
     print 'Failed'
     print '\nColor Walk failed to install.'
     sys.exit(1)
@@ -35,8 +33,7 @@ else:
     print 'Done'
 
 print 'Copying colorwalk to %s/bin ...' % PREFIX ,
-retval = subprocess.call(['install', 'colorwalk', os.path.join(PREFIX, 'bin/colorwalk')])
-if retval:
+if subprocess.call(['install', 'colorwalk', os.path.join(PREFIX, 'bin/colorwalk')]):
     print 'Failed'
     print '\nColor Walk failed to install.'
     sys.exit(1)
