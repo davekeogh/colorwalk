@@ -165,13 +165,14 @@
                 <child>
                   <object class="GtkProgressBar" id="progressbar">
                     <property name="visible">True</property>
+                    <property name="ellipsize">middle</property>
                   </object>
                 </child>
               </object>
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
           </packing>
         </child>
       </object>
