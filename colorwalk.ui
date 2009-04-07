@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires gtk+ 2.12 -->
   <!-- interface-naming-policy project-wide -->
   <object class="GtkVBox" id="vbox">
     <property name="visible">True</property>
@@ -125,9 +125,6 @@
                     <property name="invisible_char">&#x25CF;</property>
                     <property name="width_chars">3</property>
                     <property name="xalign">1</property>
-                    <property name="primary_icon_activatable">True</property>
-                    <property name="primary_icon_sensitive">True</property>
-                    <property name="primary_icon_tooltip_text">Go to page</property>
                   </object>
                   <packing>
                     <property name="position">0</property>
