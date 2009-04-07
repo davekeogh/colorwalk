@@ -1,0 +1,43 @@
+What is it?
+===========
+
+Color Walk is a really simple comic book reading application. The main design
+goals were to make it fast and easy to use. It's written in Python and uses the
+GTK+ bindings to draw the user interface.
+
+
+Dependencies
+============
+
+Python 2.x
+GTK+ 2.12
+PyGTK 2.12
+
+
+How to get it?
+==============
+
+The latest stable version of Color Walk can always be found here:
+    
+    http://members.shaw.ca/davekeogh/colorwalk/
+
+The development version can be checkedout with this command:
+    
+    git clone git://github.com/davekeogh/colorwalk.git
+
+
+Installation
+============
+
+Something similar to the following should install Color Walk for you:
+
+    tar xzf colorwalk-0.1.0.tar.gz
+    cd colorwalk-0.1.0
+    [Become root if necessary]
+    ./install.py --prefix=/usr
+
+
+How to report bugs?
+===================
+
+You can send bug reports or patches to David Keogh <davekeogh@shaw.ca>.
