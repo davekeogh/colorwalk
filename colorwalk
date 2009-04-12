@@ -339,6 +339,7 @@ class Window(gtk.Window):
                     self.widgets.get_object('toolbutton7').hide()
                     self.set_toolbar_button_sensitivity(True)
                     self.set_widget_state()
+                    self.reset_scrollbars()
                     button.set_sensitive(True)
                     
                     self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[1]), self.scale, *self.get_available_space())
