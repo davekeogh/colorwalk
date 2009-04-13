@@ -169,11 +169,13 @@ class Window(gtk.Window):
     def unfocus(self):
         '''Focus the forward button so that spacebar presses don't activate any
         other widget.'''
+        
         self.widgets.get_object('forward_button').grab_focus()
     
     def entry_contents_changed(self, entry, text, text_length, pointer):
         '''Prevent any non numerical characters from being entered into the
         entry.'''
+        
         try:
             int(text)
         except ValueError:
@@ -191,11 +193,11 @@ class Window(gtk.Window):
                 self.index = index
                 
                 def worker():
-                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
-                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-                    
                     self.reset_scrollbars()
                     self.set_widget_state()
+                    
+                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
+                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                     
                     self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
                     self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
@@ -332,17 +334,20 @@ class Window(gtk.Window):
                     self.images.sort(key=str.lower)
                     self.open_file = file
                     
-                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[0]), self.scale, *self.get_available_space())
-                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                    self.reset_scrollbars()
+                    self.set_widget_state()
                     
+                    # Hide the progressbar and related widgets.
                     self.widgets.get_object('toolbutton6').hide()
                     self.widgets.get_object('toolbutton7').hide()
                     self.set_toolbar_button_sensitivity(True)
-                    self.set_widget_state()
-                    self.reset_scrollbars()
-                    button.set_sensitive(True)
+                    
+                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[0]), self.scale, *self.get_available_space())
+                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                     
                     self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[1]), self.scale, *self.get_available_space())
+                    
+                    button.set_sensitive(True)
                 
                 self.worker = threading.Thread(target=worker)
                 self.worker.start()
@@ -362,10 +367,10 @@ class Window(gtk.Window):
                 self.current_pixbuf = self.next_pixbuf
                 self.next_pixbuf = None
                 
-                self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-                
                 self.reset_scrollbars()
                 self.set_widget_state()
+                
+                self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                 
                 if self.index != len(self.images) - 1:
                     def worker():
@@ -383,10 +388,10 @@ class Window(gtk.Window):
                 self.current_pixbuf = self.prev_pixbuf
                 self.prev_pixbuf = None
                 
-                self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-                
                 self.reset_scrollbars()
                 self.set_widget_state()
+                
+                self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                 
                 def worker():
                     self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
@@ -401,11 +406,11 @@ class Window(gtk.Window):
         self.index = index
         
         def worker():
-            self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
-            self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-            
             self.reset_scrollbars()
             self.set_widget_state()
+            
+            self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
+            self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
             
             self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
             self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
