@@ -199,9 +199,16 @@ class Window(gtk.Window):
                     self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
                     self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                     
-                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
-                    self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
+                    try:
+                        self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
+                    except IndexError:
+                        self.next_pixbuf = None
                     
+                    try:
+                        self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
+                    except IndexError:
+                        self.prev_pixbuf = None
+                
                 self.worker = threading.Thread(target=worker)
                 self.worker.start()
             else:
