@@ -54,6 +54,17 @@ def new_pixbuf(path, mode, width=-1, height=-1):
     gc.collect()
 
 
+class ArchiveError(Exception):
+    
+    message = None
+    
+    def __init__(self, message):
+        '''An error that occurs when Color Walk tries to open an archive 
+        file.'''
+        
+        self.message = message
+
+
 class Window(gtk.Window):
     
     widgets = None
@@ -115,7 +126,10 @@ class Window(gtk.Window):
         self.show()
         
         if file:
-            self.open(self.widgets.get_object('open_button'), file=file)
+            try:
+                self.file_open(self.widgets.get_object('open_button'), file=file)
+            except ArchiveError, e:
+                self.fail(e.message)
     
     def set_toolbar_button_sensitivity(self, bool):
         self.widgets.get_object('back_button').set_sensitive(bool)
@@ -259,7 +273,15 @@ class Window(gtk.Window):
         gtk.main_quit()
         sys.exit(0)
     
-    def open(self, button, file=None):
+    def open(self, button):
+        '''Wraps the open_file method in a try block to catch an exception.'''
+        
+        try:
+            self.file_open(button)
+        except ArchiveError, e:
+            self.fail(e.message)
+    
+    def file_open(self, button, file=None):
         if file:
             file = os.path.abspath(file)
             self.browse_dir = os.path.split(file)[0]
@@ -364,7 +386,10 @@ class Window(gtk.Window):
         
         else:
             button.set_sensitive(True)
-        
+    
+    def fail(self, message):
+        print message
+    
     def go_forward(self, button):
         if self.index < len(self.images):
             if self.next_pixbuf:
