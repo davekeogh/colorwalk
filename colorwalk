@@ -86,17 +86,6 @@ def choose_file(path=None):
     return file 
 
 
-class ArchiveError(Exception):
-    
-    message = None
-    
-    def __init__(self, message):
-        '''An error that occurs when Color Walk tries to open an archive 
-        file.'''
-        
-        self.message = message
-
-
 class Window(gtk.Window):
     
     widgets = None
@@ -320,54 +309,60 @@ class Window(gtk.Window):
         
         else:
             file = choose_file(self.browse_dir)
-            self.browse_dir = os.path.split(file)[0]
         
-        try:
             try:
+                self.browse_dir = os.path.split(file)[0]
                 ext = os.path.splitext(file)[1]
+                
+                if self.open_file:
+                    self.close_file()
+                
+                if ext == '.zip' or ext == '.cbz':
+                    self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
+                    command = 'unzip -j \"%s\" -d \"%s\"' % (file, self.temp_dir)
+                
+                elif ext == '.rar' or ext == '.cbr':
+                    self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
+                    command = 'unrar e \"%s\" \"%s\"' % (file, self.temp_dir)
+                
+                else:
+                    command = None
+            
             except AttributeError:
-                command = None
+                pass
             
-            if self.open_file:
-                self.close_file()
-            
-            if ext == '.zip' or ext == '.cbz':
-                self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
-                command = 'unzip -j \"%s\" -d \"%s\"' % (file, self.temp_dir)
-            
-            elif ext == '.rar' or ext == '.cbr':
-                self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
-                command = 'unrar e \"%s\" \"%s\"' % (file, self.temp_dir)
-            
-            else:
-                command = None
-            
-            if command:
-                def worker():
-                    # This is all run in a new thread to avoid blocking the UI.
-                    
-                    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    
-                    self.widgets.get_object('toolbutton6').show()
-                    self.widgets.get_object('toolbutton7').show()
-                    self.widgets.get_object('progressbar').set_text('Opening %s' % os.path.split(file)[1])
-                    
-                    while p.poll() == None:
-                        # Wait until the archive is done extracting before we do
-                        # anything else.
-                        self.widgets.get_object('progressbar').pulse()
-                        time.sleep(0.1)
-                    
-                    for f in os.listdir(self.temp_dir):
-                        # Only add files with a valid extension to the list of
-                        # images.
-                        if os.path.splitext(f)[1].lower() in IMAGE_EXTENSIONS:
-                            self.images.append(f)
-                    
+        if command:
+            def worker():
+                # This is all run in a new thread to avoid blocking the UI.
+                
+                p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                
+                self.widgets.get_object('toolbutton6').show()
+                self.widgets.get_object('toolbutton7').show()
+                self.widgets.get_object('progressbar').set_text('Opening %s' % os.path.split(file)[1])
+                
+                while p.poll() == None:
+                    # Wait until the archive is done extracting before we do
+                    # anything else.
+                    self.widgets.get_object('progressbar').pulse()
+                    time.sleep(0.1)
+                
+                for f in os.listdir(self.temp_dir):
+                    # Only add files with a valid extension to the list of
+                    # images.
+                    if os.path.splitext(f)[1].lower() in IMAGE_EXTENSIONS:
+                        self.images.append(f)
+                
+                if not len(self.images):
+                    button.set_sensitive(True)
+                    self.fail('%s cannot be opened because it does not contain any images.' % os.path.split(file)[1])
+                
+                else:
                     self.images.sort(key=str.lower)
                     self.open_file = file
                     
                     self.reset_scrollbars()
+                    
                     self.set_widget_state()
                     
                     # Hide the progressbar and related widgets.
@@ -375,27 +370,20 @@ class Window(gtk.Window):
                     self.widgets.get_object('toolbutton7').hide()
                     self.set_toolbar_button_sensitivity(True)
                     
-                    try:
-                        self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[0]), self.scale, *self.get_available_space())
-                    except IndexError:
-                        button.set_sensitive(True)
-                        raise ArchiveError('%s cannot be opened because it does not contain any images.' % os.path_split(file)[1])
-                    
+                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[0]), self.scale, *self.get_available_space())
                     self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                     
                     self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[1]), self.scale, *self.get_available_space())
                     
                     button.set_sensitive(True)
-                
-                self.worker = threading.Thread(target=worker)
-                self.worker.start()
             
-            else:
-                button.set_sensitive(True)
-                raise ArchiveError('%s cannot be opened because it is not a valid comic book archive.' % os.path_split(file)[1])
+            self.worker = threading.Thread(target=worker)
             
-        except ArchiveError, e:
-            self.fail(e.message)
+            self.worker.start()
+        
+        elif file and not command:
+            button.set_sensitive(True)
+            self.fail('%s cannot be opened because it is not a valid archive file.' % os.path.split(file)[1])
         
         else:
             button.set_sensitive(True)
