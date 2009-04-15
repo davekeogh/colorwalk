@@ -54,6 +54,38 @@ def new_pixbuf(path, mode, width=-1, height=-1):
     gc.collect()
 
 
+def choose_file(path=None):
+    '''Creates a gtk.FileChooser and returns the value when the dialog is 
+    destroyed.'''
+    
+    dialog = gtk.FileChooserDialog(title='Open File', buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+            
+    if path:
+        dialog.set_current_folder(path)
+            
+    filter = gtk.FileFilter()
+    filter.set_name('All supported files')
+    filter.add_pattern('*.cbz')
+    filter.add_pattern('*.cbr')
+    filter.add_pattern('*.zip')
+    filter.add_pattern('*.rar')
+    dialog.add_filter(filter)
+    filter = gtk.FileFilter()
+    filter.set_name('All files')
+    filter.add_pattern('*')
+    dialog.add_filter(filter)
+    
+    if dialog.run() == gtk.RESPONSE_ACCEPT:
+        file = dialog.get_filename()
+    
+    else:
+        file = None
+    
+    dialog.destroy()
+    
+    return file 
+
+
 class ArchiveError(Exception):
     
     message = None
@@ -126,10 +158,7 @@ class Window(gtk.Window):
         self.show()
         
         if file:
-            try:
-                self.file_open(self.widgets.get_object('open_button'), file=file)
-            except ArchiveError, e:
-                self.fail(e.message)
+            self.open(self.widgets.get_object('open_button'), file=file)
     
     def set_toolbar_button_sensitivity(self, bool):
         self.widgets.get_object('back_button').set_sensitive(bool)
@@ -273,116 +302,98 @@ class Window(gtk.Window):
         gtk.main_quit()
         sys.exit(0)
     
-    def open(self, button):
-        '''Wraps the open_file method in a try block to catch an exception.'''
-        
-        try:
-            self.file_open(button)
-        except ArchiveError, e:
-            self.fail(e.message)
+    def close_file(self):
+        self.index = 0
+        self.images = []
+        self.open_file = None
+        shutil.rmtree(self.temp_dir)
     
-    def file_open(self, button, file=None):
+    def open(self, button, file=None):
+        button.set_sensitive(False)
+        
         if file:
             file = os.path.abspath(file)
             self.browse_dir = os.path.split(file)[0]
             
             if not os.path.exists(file):
                 file = None
-                response = gtk.RESPONSE_REJECT
-            else:
-                response = gtk.RESPONSE_ACCEPT
         
-        button.set_sensitive(False)
+        else:
+            file = choose_file(self.browse_dir)
+            self.browse_dir = os.path.split(file)[0]
         
-        if not file:
-            dialog = gtk.FileChooserDialog(title='Open File', buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-            
-            if self.browse_dir:
-                dialog.set_current_folder(self.browse_dir)
-            
-            filter = gtk.FileFilter()
-            filter.set_name('All supported files')
-            filter.add_pattern('*.cbz')
-            filter.add_pattern('*.cbr')
-            filter.add_pattern('*.zip')
-            filter.add_pattern('*.rar')
-            dialog.add_filter(filter)
-            filter = gtk.FileFilter()
-            filter.set_name('All files')
-            filter.add_pattern('*')
-            dialog.add_filter(filter)
-            
-            response = dialog.run()
-            file = dialog.get_filename()
-            self.browse_dir = dialog.get_current_folder()
-            dialog.destroy()
-    
-        if response == gtk.RESPONSE_ACCEPT:
-            ext = os.path.splitext(file)[1]
-            
-            if self.open_file:
-                # Close the old file.
-                self.index = 0
-                self.images = []
-                self.open_file = None
-                shutil.rmtree(self.temp_dir)
-            
-            if ext == '.zip' or ext == '.cbz':
-                self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
-                command = 'unzip -j \"%s\" -d \"%s\"' % (file, self.temp_dir)
-            
-            elif ext == '.rar' or ext == '.cbr':
-                self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
-                command = 'unrar e \"%s\" \"%s\"' % (file, self.temp_dir)
-            
-            else:
-                command = None
-            
-            if command:
-                def worker():
-                    # This is all run in a new thread to avoid blocking the UI.
-                    
-                    p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    
-                    self.widgets.get_object('toolbutton6').show()
-                    self.widgets.get_object('toolbutton7').show()
-                    self.widgets.get_object('progressbar').set_text('Opening %s' % os.path.split(file)[1])
-                    
-                    while p.poll() == None:
-                        # Wait until the archive is done extracting before we do
-                        # anything else.
-                        self.widgets.get_object('progressbar').pulse()
-                        time.sleep(0.1)
-                    
-                    for f in os.listdir(self.temp_dir):
-                        # Only add files with a valid extension to the list of
-                        # images.
-                        if os.path.splitext(f)[1].lower() in IMAGE_EXTENSIONS:
-                            self.images.append(f)
-                    
-                    self.images.sort(key=str.lower)
-                    self.open_file = file
-                    
-                    self.reset_scrollbars()
-                    self.set_widget_state()
-                    
-                    # Hide the progressbar and related widgets.
-                    self.widgets.get_object('toolbutton6').hide()
-                    self.widgets.get_object('toolbutton7').hide()
-                    self.set_toolbar_button_sensitivity(True)
-                    
-                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[0]), self.scale, *self.get_available_space())
-                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-                    
-                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[1]), self.scale, *self.get_available_space())
-                    
-                    button.set_sensitive(True)
+        try:
+            if file:
+                ext = os.path.splitext(file)[1]
                 
-                self.worker = threading.Thread(target=worker)
-                self.worker.start()
+                if self.open_file:
+                    self.close_file()
+                
+                if ext == '.zip' or ext == '.cbz':
+                    self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
+                    command = 'unzip -j \"%s\" -d \"%s\"' % (file, self.temp_dir)
+                
+                elif ext == '.rar' or ext == '.cbr':
+                    self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
+                    command = 'unrar e \"%s\" \"%s\"' % (file, self.temp_dir)
+                
+                else:
+                    command = None
+                
+                if command:
+                    def worker():
+                        # This is all run in a new thread to avoid blocking the UI.
+                        
+                        p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        
+                        self.widgets.get_object('toolbutton6').show()
+                        self.widgets.get_object('toolbutton7').show()
+                        self.widgets.get_object('progressbar').set_text('Opening %s' % os.path.split(file)[1])
+                        
+                        while p.poll() == None:
+                            # Wait until the archive is done extracting before we do
+                            # anything else.
+                            self.widgets.get_object('progressbar').pulse()
+                            time.sleep(0.1)
+                        
+                        for f in os.listdir(self.temp_dir):
+                            # Only add files with a valid extension to the list of
+                            # images.
+                            if os.path.splitext(f)[1].lower() in IMAGE_EXTENSIONS:
+                                self.images.append(f)
+                        
+                        self.images.sort(key=str.lower)
+                        self.open_file = file
+                        
+                        self.reset_scrollbars()
+                        self.set_widget_state()
+                        
+                        # Hide the progressbar and related widgets.
+                        self.widgets.get_object('toolbutton6').hide()
+                        self.widgets.get_object('toolbutton7').hide()
+                        self.set_toolbar_button_sensitivity(True)
+                        
+                        try:
+                            self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[0]), self.scale, *self.get_available_space())
+                        except IndexError:
+                            raise ArchiveError('%s cannot be opened because it does not contain any images.' % os.path_split(file)[1])
+                        
+                        self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                        
+                        self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[1]), self.scale, *self.get_available_space())
+                        
+                        button.set_sensitive(True)
+                    
+                    self.worker = threading.Thread(target=worker)
+                    self.worker.start()
+                
+                else:
+                    button.set_sensitive(True)
+                    
+                    raise ArchiveError('%s cannot be opened because it is not a valid comic book archive.' % os.path_split(file)[1])
             
-            else:
-                button.set_sensitive(True)
+        except ArchiveError, e:
+            self.fail(e.message)
         
         else:
             button.set_sensitive(True)
