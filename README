@@ -21,7 +21,7 @@ The latest stable version of Color Walk can always be found here:
     
     http://members.shaw.ca/davekeogh/colorwalk/
 
-The development version can be checkedout with this command:
+The development version can be checked out with this command:
     
     git clone git://github.com/davekeogh/colorwalk.git
 
