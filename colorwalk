@@ -295,7 +295,9 @@ class Window(gtk.Window):
         self.index = 0
         self.images = []
         self.open_file = None
-        shutil.rmtree(self.temp_dir)
+        
+        if self.temp_dir:
+            shutil.rmtree(self.temp_dir)
     
     def open(self, button, file=None):
         button.set_sensitive(False)
@@ -354,7 +356,7 @@ class Window(gtk.Window):
                 
                 if not len(self.images):
                     button.set_sensitive(True)
-                    self.fail('%s cannot be opened because it does not contain any images.' % os.path.split(file)[1])
+                    self.fail('<i>%s</i> cannot be opened because it does not contain any images.' % os.path.split(file)[1])
                 
                 else:
                     self.images.sort(key=str.lower)
@@ -378,13 +380,21 @@ class Window(gtk.Window):
         
         elif file and not command:
             button.set_sensitive(True)
-            self.fail('%s cannot be opened because it is not a valid archive file.' % os.path.split(file)[1])
+            self.fail('<i>%s</i> cannot be opened because it is not a valid archive file.' % os.path.split(file)[1])
         
         else:
             button.set_sensitive(True)
     
     def fail(self, message):
-        print message
+        self.widgets.get_object('progressbar').hide()
+        self.widgets.get_object('status_label').set_markup(message)
+        self.widgets.get_object('hbox2').show()
+        
+        def statusbar_hide():
+            self.widgets.get_object('hbox2').hide()
+            return False
+        
+        glib.timeout_add_seconds(10, statusbar_hide)
     
     def go_forward(self, button):
         if self.index < len(self.images):
