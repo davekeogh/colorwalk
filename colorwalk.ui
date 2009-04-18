@@ -145,35 +145,6 @@
             <property name="expand">False</property>
           </packing>
         </child>
-        <child>
-          <object class="GtkSeparatorToolItem" id="toolbutton6"/>
-          <packing>
-            <property name="expand">False</property>
-            <property name="homogeneous">True</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkToolItem" id="toolbutton7">
-            <child>
-              <object class="GtkAlignment" id="alignment1">
-                <property name="visible">True</property>
-                <property name="top_padding">8</property>
-                <property name="bottom_padding">8</property>
-                <child>
-                  <object class="GtkProgressBar" id="progressbar">
-                    <property name="width_request">250</property>
-                    <property name="visible">True</property>
-                    <property name="activity_mode">True</property>
-                    <property name="ellipsize">middle</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-          </packing>
-        </child>
       </object>
       <packing>
         <property name="expand">False</property>
@@ -201,6 +172,49 @@
       </object>
       <packing>
         <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkHBox" id="hbox2">
+        <property name="spacing">3</property>
+        <child>
+          <object class="GtkLabel" id="status_label">
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkProgressBar" id="progressbar">
+            <property name="width_request">100</property>
+            <property name="visible">True</property>
+            <property name="activity_mode">True</property>
+            <property name="ellipsize">middle</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStatusbar" id="statusbar">
+            <property name="width_request">15</property>
+            <property name="visible">True</property>
+            <property name="spacing">2</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="position">2</property>
       </packing>
     </child>
   </object>

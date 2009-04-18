@@ -335,11 +335,10 @@ class Window(gtk.Window):
             def worker():
                 # This is all run in a new thread to avoid blocking the UI.
                 
-                p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                self.widgets.get_object('status_label').set_markup('Opening <i>%s</i> ...' % os.path.split(file)[1])
+                self.widgets.get_object('hbox2').show()
                 
-                self.widgets.get_object('toolbutton6').show()
-                self.widgets.get_object('toolbutton7').show()
-                self.widgets.get_object('progressbar').set_text('Opening %s' % os.path.split(file)[1])
+                p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 
                 while p.poll() == None:
                     # Wait until the archive is done extracting before we do
@@ -363,19 +362,15 @@ class Window(gtk.Window):
                     
                     self.reset_scrollbars()
                     
-                    self.set_widget_state()
-                    
-                    # Hide the progressbar and related widgets.
-                    self.widgets.get_object('toolbutton6').hide()
-                    self.widgets.get_object('toolbutton7').hide()
-                    self.set_toolbar_button_sensitivity(True)
-                    
                     self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[0]), self.scale, *self.get_available_space())
                     self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                     
-                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[1]), self.scale, *self.get_available_space())
-                    
                     button.set_sensitive(True)
+                    self.set_widget_state()
+                    self.set_toolbar_button_sensitivity(True)
+                    self.widgets.get_object('hbox2').hide()
+                    
+                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[1]), self.scale, *self.get_available_space())
             
             self.worker = threading.Thread(target=worker)
             
