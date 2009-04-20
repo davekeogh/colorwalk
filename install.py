@@ -16,8 +16,10 @@ FILES = {
 if __name__ == '__main__':
     parser = optparse.OptionParser()
     parser.add_option('--prefix', dest='prefix', help='define an alternate location to install to')
-
-    if parser.parse_args()[0].prefix:
+    
+    options = parser.parse_args()[0]
+    
+    if options.prefix:
         PREFIX = options.prefix
 
     print 'Installing %s %s :\n' % (APPLICATION, VERSION)
