@@ -318,21 +318,25 @@ class Window(gtk.Window):
                 
                 if self.open_file:
                     self.close_file()
-                
-                if ext == '.zip' or ext == '.cbz':
-                    self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
-                    command = 'unzip -j \"%s\" -d \"%s\"' % (file, self.temp_dir)
-                
-                elif ext == '.rar' or ext == '.cbr':
-                    self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
-                    command = 'unrar e \"%s\" \"%s\"' % (file, self.temp_dir)
-                
-                else:
-                    command = None
             
             except AttributeError:
                 pass
-            
+        
+        if file:
+            if ext == '.zip' or ext == '.cbz':
+                self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
+                command = 'unzip -j \"%s\" -d \"%s\"' % (file, self.temp_dir)
+                
+            elif ext == '.rar' or ext == '.cbr':
+                self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
+                command = 'unrar e \"%s\" \"%s\"' % (file, self.temp_dir)
+                
+            else:
+                command = None
+        
+        else:
+            command = None
+        
         if command:
             def worker():
                 # This is all run in a new thread to avoid blocking the UI.
