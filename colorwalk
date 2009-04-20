@@ -314,7 +314,6 @@ class Window(gtk.Window):
         
             try:
                 self.browse_dir = os.path.split(file)[0]
-                ext = os.path.splitext(file)[1]
                 
                 if self.open_file:
                     self.close_file()
@@ -323,6 +322,8 @@ class Window(gtk.Window):
                 pass
         
         if file:
+            ext = os.path.splitext(file)[1]
+            
             if ext == '.zip' or ext == '.cbz':
                 self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
                 command = 'unzip -j \"%s\" -d \"%s\"' % (file, self.temp_dir)
