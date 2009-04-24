@@ -277,6 +277,9 @@ class Window(gtk.Window):
         self.widgets.get_object('hbox2').show()
         
         def statusbar_hide():
+            '''Hides the statusbar and then returns False to remove the glib
+            timeout.'''
+            
             self.widgets.get_object('hbox2').hide()
             return False
         
