@@ -11,9 +11,10 @@ FIT_BY_WIDTH = 456
 
 
 def find_ui_definition():
-    '''Tries to find the XML GtkBuilder file in all the usual places. The last
-    place checked is the current working directory. If the file can't be found
-    this function returns None.'''
+    '''Tries to find the XML GtkBuilder file in all the usual places. The first
+    place to be checked is the current working directory. If it's found we
+    assume that we're debugging. If the file can't be found this function
+    returns None.'''
     
     paths = os.environ['XDG_DATA_DIRS'].split(':')
     return_value = None
@@ -119,6 +120,7 @@ class Window(gtk.Window):
     
     widgets = None
     worker = None
+    lock = None
     preferences = Preferences()
     
     current_pixbuf = None
@@ -187,69 +189,13 @@ class Window(gtk.Window):
         if file:
             self.open(self.widgets.get_object('open_button'), file=file)
     
-    def set_toolbar_button_sensitivity(self, bool):
-        self.widgets.get_object('back_button').set_sensitive(bool)
-        self.widgets.get_object('forward_button').set_sensitive(bool)
-        self.widgets.get_object('normal_button').set_sensitive(bool)
-        self.widgets.get_object('fit_button').set_sensitive(bool)
-        self.widgets.get_object('entry').set_sensitive(bool)
-        self.widgets.get_object('label').set_sensitive(bool)
-    
-    def set_widget_state(self):
-        self.set_title('%s - %s' % (os.path.split(self.open_file)[1], self.images[self.index]))
-        self.widgets.get_object('entry').set_text(str(self.index + 1))
-        self.widgets.get_object('label').set_text('of %d' % len(self.images))
+    def close_file(self):
+        self.index = 0
+        self.images = []
+        self.open_file = None
         
-        self.unfocus()
-        
-        if self.index == 0:
-            self.widgets.get_object('back_button').set_sensitive(False)
-        else:
-            self.widgets.get_object('back_button').set_sensitive(True)
-        
-        if self.index == len(self.images) - 1:
-            self.widgets.get_object('forward_button').set_sensitive(False)
-        else:
-            self.widgets.get_object('forward_button').set_sensitive(True)
-    
-    def get_available_space(self):
-        # TODO: Find a way to get the scrollbar's actual width.
-        scrollbar = 20
-        
-        height = self.height - self.widgets.get_object('toolbar').size_request()[0]
-        width = self.width - scrollbar
-        
-        return (width, height)
-    
-    def reset_scrollbars(self):
-        viewport = self.widgets.get_object('scrolledwindow')
-        hadj = viewport.get_hadjustment()
-        vadj = viewport.get_vadjustment()
-        vadj.set_value(vadj.lower)
-        hadj.set_value(hadj.lower)
-        viewport.set_hadjustment(hadj)
-        viewport.set_vadjustment(vadj)
-    
-    def toggle_fullscreen(self, button):
-        if button.get_active():
-            self.fullscreen()
-        else:
-            self.unfullscreen()
-    
-    def unfocus(self):
-        '''Focus the forward button so that spacebar presses don't activate any
-        other widget.'''
-        
-        self.widgets.get_object('forward_button').grab_focus()
-    
-    def entry_contents_changed(self, entry, text, text_length, pointer):
-        '''Prevent any non numerical characters from being entered into the
-        entry.'''
-        
-        try:
-            int(text)
-        except ValueError:
-            entry.stop_emission('insert-text')
+        if self.temp_dir:
+            shutil.rmtree(self.temp_dir)
     
     def entry_activated(self, entry):
         def fail():
@@ -288,12 +234,94 @@ class Window(gtk.Window):
             # Non-numerical value.
             fail()
     
-    def toggle_scale(self, button):
-        if button.get_active():
-            if button is self.widgets.get_object('normal_button'):
-                self.scale = DEFAULT_SIZE
-            else:
-                self.scale = FIT_BY_WIDTH
+    def entry_contents_changed(self, entry, text, text_length, pointer):
+        '''Prevent any non numerical characters from being entered into the
+        entry.'''
+        
+        try:
+            int(text)
+        except ValueError:
+            entry.stop_emission('insert-text')
+    
+    def fail(self, message):
+        self.widgets.get_object('progressbar').hide()
+        self.widgets.get_object('status_label').set_markup(message)
+        self.widgets.get_object('hbox2').show()
+        
+        def statusbar_hide():
+            self.widgets.get_object('hbox2').hide()
+            return False
+        
+        glib.timeout_add_seconds(10, statusbar_hide)
+    
+    def get_available_space(self):
+        # TODO: Find a way to get the scrollbar's actual width.
+        scrollbar = 20
+        
+        height = self.height - self.widgets.get_object('toolbar').size_request()[0]
+        width = self.width - scrollbar
+        
+        return (width, height)
+    
+    def go_back(self, button):
+        if self.index >= 0:
+            if self.prev_pixbuf:
+                self.index -= 1
+                
+                self.next_pixbuf = self.current_pixbuf
+                self.current_pixbuf = self.prev_pixbuf
+                self.prev_pixbuf = None
+                
+                self.reset_scrollbars()
+                self.set_widget_state()
+                
+                self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                
+                def worker():
+                    self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
+                
+                self.worker = threading.Thread(target=worker)
+                self.worker.start()
+    
+    def go_forward(self, button):
+        if self.index < len(self.images):
+            if self.next_pixbuf:
+                self.index += 1
+                
+                self.prev_pixbuf = self.current_pixbuf
+                self.current_pixbuf = self.next_pixbuf
+                self.next_pixbuf = None
+                
+                self.reset_scrollbars()
+                self.set_widget_state()
+                
+                self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                
+                if self.index != len(self.images) - 1:
+                    def worker():
+                        self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
+                    
+                    self.worker = threading.Thread(target=worker)
+                    self.worker.start()
+    
+    def go_to_index(self, index):
+        '''This is only used internally with safe values for index, so we don't
+        need to check the value of index here.'''
+        
+        self.index = index
+        
+        def worker():
+            self.reset_scrollbars()
+            self.set_widget_state()
+            
+            self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
+            self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+            
+            self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
+            self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
+        
+        self.worker = threading.Thread(target=worker)
+        self.worker.start()
     
     def key_pressed(self, widget, event):
         if event.keyval == 65480: # F11
@@ -305,46 +333,6 @@ class Window(gtk.Window):
             
             elif event.keyval == 65367: # End
                 self.go_to_index(widget, len(self.images) - 1)
-    
-    def window_resized(self, window, allocation):
-        if (self.width != allocation.width or self.height != allocation.height):
-            self.width = allocation.width
-            self.height = allocation.height
-            
-            if self.open_file:
-                def worker():
-                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
-                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-                    
-                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
-                    self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
-                    
-                self.worker = threading.Thread(target=worker)
-                self.worker.start()
-    
-    def quit(self, window, event):
-        if self.temp_dir:
-            shutil.rmtree(self.temp_dir)
-        
-        if self.widgets.get_object('fullscreen_button').get_active():
-            self.preferences.set('Window', 'fullscreen', str(True))
-        else:
-            self.preferences.set('Window', 'fullscreen', str(False))
-        self.preferences.set('Window', 'width', str(self.width))
-        self.preferences.set('Window', 'height', str(self.height))
-        self.preferences.set('Image', 'scale', str(self.scale))
-        self.preferences.save()
-        
-        gtk.main_quit()
-        sys.exit(0)
-    
-    def close_file(self):
-        self.index = 0
-        self.images = []
-        self.open_file = None
-        
-        if self.temp_dir:
-            shutil.rmtree(self.temp_dir)
     
     def open(self, button, file=None):
         button.set_sensitive(False)
@@ -437,76 +425,90 @@ class Window(gtk.Window):
         else:
             button.set_sensitive(True)
     
-    def fail(self, message):
-        self.widgets.get_object('progressbar').hide()
-        self.widgets.get_object('status_label').set_markup(message)
-        self.widgets.get_object('hbox2').show()
+    def quit(self, window, event):
+        if self.temp_dir:
+            shutil.rmtree(self.temp_dir)
         
-        def statusbar_hide():
-            self.widgets.get_object('hbox2').hide()
-            return False
+        if self.widgets.get_object('fullscreen_button').get_active():
+            self.preferences.set('Window', 'fullscreen', str(True))
+        else:
+            self.preferences.set('Window', 'fullscreen', str(False))
+        self.preferences.set('Window', 'width', str(self.width))
+        self.preferences.set('Window', 'height', str(self.height))
+        self.preferences.set('Image', 'scale', str(self.scale))
+        self.preferences.save()
         
-        glib.timeout_add_seconds(10, statusbar_hide)
+        gtk.main_quit()
+        sys.exit(0)
     
-    def go_forward(self, button):
-        if self.index < len(self.images):
-            if self.next_pixbuf:
-                self.index += 1
-                
-                self.prev_pixbuf = self.current_pixbuf
-                self.current_pixbuf = self.next_pixbuf
-                self.next_pixbuf = None
-                
-                self.reset_scrollbars()
-                self.set_widget_state()
-                
-                self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-                
-                if self.index != len(self.images) - 1:
-                    def worker():
-                        self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
-                    
-                    self.worker = threading.Thread(target=worker)
-                    self.worker.start()
+    def reset_scrollbars(self):
+        viewport = self.widgets.get_object('scrolledwindow')
+        hadj = viewport.get_hadjustment()
+        vadj = viewport.get_vadjustment()
+        vadj.set_value(vadj.lower)
+        hadj.set_value(hadj.lower)
+        viewport.set_hadjustment(hadj)
+        viewport.set_vadjustment(vadj)
     
-    def go_back(self, button):
-        if self.index >= 0:
-            if self.prev_pixbuf:
-                self.index -= 1
-                
-                self.next_pixbuf = self.current_pixbuf
-                self.current_pixbuf = self.prev_pixbuf
-                self.prev_pixbuf = None
-                
-                self.reset_scrollbars()
-                self.set_widget_state()
-                
-                self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-                
+    def set_toolbar_button_sensitivity(self, bool):
+        self.widgets.get_object('back_button').set_sensitive(bool)
+        self.widgets.get_object('forward_button').set_sensitive(bool)
+        self.widgets.get_object('normal_button').set_sensitive(bool)
+        self.widgets.get_object('fit_button').set_sensitive(bool)
+        self.widgets.get_object('entry').set_sensitive(bool)
+        self.widgets.get_object('label').set_sensitive(bool)
+    
+    def set_widget_state(self):
+        self.set_title('%s - %s' % (os.path.split(self.open_file)[1], self.images[self.index]))
+        self.widgets.get_object('entry').set_text(str(self.index + 1))
+        self.widgets.get_object('label').set_text('of %d' % len(self.images))
+        
+        self.unfocus()
+        
+        if self.index == 0:
+            self.widgets.get_object('back_button').set_sensitive(False)
+        else:
+            self.widgets.get_object('back_button').set_sensitive(True)
+        
+        if self.index == len(self.images) - 1:
+            self.widgets.get_object('forward_button').set_sensitive(False)
+        else:
+            self.widgets.get_object('forward_button').set_sensitive(True)
+    
+    def toggle_fullscreen(self, button):
+        if button.get_active():
+            self.fullscreen()
+        else:
+            self.unfullscreen()
+    
+    def toggle_scale(self, button):
+        if button.get_active():
+            if button is self.widgets.get_object('normal_button'):
+                self.scale = DEFAULT_SIZE
+            else:
+                self.scale = FIT_BY_WIDTH
+    
+    def unfocus(self):
+        '''Focus the forward button so that spacebar presses don't activate any
+        other widget.'''
+        
+        self.widgets.get_object('forward_button').grab_focus()
+    
+    def window_resized(self, window, allocation):
+        if (self.width != allocation.width or self.height != allocation.height):
+            self.width = allocation.width
+            self.height = allocation.height
+            
+            if self.open_file:
                 def worker():
+                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
+                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                    
+                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
                     self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
-                
+                    
                 self.worker = threading.Thread(target=worker)
                 self.worker.start()
-    
-    def go_to_index(self, index):
-        '''This is only used internally with safe values for index, so we don't
-        need to check the value of index here.'''
-        
-        self.index = index
-        
-        def worker():
-            self.reset_scrollbars()
-            self.set_widget_state()
-            
-            self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
-            self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-            
-            self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
-            self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
-        
-        self.worker = threading.Thread(target=worker)
-        self.worker.start()
     
 
 if __name__ == '__main__':
