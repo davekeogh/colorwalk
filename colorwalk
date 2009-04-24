@@ -141,8 +141,13 @@ class Window(gtk.Window):
     height = 800
     
     def __init__(self, ui, file=None):
+        '''The Colorwalk main window. Arguments: ui is the file path of a XML 
+        user interface file, and the optional argument, file, is the path to a
+        file to open.'''
+        
         gtk.Window.__init__(self)
         
+        # Load the widgets from the XML file:
         self.widgets = gtk.Builder()
         self.widgets.add_from_file(ui)
         
@@ -163,6 +168,7 @@ class Window(gtk.Window):
         self.widgets.get_object('entry').connect('insert-text', self.entry_contents_changed)
         self.widgets.get_object('entry').connect('activate', self.entry_activated)
         
+        # Setup the accelerators:
         accel_group = gtk.AccelGroup()
         self.add_accel_group(accel_group)
         
@@ -177,22 +183,29 @@ class Window(gtk.Window):
         # Resize window according to preferences:
         self.resize(self.preferences.getint('Window', 'width'),
                     self.preferences.getint('Window', 'height'))
+        self.scale = self.preferences.getint('Image', 'scale')
         
         if self.preferences.getboolean('Window', 'fullscreen'):
             self.widgets.get_object('fullscreen_button').set_active(True)
         
-        self.scale = self.preferences.getint('Image', 'scale')
-        
+        # Display the widgets:
         self.set_icon_name('image')
         self.set_title('Color Walk')
         self.add(self.widgets.get_object('vbox'))
         self.set_toolbar_button_sensitivity(False)
         self.show()
         
+        # Open a file passed on the command line:
         if file:
             self.open(self.widgets.get_object('open_button'), file=file)
     
     def close_file(self):
+        '''Reset all relevant variables and delete the temporary directory.'''
+        
+        self.current_pixbuf = None
+        self.next_pixbuf = None
+        self.prev_pixbuf = None
+        
         self.index = 0
         self.images = []
         self.open_file = None
@@ -201,7 +214,13 @@ class Window(gtk.Window):
             shutil.rmtree(self.temp_dir)
     
     def entry_activated(self, entry):
+        '''A callback connected to the entry's activate signal. First the text
+        is verified and then, if it's numerical, the correct page is opened.'''
+        
         def fail():
+            '''This is run when what's entered is invalid. It resets the entry
+            widget and removes the focus from the entry.'''
+            
             entry.set_text(str(self.index + 1))
             self.unfocus()
         
@@ -212,6 +231,9 @@ class Window(gtk.Window):
                 self.index = index
                 
                 def worker():
+                    '''Runs in the background to avoid blocking the UI. Opens
+                    the required images.'''
+                    
                     self.reset_scrollbars()
                     self.set_widget_state()
                     
@@ -247,6 +269,9 @@ class Window(gtk.Window):
             entry.stop_emission('insert-text')
     
     def fail(self, message):
+        '''If a file cannot be opened this method is run to display an error
+        message to the user.'''
+        
         self.widgets.get_object('progressbar').hide()
         self.widgets.get_object('status_label').set_markup(message)
         self.widgets.get_object('hbox2').show()
@@ -258,6 +283,8 @@ class Window(gtk.Window):
         glib.timeout_add_seconds(10, statusbar_hide)
     
     def get_available_space(self):
+        '''Returns the amount of space that the image can occupy in pixels.'''
+        
         # TODO: Find a way to get the scrollbar's actual width.
         scrollbar = 20
         
@@ -267,6 +294,9 @@ class Window(gtk.Window):
         return (width, height)
     
     def go_back(self, button):
+        '''A callback connected to the back button's clicked signal. Displays
+        the previous page.'''
+        
         if self.index >= 0:
             if self.prev_pixbuf:
                 self.index -= 1
@@ -281,12 +311,18 @@ class Window(gtk.Window):
                 self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                 
                 def worker():
+                    '''Runs in the background to avoid blocking the UI. Opens
+                    the required images.'''
+                    
                     self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
                 
                 self.worker = threading.Thread(target=worker)
                 self.worker.start()
     
     def go_forward(self, button):
+        '''A callback connected to the forward button's clicked signal. Displays
+        the next page.'''
+        
         if self.index < len(self.images):
             if self.next_pixbuf:
                 self.index += 1
@@ -302,18 +338,25 @@ class Window(gtk.Window):
                 
                 if self.index != len(self.images) - 1:
                     def worker():
+                        '''Runs in the background to avoid blocking the UI.
+                        Opens the required images.'''
+                        
                         self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
                     
                     self.worker = threading.Thread(target=worker)
                     self.worker.start()
     
     def go_to_index(self, index):
-        '''This is only used internally with safe values for index, so we don't
-        need to check the value of index here.'''
+        '''Displays the page refered to by the value of index. This is only used
+        internally with safe values for index, so we don't need to check the
+        value of index here.'''
         
         self.index = index
         
         def worker():
+            '''Runs in the background to avoid blocking the UI. Opens the
+            required images.'''
+            
             self.reset_scrollbars()
             self.set_widget_state()
             
@@ -327,6 +370,9 @@ class Window(gtk.Window):
         self.worker.start()
     
     def key_pressed(self, widget, event):
+        '''A callback onnected to the window's key-pressed-event. Does something 
+        depending on the key.'''
+        
         if event.keyval == 65480: # F11
             self.widgets.get_object('fullscreen_button').set_active(not self.widgets.get_object('fullscreen_button').get_active())
         
@@ -338,6 +384,11 @@ class Window(gtk.Window):
                 self.go_to_index(widget, len(self.images) - 1)
     
     def open(self, button, file=None):
+        '''A callback connected to the open button's clicked signal. Can also be
+        called with a file as an argument to open files passed as command line
+        arguments. If the file is valid the archive is opened. Otheriwse, the 
+        fail() method is called and an error message is displayed.'''
+        
         button.set_sensitive(False)
         
         if file:
@@ -378,7 +429,8 @@ class Window(gtk.Window):
         
         if command:
             def worker():
-                # This is all run in a new thread to avoid blocking the UI.
+                '''Runs in the background to avoid blocking the UI. Opens the
+                required images.'''
                 
                 self.widgets.get_object('status_label').set_markup('Opening <i>%s</i> ...' % os.path.split(file)[1])
                 self.widgets.get_object('hbox2').show()
@@ -429,6 +481,10 @@ class Window(gtk.Window):
             button.set_sensitive(True)
     
     def quit(self, window, event):
+        '''A callback connected to the window's delete-event signal. It deletes
+        the temporary directory, if it exists, saves the preferences, and
+        destroys the window.'''
+        
         if self.temp_dir:
             shutil.rmtree(self.temp_dir)
         
@@ -445,6 +501,8 @@ class Window(gtk.Window):
         sys.exit(0)
     
     def reset_scrollbars(self):
+        '''This method moves the scrollbars back to their default positions.'''
+        
         viewport = self.widgets.get_object('scrolledwindow')
         hadj = viewport.get_hadjustment()
         vadj = viewport.get_vadjustment()
@@ -454,6 +512,9 @@ class Window(gtk.Window):
         viewport.set_vadjustment(vadj)
     
     def set_toolbar_button_sensitivity(self, bool):
+        '''Calls the toolbar buttons set_sensitive() methods with the value of
+        bool.'''
+        
         self.widgets.get_object('back_button').set_sensitive(bool)
         self.widgets.get_object('forward_button').set_sensitive(bool)
         self.widgets.get_object('normal_button').set_sensitive(bool)
@@ -462,6 +523,9 @@ class Window(gtk.Window):
         self.widgets.get_object('label').set_sensitive(bool)
     
     def set_widget_state(self):
+        '''Updates properites of any widget that may change depending on whether
+        an image is being displayed.'''
+        
         self.set_title('%s - %s' % (os.path.split(self.open_file)[1], self.images[self.index]))
         self.widgets.get_object('entry').set_text(str(self.index + 1))
         self.widgets.get_object('label').set_text('of %d' % len(self.images))
@@ -479,12 +543,20 @@ class Window(gtk.Window):
             self.widgets.get_object('forward_button').set_sensitive(True)
     
     def toggle_fullscreen(self, button):
+        '''A callback connected to the fullscreen button's clicked signal.
+        Changes the fullscreen property of the window depending on thes state of
+        the button.'''
+        
         if button.get_active():
             self.fullscreen()
         else:
             self.unfullscreen()
     
     def toggle_scale(self, button):
+        '''A callback connected to the two scale button's clicked signals. It
+        sets the window's scale property depending on which button is active.
+        The scale property affects the way that images are loaded.'''
+        
         if button.get_active():
             if button is self.widgets.get_object('normal_button'):
                 self.scale = DEFAULT_SIZE
@@ -498,12 +570,19 @@ class Window(gtk.Window):
         self.widgets.get_object('forward_button').grab_focus()
     
     def window_resized(self, window, allocation):
+        '''A callback connected to the window's frame-event signal. It detects
+        whether the window has been resized and if it has, resizes the image
+        displayed to still properly fit the window.'''
+        
         if (self.width != allocation.width or self.height != allocation.height):
             self.width = allocation.width
             self.height = allocation.height
             
             if self.open_file:
                 def worker():
+                    '''Runs in the background to avoid blocking the UI. Opens the
+                    required images.'''
+                    
                     self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
                     self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                     
