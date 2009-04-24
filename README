@@ -40,4 +40,6 @@ Something similar to the following should install Color Walk for you:
 How to report bugs?
 ===================
 
-You can send bug reports or patches to David Keogh <davekeogh@shaw.ca>.
+You can add bug reports, patches, or feature requests to the issue tracker:
+
+    http://github.com/davekeogh/colorwalk/issues
