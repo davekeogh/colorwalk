@@ -583,8 +583,8 @@ class Window(gtk.Window):
             
             if self.open_file:
                 def worker():
-                    '''Runs in the background to avoid blocking the UI. Opens the
-                    required images.'''
+                    '''Runs in the background to avoid blocking the UI. Opens
+                    the required images.'''
                     
                     self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
                     self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
