@@ -600,8 +600,7 @@ if __name__ == '__main__':
     ui = find_ui_definition()
     
     if not ui:
-        print 'A required file, colorwalk.ui, is missing. Unable to continue.'
-        sys.exit(1)
+        sys.exit('A required file, colorwalk.ui, is missing. Unable to continue.')
     
     gtk.gdk.threads_init()
     
