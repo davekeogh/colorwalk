@@ -16,6 +16,38 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.'''
 
 
+def choose_file(path=None):
+    '''Creates a gtk.FileChooser and returns the value when the dialog is 
+    destroyed.'''
+    
+    dialog = gtk.FileChooserDialog(title='Open File', buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+            
+    if path:
+        dialog.set_current_folder(path)
+            
+    filter = gtk.FileFilter()
+    filter.set_name('All supported files')
+    filter.add_pattern('*.cbz')
+    filter.add_pattern('*.cbr')
+    filter.add_pattern('*.zip')
+    filter.add_pattern('*.rar')
+    dialog.add_filter(filter)
+    filter = gtk.FileFilter()
+    filter.set_name('All files')
+    filter.add_pattern('*')
+    dialog.add_filter(filter)
+    
+    if dialog.run() == gtk.RESPONSE_ACCEPT:
+        file = dialog.get_filename()
+    
+    else:
+        file = None
+    
+    dialog.destroy()
+    
+    return file 
+
+
 def find_ui_definition():
     '''Tries to find the XML GtkBuilder file in all the usual places. The first
     place to be checked is the current working directory. If it's found we
@@ -61,38 +93,6 @@ def new_pixbuf(path, mode, width=-1, height=-1):
     gc.collect()
 
 
-def choose_file(path=None):
-    '''Creates a gtk.FileChooser and returns the value when the dialog is 
-    destroyed.'''
-    
-    dialog = gtk.FileChooserDialog(title='Open File', buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-            
-    if path:
-        dialog.set_current_folder(path)
-            
-    filter = gtk.FileFilter()
-    filter.set_name('All supported files')
-    filter.add_pattern('*.cbz')
-    filter.add_pattern('*.cbr')
-    filter.add_pattern('*.zip')
-    filter.add_pattern('*.rar')
-    dialog.add_filter(filter)
-    filter = gtk.FileFilter()
-    filter.set_name('All files')
-    filter.add_pattern('*')
-    dialog.add_filter(filter)
-    
-    if dialog.run() == gtk.RESPONSE_ACCEPT:
-        file = dialog.get_filename()
-    
-    else:
-        file = None
-    
-    dialog.destroy()
-    
-    return file 
-
-
 def open_email(dialog, link, user_data):
     '''Attempts to open the default email program to send an email.'''
     
@@ -103,6 +103,28 @@ def open_url(dialog, link, user_data):
     '''Opens a url in the default web browser.'''
     
     subprocess.call(['xdg-open', link])
+
+
+class AboutDialog(gtk.AboutDialog):
+    
+    def __init__(self):
+        '''A custom about dialog window.'''
+        
+        # This is as good a spot as any to set these hooks.
+        gtk.about_dialog_set_email_hook(open_email, None)
+        gtk.about_dialog_set_url_hook(open_url, None)
+        
+        gtk.AboutDialog.__init__(self)
+        
+        self.set_logo_icon_name('image')
+        self.set_name('Color Walk')
+        self.set_version('0.1.0')
+        self.set_comments('A really simple comic book reading application')
+        self.set_copyright('Copyright (c) 2009 David Keogh')
+        self.set_authors(['David Keogh <davekeogh@shaw.ca>'])
+        self.set_license(LICENSE)
+        self.set_wrap_license(True)
+        self.set_website('http://members.shaw.ca/davekeogh/')
 
 
 class Preferences(ConfigParser.SafeConfigParser):
@@ -134,27 +156,6 @@ class Preferences(ConfigParser.SafeConfigParser):
     def save(self):
         with open(self.config_file, 'w') as f:
             self.write(f)
-
-
-class AboutDialog(gtk.AboutDialog):
-    
-    def __init__(self):
-        '''A custom about dialog window.'''
-        
-        gtk.about_dialog_set_email_hook(open_email, None)
-        gtk.about_dialog_set_url_hook(open_url, None)
-        
-        gtk.AboutDialog.__init__(self)
-        
-        self.set_logo_icon_name('image')
-        self.set_name('Color Walk')
-        self.set_version('0.1.0')
-        self.set_comments('A really simple comic book reading application')
-        self.set_copyright('Copyright (c) 2009 David Keogh')
-        self.set_authors(['David Keogh <davekeogh@shaw.ca>'])
-        self.set_license(LICENSE)
-        self.set_wrap_license(True)
-        self.set_website('http://members.shaw.ca/davekeogh/')
 
 
 class Window(gtk.Window):
