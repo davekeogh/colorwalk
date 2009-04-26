@@ -9,6 +9,12 @@ IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.gif', '.png', '.bmp']
 DEFAULT_SIZE = 123
 FIT_BY_WIDTH = 456
 
+LICENSE = '''This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.'''
+
 
 def find_ui_definition():
     '''Tries to find the XML GtkBuilder file in all the usual places. The first
@@ -87,6 +93,18 @@ def choose_file(path=None):
     return file 
 
 
+def open_email(dialog, link, user_data):
+    '''Attempts to open the default email program to send an email.'''
+    
+    subprocess.call(['xdg-open', 'mailto:%s' % link])
+
+
+def open_url(dialog, link, user_data):
+    '''Opens a url in the default web browser.'''
+    
+    subprocess.call(['xdg-open', link])
+
+
 class Preferences(ConfigParser.SafeConfigParser):
     
     config_file = os.path.expanduser('~/.config/colorwalk/config')
@@ -105,7 +123,6 @@ class Preferences(ConfigParser.SafeConfigParser):
         
         else:
             # Set some reasonable default values
-            
             self.add_section('Window')
             self.set('Window', 'width', str(800))
             self.set('Window', 'height', str(800))
@@ -117,6 +134,26 @@ class Preferences(ConfigParser.SafeConfigParser):
     def save(self):
         with open(self.config_file, 'w') as f:
             self.write(f)
+
+
+class AboutDialog(gtk.AboutDialog):
+    
+    def __init__(self):
+        '''A custom about dialog window.'''
+        
+        gtk.about_dialog_set_email_hook(open_email, None)
+        gtk.about_dialog_set_url_hook(open_url, None)
+        
+        gtk.AboutDialog.__init__(self)
+        
+        self.set_logo_icon_name('image')
+        self.set_name('Color Walk')
+        self.set_version('0.1.0')
+        self.set_copyright('Copyright (c) 2009 David Keogh')
+        self.set_authors(['David Keogh <davekeogh@shaw.ca>'])
+        self.set_license(LICENSE)
+        self.set_wrap_license(True)
+        self.set_website('http://members.shaw.ca/davekeogh/')
 
 
 class Window(gtk.Window):
@@ -163,6 +200,7 @@ class Window(gtk.Window):
         self.widgets.get_object('back_button').connect('clicked', self.go_back)
         self.widgets.get_object('normal_button').connect('toggled', self.toggle_scale)
         self.widgets.get_object('fit_button').connect('toggled', self.toggle_scale)
+        self.widgets.get_object('about_button').connect('clicked', self.about)
         
         # Entry events:
         self.widgets.get_object('entry').connect('insert-text', self.entry_contents_changed)
@@ -198,6 +236,13 @@ class Window(gtk.Window):
         # Open a file passed on the command line:
         if file:
             self.open(self.widgets.get_object('open_button'), file=file)
+    
+    def about(self, button):
+        '''Shows the about dialog.'''
+        
+        dialog = AboutDialog()
+        if dialog.run():
+            dialog.destroy()
     
     def close_file(self):
         '''Reset all relevant variables and delete the temporary directory.'''
