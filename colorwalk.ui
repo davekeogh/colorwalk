@@ -53,6 +53,7 @@
         <child>
           <object class="GtkToggleToolButton" id="fullscreen_button">
             <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Toggle fullscreen viewing</property>
             <property name="is_important">True</property>
             <property name="label" translatable="yes">Fullscreen</property>
             <property name="use_underline">True</property>
@@ -157,6 +158,7 @@
         <child>
           <object class="GtkToolButton" id="about_button">
             <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">About Color Walk</property>
             <property name="label" translatable="yes">About</property>
             <property name="use_underline">True</property>
             <property name="stock_id">gtk-about</property>
