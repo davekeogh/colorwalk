@@ -149,6 +149,7 @@ class AboutDialog(gtk.AboutDialog):
         self.set_logo_icon_name('image')
         self.set_name('Color Walk')
         self.set_version('0.1.0')
+        self.set_comments('A really simple comic book reading application')
         self.set_copyright('Copyright (c) 2009 David Keogh')
         self.set_authors(['David Keogh <davekeogh@shaw.ca>'])
         self.set_license(LICENSE)
