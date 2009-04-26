@@ -145,6 +145,27 @@
             <property name="expand">False</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkSeparatorToolItem" id="toolbutton2">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton" id="about_button">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">About</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-about</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="expand">False</property>
