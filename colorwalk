@@ -114,6 +114,10 @@ class AboutDialog(gtk.AboutDialog):
         gtk.about_dialog_set_email_hook(open_email, None)
         gtk.about_dialog_set_url_hook(open_url, None)
         
+        # we don't use gtk.LinkButton, but gtk.AboutDialog does;
+        # in gtk 2.16.0 without this, the about uri opens doubly:
+        gtk.link_button_set_uri_hook(lambda *args:None)
+
         gtk.AboutDialog.__init__(self)
         
         self.set_logo_icon_name('image')
