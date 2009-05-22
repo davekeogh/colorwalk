@@ -114,8 +114,8 @@ class AboutDialog(gtk.AboutDialog):
         gtk.about_dialog_set_email_hook(open_email, None)
         gtk.about_dialog_set_url_hook(open_url, None)
         
-        # we don't use gtk.LinkButton, but gtk.AboutDialog does;
-        # in gtk 2.16.0 without this, the about uri opens doubly:
+        # We don't use gtk.LinkButton, but gtk.AboutDialog does. In gtk 2.16.0
+        # without this, the about uri opens twice:
         gtk.link_button_set_uri_hook(lambda *args:None)
 
         gtk.AboutDialog.__init__(self)
@@ -223,6 +223,8 @@ class Window(gtk.Window):
         # Key values = spacebar, page down:
         self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 32, 0, (gtk.ACCEL_LOCKED))
         self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 65366, 0, (gtk.ACCEL_LOCKED))
+        
+        # See the key_pressed method for more 'pseudo accelerators'
         
         # Resize window according to preferences:
         self.resize(self.preferences.getint('Window', 'width'),
@@ -427,6 +429,9 @@ class Window(gtk.Window):
         '''A callback onnected to the window's key-pressed-event. Does something 
         depending on the key.'''
         
+        if event.keyval in (65307, 113): # Esc, q
+            self.quit(self, event=None)
+        
         if event.keyval == 65480: # F11
             self.widgets.get_object('fullscreen_button').set_active(not self.widgets.get_object('fullscreen_button').get_active())
         
@@ -534,7 +539,7 @@ class Window(gtk.Window):
         else:
             button.set_sensitive(True)
     
-    def quit(self, window, event):
+    def quit(self, window, event=None):
         '''A callback connected to the window's delete-event signal. It deletes
         the temporary directory, if it exists, saves the preferences, and
         destroys the window.'''
@@ -546,6 +551,7 @@ class Window(gtk.Window):
             self.preferences.set('Window', 'fullscreen', str(True))
         else:
             self.preferences.set('Window', 'fullscreen', str(False))
+        
         self.preferences.set('Window', 'width', str(self.width))
         self.preferences.set('Window', 'height', str(self.height))
         self.preferences.set('Image', 'scale', str(self.scale))
