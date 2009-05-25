@@ -156,6 +156,19 @@
           </packing>
         </child>
         <child>
+          <object class="GtkToolButton" id="help_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Help</property>
+            <property name="label" translatable="yes">Help</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-help</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkToolButton" id="about_button">
             <property name="visible">True</property>
             <property name="tooltip_text" translatable="yes">About Color Walk</property>
