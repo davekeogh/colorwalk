@@ -224,6 +224,7 @@ class Window(gtk.Window):
         self.widgets.get_object('normal_button').connect('toggled', self.toggle_scale)
         self.widgets.get_object('fit_button').connect('toggled', self.toggle_scale)
         self.widgets.get_object('about_button').connect('clicked', self.about)
+        self.widgets.get_object('help_button').connect('clicked', self.help)
         
         # Entry events:
         self.widgets.get_object('entry').connect('insert-text', self.entry_contents_changed)
@@ -441,6 +442,18 @@ class Window(gtk.Window):
         
         self.worker = threading.Thread(target=worker)
         self.worker.start()
+    
+    def help(self, widget):
+        '''Displays a dialog listing all the keyboard shortcuts.'''
+        
+        dialog = gtk.Dialog('Color Walk Help', self,
+                            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT  | gtk.DIALOG_NO_SEPARATOR,
+                            (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+        dialog.get_content_area().add((self.widgets.get_object('dialog-vbox')))
+        dialog.resize(350, 200)
+        
+        if dialog.run():
+            dialog.destroy()
     
     def key_pressed(self, widget, event):
         '''A callback connected to the window's key-pressed-event. Does 
