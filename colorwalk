@@ -452,9 +452,10 @@ class Window(gtk.Window):
         '''Displays a dialog listing all the keyboard shortcuts.'''
         
         dialog = gtk.Dialog('Color Walk Help', self,
-                            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT  | gtk.DIALOG_NO_SEPARATOR,
+                            gtk.DIALOG_MODAL | gtk.DIALOG_NO_SEPARATOR,
                             (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
         dialog.get_content_area().add((self.widgets.get_object('dialog-vbox')))
+        dialog.set_icon_name('help')
         dialog.resize(350, 200)
         
         if dialog.run():
