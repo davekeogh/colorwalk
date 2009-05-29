@@ -655,11 +655,27 @@ class Window(gtk.Window):
         sets the window's scale property depending on which button is active.
         The scale property affects the way that images are loaded.'''
         
+        old_scale = self.scale
+        
         if button.get_active():
             if button is self.widgets.get_object('normal_button'):
                 self.scale = DEFAULT_SIZE
             else:
                 self.scale = FIT_BY_WIDTH
+            
+            if self.scale != old_scale:
+                def worker():
+                    '''Runs in the background to avoid blocking the UI. Opens
+                    the required images.'''
+                    
+                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
+                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                    
+                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
+                    self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
+                    
+                self.worker = threading.Thread(target=worker)
+                self.worker.start()
     
     def unfocus(self):
         '''Focus the forward button so that spacebar presses don't activate any
