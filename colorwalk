@@ -259,7 +259,7 @@ class Window(gtk.Window):
         if self.preferences.getboolean('Window', 'fullscreen'):
             self.widgets.get_object('fullscreen_button').set_active(True)
         
-        # Work around a bug in glade-3
+        # Work around a bug in glade-3:
         self.widgets.get_object('image').clear()
         
         # Display the widgets:
