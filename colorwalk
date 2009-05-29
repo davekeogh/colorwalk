@@ -545,6 +545,9 @@ class Window(gtk.Window):
             command = None
         
         if command:
+            # It's less confusing if we get rid of any old image first:
+            self.widgets.get_object('image').clear()
+            
             def worker():
                 '''Runs in the background to avoid blocking the UI. Opens the
                 required images.'''
