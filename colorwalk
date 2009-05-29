@@ -459,6 +459,7 @@ class Window(gtk.Window):
         dialog.resize(350, 200)
         
         if dialog.run():
+            dialog.get_content_area().remove(self.widgets.get_object('dialog-vbox'))
             dialog.destroy()
     
     def key_pressed(self, widget, event):
