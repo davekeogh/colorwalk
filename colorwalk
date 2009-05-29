@@ -234,13 +234,18 @@ class Window(gtk.Window):
         accel_group = gtk.AccelGroup()
         self.add_accel_group(accel_group)
         
-        # Key values = backspace, page up:
+        # Key values = 'o', 'O':
+        self.widgets.get_object('open_button').add_accelerator('clicked', accel_group, 111, gtk.gdk.CONTROL_MASK, (gtk.ACCEL_LOCKED))
+        
+        # Key values = backspace, page up, back arrow:
         self.widgets.get_object('back_button').add_accelerator('clicked', accel_group, 65288, 0, (gtk.ACCEL_LOCKED))
         self.widgets.get_object('back_button').add_accelerator('clicked', accel_group, 65365, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('back_button').add_accelerator('clicked', accel_group, 65361, 0, (gtk.ACCEL_LOCKED))
         
-        # Key values = spacebar, page down:
+        # Key values = spacebar, page down, forward arrow:
         self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 32, 0, (gtk.ACCEL_LOCKED))
         self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 65366, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 65363, 0, (gtk.ACCEL_LOCKED))
         
         # See the key_pressed method for more 'pseudo accelerators'
         
@@ -464,6 +469,9 @@ class Window(gtk.Window):
         
         if event.keyval == 65480: # F11
             self.widgets.get_object('fullscreen_button').set_active(not self.widgets.get_object('fullscreen_button').get_active())
+        
+        if event.keyval == 65470: # F1
+            self.help(widget)
         
         if self.open_file:
             if event.keyval == 65360: # Home
