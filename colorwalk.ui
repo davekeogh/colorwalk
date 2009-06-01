@@ -565,7 +565,7 @@
   <object class="GtkMenu" id="context-menu">
     <property name="visible">True</property>
     <child>
-      <object class="GtkImageMenuItem" id="menuitem1">
+      <object class="GtkImageMenuItem" id="context-menu-open">
         <property name="label">gtk-open</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
@@ -573,7 +573,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="menuitem2">
+      <object class="GtkImageMenuItem" id="context-menu-close">
         <property name="label">gtk-close</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
@@ -586,7 +586,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="menuitem4">
+      <object class="GtkImageMenuItem" id="context-menu-back">
         <property name="label">gtk-go-back</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
@@ -594,7 +594,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="menuitem5">
+      <object class="GtkImageMenuItem" id="context-menu-forward">
         <property name="label">gtk-go-forward</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
@@ -607,7 +607,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="menuitem7">
+      <object class="GtkImageMenuItem" id="context-menu-edit">
         <property name="label">gtk-edit</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
@@ -615,7 +615,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="menuitem8">
+      <object class="GtkImageMenuItem" id="context-menu-save">
         <property name="label">gtk-save-as</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
@@ -628,7 +628,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="menuitem10">
+      <object class="GtkImageMenuItem" id="context-menu-quit">
         <property name="label">gtk-quit</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
