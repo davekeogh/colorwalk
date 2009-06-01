@@ -270,7 +270,7 @@ class Window(gtk.Window):
         self.set_icon_name('image')
         self.set_title('Color Walk')
         self.add(self.widgets.get_object('vbox'))
-        self.set_toolbar_button_sensitivity(False)
+        self.set_widget_sensitivity(False)
         self.show()
         
         # Open a file passed on the command line:
@@ -293,7 +293,7 @@ class Window(gtk.Window):
             self.set_title('Color Walk')
             self.widgets.get_object('entry').set_text('')
             self.widgets.get_object('label').set_text('')
-            self.set_toolbar_button_sensitivity(False)
+            self.set_widget_sensitivity(False)
             self.widgets.get_object('image').clear()
     
     def close_file(self):
@@ -615,7 +615,7 @@ class Window(gtk.Window):
                     
                     button.set_sensitive(True)
                     self.set_widget_state()
-                    self.set_toolbar_button_sensitivity(True)
+                    self.set_widget_sensitivity(True)
                     self.widgets.get_object('hbox2').hide()
                     
                     self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[1]), self.scale, *self.get_available_space())
@@ -664,9 +664,9 @@ class Window(gtk.Window):
         viewport.set_hadjustment(hadj)
         viewport.set_vadjustment(vadj)
     
-    def set_toolbar_button_sensitivity(self, bool):
-        '''Calls the toolbar buttons set_sensitive() methods with the value of
-        bool.'''
+    def set_widget_sensitivity(self, bool):
+        '''Calls the toolbar buttons and menu items set_sensitive() methods 
+        with the value of bool.'''
         
         self.widgets.get_object('close_button').set_sensitive(bool)
         self.widgets.get_object('back_button').set_sensitive(bool)
@@ -675,6 +675,13 @@ class Window(gtk.Window):
         self.widgets.get_object('fit_button').set_sensitive(bool)
         self.widgets.get_object('entry').set_sensitive(bool)
         self.widgets.get_object('label').set_sensitive(bool)
+        
+        # Context menu widgets:
+        self.widgets.get_object('context-menu-close').set_sensitive(bool)
+        self.widgets.get_object('context-menu-back').set_sensitive(bool)
+        self.widgets.get_object('context-menu-forward').set_sensitive(bool)
+        self.widgets.get_object('context-menu-edit').set_sensitive(bool)
+        self.widgets.get_object('context-menu-save').set_sensitive(bool)
     
     def set_widget_state(self):
         '''Updates properites of any widget that may change depending on whether
