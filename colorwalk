@@ -231,6 +231,8 @@ class Window(gtk.Window):
         self.widgets.get_object('entry').connect('insert-text', self.entry_contents_changed)
         self.widgets.get_object('entry').connect('activate', self.entry_activated)
         
+        self.widgets.get_object('viewport').connect('button-press-event', self.image_clicked)
+        
         # Setup the accelerators:
         accel_group = gtk.AccelGroup()
         self.add_accel_group(accel_group)
@@ -258,6 +260,8 @@ class Window(gtk.Window):
         
         if self.preferences.getboolean('Window', 'fullscreen'):
             self.widgets.get_object('fullscreen_button').set_active(True)
+        
+        self.widgets.get_object('context-menu').attach_to_widget(self.widgets.get_object('viewport'), lambda *args:None)
         
         # Work around a bug in glade-3:
         self.widgets.get_object('image').clear()
@@ -495,6 +499,13 @@ class Window(gtk.Window):
         if dialog.run():
             dialog.get_content_area().remove(self.widgets.get_object('dialog-vbox'))
             dialog.destroy()
+    
+    def image_clicked(self, viewport, event):
+        '''A callback connected to the viewport's button-pressed-event. Displays
+        a menu whent he right mouse button is pressed.'''
+        
+        if event.button == 3:
+            self.widgets.get_object('context-menu').popup(None, None, None, event.button, event.time, None)
     
     def key_pressed(self, widget, event):
         '''A callback connected to the window's key-pressed-event. Does 
