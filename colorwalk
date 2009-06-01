@@ -183,7 +183,7 @@ class Window(gtk.Window):
     
     widgets = None
     worker = None
-    lock = threading.Lock()
+    lock = None
     preferences = Preferences()
     
     current_pixbuf = None
@@ -328,8 +328,6 @@ class Window(gtk.Window):
                     '''Runs in the background to avoid blocking the UI. Opens
                     the required images.'''
                     
-                    self.lock.acquire()
-                    
                     self.reset_scrollbars()
                     self.set_widget_state()
                     
@@ -345,8 +343,6 @@ class Window(gtk.Window):
                         self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
                     except IndexError:
                         self.prev_pixbuf = None
-                    
-                    self.lock.release()
                 
                 self.worker = threading.Thread(target=worker)
                 self.worker.start()
@@ -415,11 +411,7 @@ class Window(gtk.Window):
                     '''Runs in the background to avoid blocking the UI. Opens
                     the required images.'''
                     
-                    self.lock.acquire()
-                    
                     self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
-                    
-                    self.lock.release()
                 
                 self.worker = threading.Thread(target=worker)
                 self.worker.start()
@@ -446,11 +438,7 @@ class Window(gtk.Window):
                         '''Runs in the background to avoid blocking the UI.
                         Opens the required images.'''
                         
-                        self.lock.acquire()
-                        
                         self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
-                        
-                        self.lock.release()
                     
                     self.worker = threading.Thread(target=worker)
                     self.worker.start()
@@ -466,8 +454,6 @@ class Window(gtk.Window):
             '''Runs in the background to avoid blocking the UI. Opens the
             required images.'''
             
-            self.lock.acquire()
-            
             self.reset_scrollbars()
             self.set_widget_state()
             
@@ -476,8 +462,6 @@ class Window(gtk.Window):
             
             self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
             self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
-            
-            self.lock.release()
         
         self.worker = threading.Thread(target=worker)
         self.worker.start()
@@ -568,8 +552,6 @@ class Window(gtk.Window):
                 '''Runs in the background to avoid blocking the UI. Opens the
                 required images.'''
                 
-                self.lock.acquire()
-                
                 self.widgets.get_object('status_label').set_markup('Opening <i>%s</i> ...' % os.path.split(file)[1])
                 self.widgets.get_object('hbox2').show()
                 
@@ -606,8 +588,6 @@ class Window(gtk.Window):
                     self.widgets.get_object('hbox2').hide()
                     
                     self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[1]), self.scale, *self.get_available_space())
-                
-                self.lock.release()
             
             self.worker = threading.Thread(target=worker)
             
@@ -711,16 +691,12 @@ class Window(gtk.Window):
                     '''Runs in the background to avoid blocking the UI. Opens
                     the required images.'''
                     
-                    self.lock.acquire()
-                    
                     self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
                     self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                     
                     self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
                     self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
                     
-                    self.lock.release()
-                
                 self.worker = threading.Thread(target=worker)
                 self.worker.start()
     
@@ -744,16 +720,12 @@ class Window(gtk.Window):
                     '''Runs in the background to avoid blocking the UI. Opens
                     the required images.'''
                     
-                    self.lock.acquire()
-                    
                     self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
                     self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                     
                     self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
                     self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
                     
-                    self.lock.release()
-                
                 self.worker = threading.Thread(target=worker)
                 self.worker.start()
     
