@@ -688,15 +688,10 @@ class Window(gtk.Window):
         
         if dialog.run() == gtk.RESPONSE_ACCEPT:
             file = dialog.get_filename()
-        
-        else:
-            file = None
-        
-        dialog.destroy()
-        
-        if file:
+            
             shutil.copyfile(os.path.join(self.temp_dir, self.images[self.index]), file)
         
+        dialog.destroy()
     
     def set_widget_sensitivity(self, bool):
         '''Calls the toolbar buttons and menu items set_sensitive() methods 
