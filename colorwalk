@@ -173,6 +173,9 @@ class Preferences(ConfigParser.SafeConfigParser):
             
             self.add_section('Image')
             self.set('Image', 'scale', str(456)) # FIT_BY_WIDTH
+            
+            self.add_section('Preferences')
+            self.set('Preferences', 'editor', '')
     
     def save(self):
         with open(self.config_file, 'w') as f:
@@ -231,6 +234,7 @@ class Window(gtk.Window):
         self.widgets.get_object('viewport').connect('button-press-event', self.image_clicked)
         self.widgets.get_object('context-menu-open').connect('activate', self.open)
         self.widgets.get_object('context-menu-close').connect('activate', self.close)
+        self.widgets.get_object('context-menu-save').connect('activate', self.save_image)
         self.widgets.get_object('context-menu-back').connect('activate', self.go_back)
         self.widgets.get_object('context-menu-forward').connect('activate', self.go_forward)
         self.widgets.get_object('context-menu-quit').connect('activate', self.quit)
@@ -514,6 +518,11 @@ class Window(gtk.Window):
         a menu whent he right mouse button is pressed.'''
         
         if event.button == 3:
+            if not self.preferences.get('Preferences', 'editor'):
+                self.widgets.get_object('context-menu-edit').set_sensitive(False)
+            else:
+                self.widgets.get_object('context-menu-edit').set_sensitive(True)
+            
             self.widgets.get_object('context-menu').popup(None, None, None, event.button, event.time, None)
     
     def key_pressed(self, widget, event):
@@ -667,6 +676,27 @@ class Window(gtk.Window):
         hadj.set_value(hadj.lower)
         viewport.set_hadjustment(hadj)
         viewport.set_vadjustment(vadj)
+    
+    def save_image(self, widget):
+        '''A callback connected to the save context menu item's activate signal.
+        This allows the user to save the currently displayed image somewhere.'''
+        
+        dialog = gtk.FileChooserDialog(title='Save File', action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_SAVE, gtk.RESPONSE_ACCEPT))
+        dialog.set_current_folder(self.browse_dir)
+        dialog.set_current_name(self.images[self.index])
+        dialog.set_do_overwrite_confirmation(True)
+        
+        if dialog.run() == gtk.RESPONSE_ACCEPT:
+            file = dialog.get_filename()
+        
+        else:
+            file = None
+        
+        dialog.destroy()
+        
+        if file:
+            shutil.copyfile(os.path.join(self.temp_dir, self.images[self.index]), file)
+        
     
     def set_widget_sensitivity(self, bool):
         '''Calls the toolbar buttons and menu items set_sensitive() methods 
