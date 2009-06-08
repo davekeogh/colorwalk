@@ -229,6 +229,7 @@ class Window(gtk.Window):
         self.widgets.get_object('fit_button').connect('toggled', self.toggle_scale)
         self.widgets.get_object('about_button').connect('clicked', self.about)
         self.widgets.get_object('help_button').connect('clicked', self.help)
+        self.widgets.get_object('prefs_button').connect('clicked', self.edit_preferences)
         
         # Context menu events:
         self.widgets.get_object('viewport').connect('button-press-event', self.image_clicked)
@@ -321,6 +322,28 @@ class Window(gtk.Window):
         if self.temp_dir:
             shutil.rmtree(self.temp_dir)
             self.temp_dir = None
+    
+    def edit_preferences(self, widget):
+        '''A callback connected to the preferences button's clicked signal.
+        Displays a dialog containing the application's options.'''
+        
+        dialog = gtk.Dialog('Color Walk Preferences', self,
+                            gtk.DIALOG_MODAL | gtk.DIALOG_NO_SEPARATOR, ())
+        dialog.get_content_area().add((self.widgets.get_object('prefs-vbox')))
+        button = dialog.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        button.grab_default()
+        button.grab_focus()
+        dialog.set_icon_name('preferences-desktop')
+        dialog.resize(350, 200)
+        
+        if self.preferences.get('Preferences', 'editor'):
+            self.widgets.get_object('editor_entry').set_text(self.preferences.get('Preferences', 'editor'))
+        
+        if dialog.run():
+            dialog.get_content_area().remove(self.widgets.get_object('prefs-vbox'))
+            dialog.destroy()
+            
+            self.preferences.set('Preferences', 'editor', self.widgets.get_object('editor_entry').get_text())
     
     def entry_activated(self, entry):
         '''A callback connected to the entry's activate signal. First the text
@@ -498,7 +521,8 @@ class Window(gtk.Window):
         self.worker.start()
     
     def help(self, widget):
-        '''Displays a dialog listing all the keyboard shortcuts.'''
+        '''A callback connected to the help button's clicked signal. Displays a
+        dialog listing all the keyboard shortcuts.'''
         
         dialog = gtk.Dialog('Color Walk Help', self,
                             gtk.DIALOG_MODAL | gtk.DIALOG_NO_SEPARATOR, ())

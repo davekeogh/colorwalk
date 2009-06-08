@@ -169,6 +169,19 @@
           </packing>
         </child>
         <child>
+          <object class="GtkToolButton" id="prefs_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Edit Color Walk preferences</property>
+            <property name="label" translatable="yes">Preferences</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-preferences</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkToolButton" id="help_button">
             <property name="visible">True</property>
             <property name="tooltip_text" translatable="yes">Display keyboard shortcuts</property>
@@ -637,6 +650,61 @@
         <property name="use_stock">True</property>
         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
       </object>
+    </child>
+  </object>
+  <object class="GtkVBox" id="prefs-vbox">
+    <property name="visible">True</property>
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkAlignment" id="alignment1">
+        <property name="visible">True</property>
+        <property name="top_padding">6</property>
+        <property name="left_padding">6</property>
+        <property name="right_padding">6</property>
+        <child>
+          <object class="GtkVBox" id="vbox1">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">8</property>
+            <child>
+              <object class="GtkFrame" id="frame1">
+                <property name="visible">True</property>
+                <property name="label_xalign">0</property>
+                <property name="shadow_type">none</property>
+                <child>
+                  <object class="GtkAlignment" id="alignment2">
+                    <property name="visible">True</property>
+                    <property name="top_padding">8</property>
+                    <property name="left_padding">8</property>
+                    <child>
+                      <object class="GtkEntry" id="editor_entry">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="invisible_char">&#x25CF;</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child type="label">
+                  <object class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Image Editor:&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="position">0</property>
+      </packing>
     </child>
   </object>
 </interface>
