@@ -250,6 +250,7 @@ class Window(gtk.Window):
         self.widgets.get_object('viewport').connect('button-press-event', self.image_clicked)
         self.widgets.get_object('context-menu-open').connect('activate', self.open)
         self.widgets.get_object('context-menu-close').connect('activate', self.close)
+        self.widgets.get_object('context-menu-edit').connect('activate', self.edit_image)
         self.widgets.get_object('context-menu-save').connect('activate', self.save_image)
         self.widgets.get_object('context-menu-back').connect('activate', self.go_back)
         self.widgets.get_object('context-menu-forward').connect('activate', self.go_forward)
@@ -337,6 +338,13 @@ class Window(gtk.Window):
         if self.temp_dir:
             shutil.rmtree(self.temp_dir)
             self.temp_dir = None
+    
+    def edit_image(self, widget):
+        '''A callback connected to the edit context menu item's activate signal.
+        It launches a helper application (like the gimp) to edit the image.'''
+        
+        # TODO: This needs to be run in a new process to avoid blocking the UI.
+        subprocess.call([self.preferences.get('Preferences', 'editor'), os.path.join(self.temp_dir, self.images[self.index])])
     
     def edit_preferences(self, widget):
         '''A callback connected to the preferences button's clicked signal.
@@ -575,7 +583,8 @@ class Window(gtk.Window):
             if not self.preferences.get('Preferences', 'editor'):
                 self.widgets.get_object('context-menu-edit').set_sensitive(False)
             else:
-                self.widgets.get_object('context-menu-edit').set_sensitive(True)
+                if self.open_file:
+                    self.widgets.get_object('context-menu-edit').set_sensitive(True)
             
             self.widgets.get_object('context-menu').popup(None, None, None, event.button, event.time, None)
     
