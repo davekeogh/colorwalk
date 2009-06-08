@@ -659,6 +659,7 @@
       <object class="GtkAlignment" id="alignment1">
         <property name="visible">True</property>
         <property name="top_padding">6</property>
+        <property name="bottom_padding">6</property>
         <property name="left_padding">6</property>
         <property name="right_padding">6</property>
         <child>
@@ -677,17 +678,40 @@
                     <property name="top_padding">8</property>
                     <property name="left_padding">8</property>
                     <child>
-                      <object class="GtkEntry" id="editor_entry">
+                      <object class="GtkHBox" id="hbox1">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">&#x25CF;</property>
+                        <property name="spacing">8</property>
+                        <child>
+                          <object class="GtkEntry" id="editor_entry">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_text" translatable="yes">Enter the name of a executable to edit images with</property>
+                            <property name="invisible_char">&#x25CF;</property>
+                          </object>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="editor_image">
+                            <property name="visible">True</property>
+                            <property name="tooltip_text" translatable="yes">Indicates if the executable can be found</property>
+                            <property name="stock">gtk-no</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                     </child>
                   </object>
                 </child>
                 <child type="label">
-                  <object class="GtkLabel" id="label1">
+                  <object class="GtkLabel" id="editor_label">
                     <property name="visible">True</property>
+                    <property name="tooltip_text" translatable="yes">Enter the name of a executable to edit images with</property>
                     <property name="label" translatable="yes">&lt;b&gt;Image Editor:&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
                   </object>

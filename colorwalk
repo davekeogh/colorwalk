@@ -64,6 +64,21 @@ def choose_file(path=None):
     
     return file 
 
+def find_executable(name):
+    '''Tries to find an executable that's being used by as a helper application.
+    If the program is found anywhere in PATH it returns true; otherwise it
+    returns false.'''
+    
+    paths = os.environ['PATH'].split(':')
+    found = False
+    
+    for path in paths:
+        full_path = os.path.join(path, name)
+            
+        if os.path.exists(full_path):
+            found = True
+    
+    return found
 
 def find_ui_definition():
     '''Tries to find the XML GtkBuilder file in all the usual places. The first
@@ -334,10 +349,25 @@ class Window(gtk.Window):
         button.grab_default()
         button.grab_focus()
         dialog.set_icon_name('preferences-desktop')
-        dialog.resize(350, 200)
+        
+        def update_icon():
+            if not self.widgets.get_object('editor_entry').get_text():
+                self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
+            else:
+                if find_executable(self.widgets.get_object('editor_entry').get_text()):
+                    self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_YES, gtk.ICON_SIZE_BUTTON)
+                else:
+                    self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
+        
+        def editor_text_changed(entry):
+            update_icon()
+        
+        self.widgets.get_object('editor_entry').connect('changed', editor_text_changed)
         
         if self.preferences.get('Preferences', 'editor'):
             self.widgets.get_object('editor_entry').set_text(self.preferences.get('Preferences', 'editor'))
+            
+            update_icon()
         
         if dialog.run():
             dialog.get_content_area().remove(self.widgets.get_object('prefs-vbox'))
