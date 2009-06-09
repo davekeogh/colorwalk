@@ -265,19 +265,19 @@ class Window(gtk.Window):
         self.add_accel_group(accel_group)
         
         # Key values = o, w, q:
-        self.widgets.get_object('open_button').add_accelerator('clicked', accel_group, 111, gtk.gdk.CONTROL_MASK, (gtk.ACCEL_LOCKED))
-        self.widgets.get_object('close_button').add_accelerator('clicked', accel_group, 119, gtk.gdk.CONTROL_MASK, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('context-menu-open').add_accelerator('activate', accel_group, 111, gtk.gdk.CONTROL_MASK, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('context-menu-close').add_accelerator('activate', accel_group, 119, gtk.gdk.CONTROL_MASK, (gtk.ACCEL_LOCKED))
         self.widgets.get_object('context-menu-quit').add_accelerator('activate', accel_group, 113, gtk.gdk.CONTROL_MASK, (gtk.ACCEL_LOCKED))
         
         # Key values = backspace, page up, back arrow:
-        self.widgets.get_object('back_button').add_accelerator('clicked', accel_group, 65288, 0, (gtk.ACCEL_LOCKED))
-        self.widgets.get_object('back_button').add_accelerator('clicked', accel_group, 65365, 0, (gtk.ACCEL_LOCKED))
-        self.widgets.get_object('back_button').add_accelerator('clicked', accel_group, 65361, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('context-menu-back').add_accelerator('activate', accel_group, 65288, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('context-menu-back').add_accelerator('activate', accel_group, 65365, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('context-menu-back').add_accelerator('activate', accel_group, 65361, 0, (gtk.ACCEL_LOCKED))
         
         # Key values = spacebar, page down, forward arrow:
-        self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 32, 0, (gtk.ACCEL_LOCKED))
-        self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 65366, 0, (gtk.ACCEL_LOCKED))
-        self.widgets.get_object('forward_button').add_accelerator('clicked', accel_group, 65363, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('context-menu-forward').add_accelerator('activate', accel_group, 32, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('context-menu-forward').add_accelerator('activate', accel_group, 65366, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('context-menu-forward').add_accelerator('activate', accel_group, 65363, 0, (gtk.ACCEL_LOCKED))
         
         # See the key_pressed method for more 'pseudo accelerators'
         
