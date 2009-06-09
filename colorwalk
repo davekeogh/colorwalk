@@ -306,7 +306,8 @@ class Window(gtk.Window):
             self.open(self.widgets.get_object('open_button'), file=file)
     
     def about(self, button):
-        '''Shows the about dialog.'''
+        '''A callback connected to the about button's clicked signal. Shows the
+        about dialog.'''
         
         dialog = AboutDialog()
         if dialog.run():
@@ -434,8 +435,8 @@ class Window(gtk.Window):
             fail()
     
     def entry_contents_changed(self, entry, text, text_length, pointer):
-        '''Prevent any non numerical characters from being entered into the
-        entry.'''
+        '''A callback connected to the entry's contents-changed signal. Prevents
+        any non numerical characters from being entered into the entry.'''
         
         try:
             int(text)
@@ -608,8 +609,8 @@ class Window(gtk.Window):
     def open(self, button, file=None):
         '''A callback connected to the open button's clicked signal. Can also be
         called with a file as an argument to open files passed as command line
-        arguments. If the file is valid the archive is opened. Otheriwse, the 
-        fail() method is called and an error message is displayed.'''
+        arguments. If the file is valid the archive is opened. Otherwise, the 
+        fail method is called and an error message is displayed.'''
         
         button.set_sensitive(False)
         
@@ -732,6 +733,8 @@ class Window(gtk.Window):
     def reset_scrollbars(self):
         '''This method moves the scrollbars back to their default positions.'''
         
+        # TODO: Add support for RTL
+        
         viewport = self.widgets.get_object('scrolledwindow')
         hadj = viewport.get_hadjustment()
         vadj = viewport.get_vadjustment()
@@ -757,8 +760,8 @@ class Window(gtk.Window):
         dialog.destroy()
     
     def set_widget_sensitivity(self, bool):
-        '''Calls the toolbar buttons and menu items set_sensitive() methods 
-        with the value of bool.'''
+        '''Calls the toolbar buttons and menu items set_sensitive methods with
+        the value of bool.'''
         
         self.widgets.get_object('close_button').set_sensitive(bool)
         self.widgets.get_object('back_button').set_sensitive(bool)
