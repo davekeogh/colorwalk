@@ -351,8 +351,7 @@ class Window(gtk.Window):
         
         self.show_status_message('Running <i>%s %s</i> ...' % (self.preferences.get('Preferences', 'editor'), os.path.join(self.temp_dir, self.images[self.index])))
         
-        # TODO: This needs to be run in a new process to avoid blocking the UI.
-        # subprocess.call([self.preferences.get('Preferences', 'editor'), os.path.join(self.temp_dir, self.images[self.index])])
+        subprocess.Popen([self.preferences.get('Preferences', 'editor'), os.path.join(self.temp_dir, self.images[self.index])])
     
     def edit_preferences(self, widget):
         '''A callback connected to the preferences button's clicked signal.
