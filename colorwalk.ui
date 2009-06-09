@@ -606,6 +606,7 @@
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
+        <accelerator key="Page_Up" signal="activate"/>
       </object>
     </child>
     <child>
@@ -614,6 +615,7 @@
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
+        <accelerator key="Page_Down" signal="activate"/>
       </object>
     </child>
     <child>
@@ -634,6 +636,13 @@
         <property name="label">gtk-save-as</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="context-menu-preferences">
+        <property name="label">gtk-preferences</property>
+        <property name="visible">True</property>
         <property name="use_stock">True</property>
       </object>
     </child>
@@ -685,7 +694,6 @@
                           <object class="GtkEntry" id="editor_entry">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">Enter the name of a executable to edit images with</property>
                             <property name="invisible_char">&#x25CF;</property>
                           </object>
                           <packing>
@@ -711,7 +719,6 @@
                 <child type="label">
                   <object class="GtkLabel" id="editor_label">
                     <property name="visible">True</property>
-                    <property name="tooltip_text" translatable="yes">Enter the name of a executable to edit images with</property>
                     <property name="label" translatable="yes">&lt;b&gt;Image Editor:&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
                   </object>
@@ -722,6 +729,46 @@
                 <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
+            </child>
+            <child>
+              <object class="GtkHSeparator" id="hseparator1">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="toolbar_checkbutton">
+                <property name="label" translatable="yes">Show toolbar</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="fullscreen_checkbutton">
+                <property name="label" translatable="yes">Start in fullscreen mode</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
         </child>

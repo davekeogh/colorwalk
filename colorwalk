@@ -185,6 +185,7 @@ class Preferences(ConfigParser.SafeConfigParser):
             self.set('Window', 'width', str(800))
             self.set('Window', 'height', str(800))
             self.set('Window', 'fullscreen', str(False))
+            self.set('Window', 'show_toolbar', str(True))
             
             self.add_section('Image')
             self.set('Image', 'scale', str(456)) # FIT_BY_WIDTH
@@ -255,6 +256,7 @@ class Window(gtk.Window):
         self.widgets.get_object('context-menu-back').connect('activate', self.go_back)
         self.widgets.get_object('context-menu-forward').connect('activate', self.go_forward)
         self.widgets.get_object('context-menu-quit').connect('activate', self.quit)
+        self.widgets.get_object('context-menu-preferences').connect('activate', self.edit_preferences)
         
         # Entry events:
         self.widgets.get_object('entry').connect('insert-text', self.entry_contents_changed)
@@ -288,6 +290,9 @@ class Window(gtk.Window):
         
         if self.preferences.getboolean('Window', 'fullscreen'):
             self.widgets.get_object('fullscreen_button').set_active(True)
+        
+        if not self.preferences.getboolean('Window', 'show_toolbar'):
+            self.widgets.get_object('toolbar').hide()
         
         self.widgets.get_object('context-menu').attach_to_widget(self.widgets.get_object('viewport'), lambda *args:None)
         
@@ -344,8 +349,10 @@ class Window(gtk.Window):
         '''A callback connected to the edit context menu item's activate signal.
         It launches a helper application (like the gimp) to edit the image.'''
         
+        self.show_status_message('Running <i>%s %s</i> ...' % (self.preferences.get('Preferences', 'editor'), os.path.join(self.temp_dir, self.images[self.index])))
+        
         # TODO: This needs to be run in a new process to avoid blocking the UI.
-        subprocess.call([self.preferences.get('Preferences', 'editor'), os.path.join(self.temp_dir, self.images[self.index])])
+        # subprocess.call([self.preferences.get('Preferences', 'editor'), os.path.join(self.temp_dir, self.images[self.index])])
     
     def edit_preferences(self, widget):
         '''A callback connected to the preferences button's clicked signal.
@@ -378,11 +385,18 @@ class Window(gtk.Window):
             
             update_icon()
         
+        self.widgets.get_object('toolbar_checkbutton').set_active(self.preferences.getboolean('Window', 'show_toolbar'))
+        self.widgets.get_object('fullscreen_checkbutton').set_active(self.preferences.getboolean('Window', 'fullscreen'))
+        
         if dialog.run():
             dialog.get_content_area().remove(self.widgets.get_object('prefs-vbox'))
             dialog.destroy()
             
             self.preferences.set('Preferences', 'editor', self.widgets.get_object('editor_entry').get_text())
+            self.preferences.set('Window', 'show_toolbar', str(self.widgets.get_object('toolbar_checkbutton').get_active()))
+            self.preferences.set('Window', 'fullscreen', str(self.widgets.get_object('fullscreen_checkbutton').get_active()))
+            
+            self.reload_preferences()
     
     def entry_activated(self, entry):
         '''A callback connected to the entry's activate signal. First the text
@@ -443,23 +457,6 @@ class Window(gtk.Window):
         except ValueError:
             entry.stop_emission('insert-text')
     
-    def fail(self, message):
-        '''If a file cannot be opened this method is run to display an error
-        message to the user.'''
-        
-        self.widgets.get_object('progressbar').hide()
-        self.widgets.get_object('status_label').set_markup(message)
-        self.widgets.get_object('hbox2').show()
-        
-        def statusbar_hide():
-            '''Hides the statusbar and then returns False to remove the glib
-            timeout.'''
-            
-            self.widgets.get_object('hbox2').hide()
-            return False
-        
-        glib.timeout_add_seconds(10, statusbar_hide)
-    
     def get_available_space(self):
         '''Returns the amount of space that the image can occupy in pixels.'''
         
@@ -494,7 +491,8 @@ class Window(gtk.Window):
                     
                     self.lock.acquire()
                     
-                    self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
+                    if self.index > 0:
+                        self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
                     
                     self.lock.release()
                 
@@ -551,8 +549,11 @@ class Window(gtk.Window):
             self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
             self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
             
-            self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
-            self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
+            if self.index != len(self.images) - 1:
+                self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
+            
+            if self.index > 0:
+                self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
             
             self.lock.release()
         
@@ -601,10 +602,10 @@ class Window(gtk.Window):
         
         if self.open_file:
             if event.keyval == 65360: # Home
-                self.go_to_index(widget, 0)
+                self.go_to_index(0)
             
             elif event.keyval == 65367: # End
-                self.go_to_index(widget, len(self.images) - 1)
+                self.go_to_index(len(self.images) - 1)
     
     def open(self, button, file=None):
         '''A callback connected to the open button's clicked signal. Can also be
@@ -679,7 +680,7 @@ class Window(gtk.Window):
                 
                 if not len(self.images):
                     button.set_sensitive(True)
-                    self.fail('<i>%s</i> cannot be opened because it does not contain any images.' % os.path.split(file)[1])
+                    self.show_status_message('<i>%s</i> cannot be opened because it does not contain any images.' % os.path.split(file)[1])
                 
                 else:
                     self.images.sort(key=str.lower)
@@ -705,7 +706,7 @@ class Window(gtk.Window):
         
         elif file and not command:
             button.set_sensitive(True)
-            self.fail('<i>%s</i> cannot be opened because it is not a valid archive file.' % os.path.split(file)[1])
+            self.show_status_message('<i>%s</i> cannot be opened because it is not a valid archive file.' % os.path.split(file)[1])
         
         else:
             button.set_sensitive(True)
@@ -717,11 +718,6 @@ class Window(gtk.Window):
         
         self.close_file()
         
-        if self.widgets.get_object('fullscreen_button').get_active():
-            self.preferences.set('Window', 'fullscreen', str(True))
-        else:
-            self.preferences.set('Window', 'fullscreen', str(False))
-        
         self.preferences.set('Window', 'width', str(self.width))
         self.preferences.set('Window', 'height', str(self.height))
         self.preferences.set('Image', 'scale', str(self.scale))
@@ -729,6 +725,15 @@ class Window(gtk.Window):
         
         gtk.main_quit()
         sys.exit(0)
+    
+    def reload_preferences(self):
+        '''Applies the preference values to their related widgets. This is run 
+        after the preferences dialog is closed.'''
+        
+        if self.preferences.getboolean('Window', 'show_toolbar'):
+            self.widgets.get_object('toolbar').show()
+        else:
+            self.widgets.get_object('toolbar').hide()
     
     def reset_scrollbars(self):
         '''This method moves the scrollbars back to their default positions.'''
@@ -797,6 +802,23 @@ class Window(gtk.Window):
             self.widgets.get_object('forward_button').set_sensitive(False)
         else:
             self.widgets.get_object('forward_button').set_sensitive(True)
+    
+    def show_status_message(self, message, timeout=10):
+        '''If a file cannot be opened this method is run to display an error
+        message to the user.'''
+        
+        self.widgets.get_object('progressbar').hide()
+        self.widgets.get_object('status_label').set_markup(message)
+        self.widgets.get_object('hbox2').show()
+        
+        def statusbar_hide():
+            '''Hides the statusbar and then returns False to remove the glib
+            timeout.'''
+            
+            self.widgets.get_object('hbox2').hide()
+            return False
+        
+        glib.timeout_add_seconds(timeout, statusbar_hide)
     
     def toggle_fullscreen(self, button):
         '''A callback connected to the fullscreen button's clicked signal.
