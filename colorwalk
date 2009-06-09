@@ -219,7 +219,7 @@ class Window(gtk.Window):
     height = 800
     
     def __init__(self, ui, file=None):
-        '''The Colorwalk main window. Arguments: ui is the file path of a XML 
+        '''The Color Walk main window. Arguments: ui is the file path of a XML 
         user interface file, and the optional argument, file, is the path to a
         file to open.'''
         
