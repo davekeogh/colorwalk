@@ -237,7 +237,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkHBox" id="hbox2">
+      <object class="GtkHBox" id="status_box">
         <property name="spacing">3</property>
         <child>
           <object class="GtkLabel" id="status_label">
