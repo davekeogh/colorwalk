@@ -67,6 +67,9 @@ def find_background_color(pixels, width, height):
     ''' Finds a roughly average color to use as the background of the window
     based on the corner colors of the image.'''
     
+    # TODO: Sample more areas along the border of the image to get a better
+    #       average.
+    
     c1 = pixels[0][0] # top left
     c2 = pixels[width - 1][0] # top right
     c3 = pixels[0][height - 1] # bottom left
