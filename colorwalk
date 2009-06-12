@@ -75,7 +75,7 @@ def find_background_color(pixels, width, height):
     def average(values):
         '''Computes the arithmetic mean of a list of numbers.'''
         
-        return sum(values, 0.0) / len(values)
+        return sum(values) / len(values)
     
     r = average([c1[0], c2[0], c3[0], c4[0]])
     g = average([c1[1], c2[1], c3[1], c4[1]])
@@ -237,7 +237,9 @@ class Window(gtk.Window):
     
     scale = FIT_BY_WIDTH
     width = 800
+    width_old = None
     height = 800
+    height_old = None
     maximized = False
     
     def __init__(self, ui, file=None):
@@ -743,8 +745,13 @@ class Window(gtk.Window):
         
         self.close_file()
         
-        self.preferences.set('Window', 'width', str(self.width))
-        self.preferences.set('Window', 'height', str(self.height))
+        if self.width_old and self.height_old:
+            self.preferences.set('Window', 'width', str(self.width_old))
+            self.preferences.set('Window', 'height', str(self.height_old))
+        else:
+            self.preferences.set('Window', 'width', str(self.width))
+            self.preferences.set('Window', 'height', str(self.height))
+        
         self.preferences.set('Window', 'maximized', str(self.maximized))
         self.preferences.set('Image', 'scale', str(self.scale))
         self.preferences.save()
@@ -863,8 +870,14 @@ class Window(gtk.Window):
         the button.'''
         
         if button.get_active():
+            self.width_old = self.width
+            self.height_old = self.height
+            
             self.fullscreen()
         else:
+            self.width_old = None
+            self.height_old = None
+            
             self.unfullscreen()
     
     def toggle_scale(self, button):
