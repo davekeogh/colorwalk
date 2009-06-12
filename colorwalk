@@ -63,7 +63,7 @@ def choose_file(path=None):
     
     return file 
 
-def find_background_color(pixels, width, height):
+def find_average_color(pixels, width, height):
     ''' Finds a roughly average color to use as the background of the window
     based on the corner colors of the image.'''
     
