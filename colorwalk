@@ -675,6 +675,8 @@ class Window(gtk.Window):
                     # images.
                     if os.path.splitext(f)[1].lower() in IMAGE_EXTENSIONS:
                         self.images.append(f)
+                    
+                    self.widgets.get_object('progressbar').pulse()
                 
                 if not len(self.images):
                     button.set_sensitive(True)
@@ -688,6 +690,8 @@ class Window(gtk.Window):
                     
                     self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[0]), self.scale, *self.get_available_space())
                     self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
+                    
+                    self.widgets.get_object('progressbar').pulse()
                     
                     button.set_sensitive(True)
                     self.set_widget_state()
