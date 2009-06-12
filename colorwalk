@@ -63,6 +63,26 @@ def choose_file(path=None):
     
     return file 
 
+def find_background_color(pixels, width, height):
+    ''' Finds a roughly average color to use as the background of the window
+    based on the corner colors of the image.'''
+    
+    c1 = pixels[0][0] # top left
+    c2 = pixels[width - 1][0] # top right
+    c3 = pixels[0][height - 1] # bottom left
+    c4 = pixels[width - 1][height - 1] # bottom right
+    
+    def average(values):
+        '''Computes the arithmetic mean of a list of numbers.'''
+        
+        return sum(values, 0.0) / len(values)
+    
+    r = average([c1[0], c2[0], c3[0], c4[0]])
+    g = average([c1[1], c2[1], c3[1], c4[1]])
+    b = average([c1[2], c2[2], c3[2], c4[2]])
+    
+    return [int(r), int(g), int(b)]
+
 def find_executable(name):
     '''Tries to find an executable that's being used by as a helper application.
     If the program is found anywhere in PATH it returns true; otherwise it
