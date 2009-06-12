@@ -184,6 +184,7 @@ class Preferences(ConfigParser.SafeConfigParser):
             self.set('Window', 'width', str(800))
             self.set('Window', 'height', str(800))
             self.set('Window', 'fullscreen', str(False))
+            self.set('Window', 'maximized', str(False))
             self.set('Window', 'show_toolbar', str(True))
             
             self.add_section('Image')
@@ -217,6 +218,7 @@ class Window(gtk.Window):
     scale = FIT_BY_WIDTH
     width = 800
     height = 800
+    maximized = False
     
     def __init__(self, ui, file=None):
         '''The Color Walk main window. Arguments: ui is the file path of a XML 
@@ -233,6 +235,7 @@ class Window(gtk.Window):
         self.connect('delete-event', self.quit)
         self.connect('configure-event', self.window_resized)
         self.connect('key-press-event', self.key_pressed)
+        self.connect('window-state-event', self.state_changed)
         
         # Tool button events:
         self.widgets.get_object('open_button').connect('clicked', self.open)
@@ -285,13 +288,17 @@ class Window(gtk.Window):
         # Resize window according to preferences:
         self.resize(self.preferences.getint('Window', 'width'),
                     self.preferences.getint('Window', 'height'))
-        self.scale = self.preferences.getint('Image', 'scale')
+        
+        if self.preferences.getboolean('Window', 'maximized'):
+            self.maximize()
         
         if self.preferences.getboolean('Window', 'fullscreen'):
             self.widgets.get_object('fullscreen_button').set_active(True)
         
         if not self.preferences.getboolean('Window', 'show_toolbar'):
             self.widgets.get_object('toolbar').hide()
+        
+        self.scale = self.preferences.getint('Image', 'scale')
         
         self.widgets.get_object('context-menu').attach_to_widget(self.widgets.get_object('viewport'), lambda *args:None)
         
@@ -722,6 +729,7 @@ class Window(gtk.Window):
         
         self.preferences.set('Window', 'width', str(self.width))
         self.preferences.set('Window', 'height', str(self.height))
+        self.preferences.set('Window', 'maximized', str(self.maximized))
         self.preferences.set('Image', 'scale', str(self.scale))
         self.preferences.save()
         
@@ -820,7 +828,18 @@ class Window(gtk.Window):
             self.widgets.get_object('status_box').hide()
             return False
         
-        glib.timeout_add_seconds(timeout, statusbar_hide)
+        glib.clickedtimeout_add_seconds(timeout, statusbar_hide)
+    
+    def state_changed(self, widget, event):
+        '''A callback connected to the window's window-state-event signal. This
+        is used to keep track of whether the window is maximized or not.'''
+        
+        state = event.new_window_state
+        
+        if state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            self.maximized = True
+        else:
+            self.maximized = False
     
     def toggle_fullscreen(self, button):
         '''A callback connected to the fullscreen button's clicked signal.
