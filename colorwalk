@@ -63,6 +63,7 @@ def choose_file(path=None):
     
     return file 
 
+
 def find_average_border_color(pixels, width, height):
     ''' Finds a roughly average color to use as the background of the window
     based on the corner colors of the image.'''
@@ -86,6 +87,7 @@ def find_average_border_color(pixels, width, height):
     
     return [int(r), int(g), int(b)]
 
+
 def find_executable(name):
     '''Tries to find an executable that's being used by as a helper application.
     If the program is found anywhere in PATH it returns true; otherwise it
@@ -101,6 +103,7 @@ def find_executable(name):
             found = True
     
     return found
+
 
 def find_ui_definition():
     '''Tries to find the XML GtkBuilder file in all the usual places. The first
