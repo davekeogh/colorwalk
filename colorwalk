@@ -185,6 +185,26 @@ class AboutDialog(gtk.AboutDialog):
         self.set_website('http://members.shaw.ca/davekeogh/')
 
 
+class FloatingToolbar(gtk.Window):
+    
+    parent = None
+    
+    def __init__(self, parent):
+        '''A copy of Color Walk's toolbar in a undecorated gtk.Window. This
+        allows us to position it overtop of the displayed image and show and
+        hide it easily.'''
+        
+        self.parent = parent
+        
+        gtk.Window.__init__(self)
+        self.add(parent.widgets.get_object('toolbar'))
+        
+        self.set_decorated(False)
+        self.set_keep_above(True)
+        self.set_property('skip-taskbar-hint', True)
+        self.set_property('skip-pager-hint', True)
+
+
 class Preferences(ConfigParser.SafeConfigParser):
     
     config_file = os.path.expanduser('~/.config/colorwalk/config')
@@ -192,6 +212,8 @@ class Preferences(ConfigParser.SafeConfigParser):
     def __init__(self):
         '''Represents a configuration file at ~/.config/colorwalk/config. 
         Creates one with the default values if it does not exist.'''
+        
+        # TODO: Some sort of fallback if the file or directory can't be created
         
         ConfigParser.SafeConfigParser.__init__(self)
         
@@ -211,7 +233,7 @@ class Preferences(ConfigParser.SafeConfigParser):
             self.set('Window', 'show_toolbar', str(True))
             
             self.add_section('Image')
-            self.set('Image', 'scale', str(456)) # FIT_BY_WIDTH
+            self.set('Image', 'scale', str(FIT_BY_WIDTH))
             
             self.add_section('Preferences')
             self.set('Preferences', 'editor', '')
