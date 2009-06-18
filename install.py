@@ -37,7 +37,7 @@ if __name__ == '__main__':
         print 'Copying %s to %s/%s ...' % (file, PREFIX, FILES[file]) ,
         if subprocess.call(['install', '%s' % file, os.path.join(PREFIX, os.path.join(FILES[file], file))]):
             print 'Failed'
-            print '\n%s Walk failed to install.' % APPLICATION
+            print '\n%s failed to install.' % APPLICATION
             sys.exit(1)
         else:
             print 'Done'
