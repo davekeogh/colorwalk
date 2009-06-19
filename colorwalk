@@ -240,7 +240,7 @@ class Preferences(ConfigParser.SafeConfigParser):
             
             self.add_section('Preferences')
             self.set('Preferences', 'editor', '')
-            self.set('Preferences', 'background', '')
+            self.set('Preferences', 'background', 'theme')
     
     def save(self):
         with open(self.config_file, 'w') as f:
@@ -445,6 +445,18 @@ class Window(gtk.Window):
         self.widgets.get_object('toolbar_checkbutton').set_active(self.preferences.getboolean('Window', 'show_toolbar'))
         self.widgets.get_object('fullscreen_checkbutton').set_active(self.preferences.getboolean('Window', 'fullscreen'))
         
+        bg = self.preferences.get('Preferences', 'background')
+        
+        if bg == 'match':
+            self.widgets.get_object('match_radiobutton').set_active(True)
+        
+        elif bg == 'theme':
+            self.widgets.get_object('theme_radiobutton').set_active(True)
+        
+        else:
+                self.widgets.get_object('custom_radiobutton').set_active(True)
+                self.widgets.get_object('colorbutton').set_color(gtk.gdk.color_parse(bg))
+        
         if dialog.run():
             dialog.get_content_area().remove(self.widgets.get_object('prefs-vbox'))
             dialog.destroy()
@@ -452,6 +464,15 @@ class Window(gtk.Window):
             self.preferences.set('Preferences', 'editor', self.widgets.get_object('editor_entry').get_text())
             self.preferences.set('Window', 'show_toolbar', str(self.widgets.get_object('toolbar_checkbutton').get_active()))
             self.preferences.set('Window', 'fullscreen', str(self.widgets.get_object('fullscreen_checkbutton').get_active()))
+            
+            if self.widgets.get_object('match_radiobutton').get_active():
+                self.preferences.set('Preferences', 'background', 'match')
+            
+            elif self.widgets.get_object('theme_radiobutton').get_active():
+                self.preferences.set('Preferences', 'background', 'theme')
+            
+            else:
+                self.preferences.set('Preferences', 'background', self.widgets.get_object('colorbutton').get_color().to_string())
             
             self.reload_preferences()
     
@@ -797,6 +818,8 @@ class Window(gtk.Window):
             self.widgets.get_object('toolbar').show()
         else:
             self.widgets.get_object('toolbar').hide()
+        
+        self.set_background_color()
     
     def reset_scrollbars(self):
         '''This method moves the scrollbars back to their default positions.'''
@@ -833,13 +856,15 @@ class Window(gtk.Window):
         
         pref = self.preferences.get('Preferences', 'background')
         
-        if pref:
-            if pref == 'match':
-                if self.open_file:
-                    self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(find_average_border_color(self.current_pixbuf.get_pixels_array(), self.current_pixbuf.get_width(), self.current_pixbuf.get_height())))
-            
-            else:
-                self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(pref))
+        if pref == 'match':
+            if self.open_file:
+                self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(find_average_border_color(self.current_pixbuf.get_pixels_array(), self.current_pixbuf.get_width(), self.current_pixbuf.get_height())))
+        
+        elif pref == 'theme':
+            pass
+        
+        else:
+            self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(pref))
     
     def set_widget_sensitivity(self, bool):
         '''Calls the toolbar buttons and menu items set_sensitive methods with
