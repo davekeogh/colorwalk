@@ -254,6 +254,8 @@ class Window(gtk.Window):
     lock = threading.Lock()
     preferences = Preferences()
     
+    default_background = None
+    
     current_pixbuf = None
     prev_pixbuf = None
     next_pixbuf = None
@@ -361,8 +363,12 @@ class Window(gtk.Window):
         self.set_title('Color Walk')
         self.add(self.widgets.get_object('vbox'))
         self.set_widget_sensitivity(False)
-        self.set_background_color()
         self.show()
+        
+        # This allows us to reset the background to the original GTK style 
+        # without destroying the widget:
+        self.default_background = self.widgets.get_object('viewport').style.bg[gtk.STATE_NORMAL].to_string()
+        self.set_background_color()
         
         # Open a file passed on the command line:
         if file:
@@ -861,7 +867,7 @@ class Window(gtk.Window):
                 self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(find_average_border_color(self.current_pixbuf.get_pixels_array(), self.current_pixbuf.get_width(), self.current_pixbuf.get_height())))
         
         elif pref == 'theme':
-            pass
+            self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.default_background))
         
         else:
             self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(pref))
