@@ -72,20 +72,20 @@ def find_average_border_color(pixels, width, height):
     #       average.
     
     c1 = pixels[0][0] # top left
-    c2 = pixels[width - 1][0] # top right
-    c3 = pixels[0][height - 1] # bottom left
-    c4 = pixels[width - 1][height - 1] # bottom right
+    c2 = pixels[height - 1][0] # bottom left
+    c3 = pixels[0][width - 1] # top right
+    c4 = pixels[height - 1][width - 1] # bottom right
     
     def average(values):
         '''Computes the arithmetic mean of a list of numbers.'''
         
         return sum(values) / len(values)
     
-    r = average([c1[0], c2[0], c3[0], c4[0]])
-    g = average([c1[1], c2[1], c3[1], c4[1]])
-    b = average([c1[2], c2[2], c3[2], c4[2]])
+    r = int(average([c1[0], c2[0], c3[0], c4[0]]))
+    g = int(average([c1[1], c2[1], c3[1], c4[1]]))
+    b = int(average([c1[2], c2[2], c3[2], c4[2]]))
     
-    return [int(r), int(g), int(b)]
+    return '#%02x%02x%02x' % (r, g, b)
 
 
 def find_executable(name):
@@ -240,6 +240,7 @@ class Preferences(ConfigParser.SafeConfigParser):
             
             self.add_section('Preferences')
             self.set('Preferences', 'editor', '')
+            self.set('Preferences', 'background', '')
     
     def save(self):
         with open(self.config_file, 'w') as f:
@@ -360,6 +361,7 @@ class Window(gtk.Window):
         self.set_title('Color Walk')
         self.add(self.widgets.get_object('vbox'))
         self.set_widget_sensitivity(False)
+        self.set_background_color()
         self.show()
         
         # Open a file passed on the command line:
@@ -825,6 +827,20 @@ class Window(gtk.Window):
         
         dialog.destroy()
     
+    def set_background_color(self):
+        '''Sets the background color of the image viewing area from the 
+        preference value.'''
+        
+        pref = self.preferences.get('Preferences', 'background')
+        
+        if pref:
+            if pref == 'match':
+                if self.open_file:
+                    self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(find_average_border_color(self.current_pixbuf.get_pixels_array(), self.current_pixbuf.get_width(), self.current_pixbuf.get_height())))
+            
+            else:
+                self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(pref))
+    
     def set_widget_sensitivity(self, bool):
         '''Calls the toolbar buttons and menu items set_sensitive methods with
         the value of bool.'''
@@ -851,6 +867,8 @@ class Window(gtk.Window):
         self.set_title('%s - %s' % (os.path.split(self.open_file)[1], self.images[self.index]))
         self.widgets.get_object('entry').set_text(str(self.index + 1))
         self.widgets.get_object('label').set_text('of %d' % len(self.images))
+        
+        self.set_background_color()
         
         self.unfocus()
         
