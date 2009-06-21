@@ -21,7 +21,7 @@ import sys, os, subprocess, threading, tempfile, shutil, time, gc, ConfigParser
 import glib, gobject, gtk
 
 
-IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.gif', '.png', '.bmp']
+IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.gif', '.png', '.bmp')
 DEFAULT_SIZE = 123
 FIT_BY_WIDTH = 456
 
