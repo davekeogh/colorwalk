@@ -37,10 +37,10 @@ def choose_file(path=None):
     destroyed.'''
     
     dialog = gtk.FileChooserDialog(title='Open File', buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-            
+    
     if path:
         dialog.set_current_folder(path)
-            
+    
     filter = gtk.FileFilter()
     filter.set_name('All supported files')
     filter.add_pattern('*.cbz')
@@ -98,7 +98,7 @@ def find_executable(name):
     
     for path in paths:
         full_path = os.path.join(path, name)
-            
+        
         if os.path.exists(full_path):
             found = True
     
