@@ -16,7 +16,7 @@
 #    along with Color Walk.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import sys, os, subprocess, threading, tempfile, shutil, time, gc, ConfigParser
+import sys, os, subprocess, threading, tempfile, shutil, time, ConfigParser
 
 import glib, gobject, gtk
 

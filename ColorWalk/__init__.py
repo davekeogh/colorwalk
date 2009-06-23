@@ -16,7 +16,7 @@
 #    along with Color Walk.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import sys, os, os.path
+import sys, os, os.path, gc, subprocess
 
 import gtk
 
