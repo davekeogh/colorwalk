@@ -15,19 +15,23 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Color Walk.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os, subprocess, optparse
+
+import sys, os, subprocess, optparse, distutils
+
 
 APPLICATION = 'Color Walk'
 VERSION = '0.1.0'
 PREFIX = '/usr'
 REMOVE = False
 
-DIRECTORIES = ['share/colorwalk']
+DIRECTORIES = ('share/colorwalk', 'lib/python%s.%s/dist-packages/ColorWalk' % (sys.version_info[0], sys.version_info[1]))
 FILES = {
-    'colorwalk.ui'      : 'share/colorwalk',
-    'colorwalk.desktop' : 'share/applications',
-    'colorwalk'         : 'bin'
+    'colorwalk.ui'          : DIRECTORIES[0],
+    'colorwalk.desktop'     : 'share/applications',
+    'colorwalk'             : 'bin',
+    'ColorWalk/__init__.py' : os.path.split(DIRECTORIES[1])[0]
 }
+
 
 if __name__ == '__main__':
     parser = optparse.OptionParser()

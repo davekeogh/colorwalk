@@ -24,6 +24,7 @@ from ColorWalk import IMAGE_EXTENSIONS, DEFAULT_SIZE, FIT_BY_WIDTH, LICENSE
 
 from ColorWalk import choose_file, find_average_border_color, find_executable, find_ui_definition, new_pixbuf, open_email, open_url
 
+
 class AboutDialog(gtk.AboutDialog):
     
     def __init__(self):
