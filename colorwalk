@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Color Walk.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os, subprocess, threading, tempfile, shutil, time, ConfigParser
+import sys, os, subprocess, threading, tempfile, shutil, time, ConfigParser, optparse
 
 import glib, gobject, gtk
 
@@ -890,10 +890,13 @@ if __name__ == '__main__':
     if not ui:
         sys.exit('A required file, colorwalk.ui, is missing. Unable to continue.')
     
+    parser = optparse.OptionParser(usage='Usage: %prog FILE')
+    args = parser.parse_args()[1]
+    
     gtk.gdk.threads_init()
     
-    if len(sys.argv) > 1:
-        Window(ui, file=sys.argv[1])
+    if args:
+        Window(ui, file=args[0])
     
     else:
         Window(ui)

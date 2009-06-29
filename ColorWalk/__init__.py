@@ -19,6 +19,7 @@ import sys, os, os.path, gc, subprocess
 
 import gtk
 
+
 IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.gif', '.png', '.bmp')
 DEFAULT_SIZE = 123
 FIT_BY_WIDTH = 456
