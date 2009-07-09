@@ -90,7 +90,7 @@
           <object class="GtkRadioToolButton" id="normal_button">
             <property name="visible">True</property>
             <property name="tooltip_text" translatable="yes">Display the image at it's normal size</property>
-            <property name="label" translatable="yes">Normal Size</property>
+            <property name="label" translatable="yes">Normal size</property>
             <property name="use_underline">True</property>
             <property name="stock_id">gtk-zoom-100</property>
             <property name="group">fit_button</property>
@@ -104,7 +104,7 @@
           <object class="GtkRadioToolButton" id="fit_button">
             <property name="visible">True</property>
             <property name="tooltip_text" translatable="yes">FIt the image to the window so as to avoid horizontal scrolling</property>
-            <property name="label" translatable="yes">Fit To WIndow</property>
+            <property name="label" translatable="yes">Fit by width</property>
             <property name="use_underline">True</property>
             <property name="stock_id">gtk-zoom-fit</property>
             <property name="active">True</property>
@@ -1033,6 +1033,185 @@
       </object>
       <packing>
         <property name="position">0</property>
+      </packing>
+    </child>
+  </object>
+  <object class="GtkHBox" id="fullscreen_toolbar">
+    <property name="visible">True</property>
+    <child>
+      <object class="GtkToolbar" id="fs-toolbar">
+        <property name="visible">True</property>
+        <child>
+          <object class="GtkToolButton" id="fs-open_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Open a comic book</property>
+            <property name="label" translatable="yes">toolbutton1</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-open</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton" id="fs-close_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Close an open comic book</property>
+            <property name="label" translatable="yes">toolbutton2</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-close</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton" id="fs-back_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Go to the previous page</property>
+            <property name="is_important">True</property>
+            <property name="label" translatable="yes">Back</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-go-back</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton" id="fs-forward_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="tooltip_text" translatable="yes">Go to the next page</property>
+            <property name="is_important">True</property>
+            <property name="label" translatable="yes">Forward</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-go-forward</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleToolButton" id="fs-fullscreen_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Toggle fullscreen viewing</property>
+            <property name="is_important">True</property>
+            <property name="label" translatable="yes">Fullscreen</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-fullscreen</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparatorToolItem" id="toolbutton8">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkRadioToolButton" id="fs-normal_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">Display the image at it's normal size</property>
+            <property name="label" translatable="yes">Normal size</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-zoom-100</property>
+            <property name="group">fit_button</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkRadioToolButton" id="fs-fit_button">
+            <property name="visible">True</property>
+            <property name="tooltip_text" translatable="yes">FIt the image to the window so as to avoid horizontal scrolling</property>
+            <property name="label" translatable="yes">Fit by width</property>
+            <property name="use_underline">True</property>
+            <property name="stock_id">gtk-zoom-fit</property>
+            <property name="active">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparatorToolItem" id="toolbutton9">
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolItem" id="toolbutton0">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkHBox" id="hbox9">
+                <property name="visible">True</property>
+                <property name="spacing">3</property>
+                <child>
+                  <object class="GtkEntry" id="fs-entry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Go to page</property>
+                    <property name="max_length">3</property>
+                    <property name="invisible_char">&#x25CF;</property>
+                    <property name="width_chars">3</property>
+                    <property name="xalign">1</property>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="fs-label">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="fs-file_label">
+        <property name="visible">True</property>
+        <property name="use_markup">True</property>
+      </object>
+      <packing>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkProgressBar" id="fs-progressbar"/>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">2</property>
       </packing>
     </child>
   </object>
