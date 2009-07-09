@@ -54,21 +54,26 @@ class AboutDialog(gtk.AboutDialog):
 class FloatingToolbar(gtk.Window):
     
     parent = None
+    toolbar = None
     
-    def __init__(self, parent):
+    def __init__(self, parent, toolbar):
         '''A copy of Color Walk's toolbar in a undecorated gtk.Window. This
         allows us to position it overtop of the displayed image and show and
         hide it easily.'''
         
         self.parent = parent
+        self.toolbar = toolbar
         
         gtk.Window.__init__(self)
-        self.add(parent.widgets.get_object('toolbar'))
+        self.add(toolbar)
         
         self.set_decorated(False)
         self.set_keep_above(True)
         self.set_property('skip-taskbar-hint', True)
         self.set_property('skip-pager-hint', True)
+        
+        self.resize(self.get_screen().get_width(), 32)
+        self.move(0, self.get_screen().get_height() + 32)
 
 
 class Preferences(ConfigParser.SafeConfigParser):
