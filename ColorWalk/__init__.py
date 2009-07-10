@@ -144,8 +144,7 @@ def new_pixbuf(path, mode, width=-1, height=-1):
         else:
             return temp
     
-    # gtk.gdk.Pixbufs don't seem to be collected properly. I'm not sure if this
-    # is the best spot to call the garbage collecter though.
+    # Pixbufs don't get collected properly with older versions of pygtk:
     gc.collect()
 
 
@@ -159,3 +158,45 @@ def open_url(dialog, link, user_data):
     '''Opens a url in the default web browser.'''
     
     subprocess.call(['xdg-open', link])
+
+
+def preload_images(window, next=True, prev=True):
+    '''Loads the pages into memory. This spawns a new thread to avoid blocking 
+    the UI'''
+    
+    def worker():
+        '''Runs in the background to avoid blocking the UI. Opens
+        the required images.'''
+        
+        window.lock.acquire()
+        
+        if next:
+            window.next_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index + 1]), window.scale, *window.get_available_space())
+        
+        if prev:
+            window.prev_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index - 1]), window.scale, *window.get_available_space())
+        
+        window.lock.release()
+    
+    threading.Thread(target=worker).start()
+
+
+def reload_all(window):
+    '''Loads all the images into memory then re-displays the current one. This 
+    spawns a new thread to avoid blocking the UI'''
+    
+    def worker():
+        '''Runs in the background to avoid blocking the UI. Opens
+        the required images.'''
+        
+        window.lock.acquire()
+        
+        window.current_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index]), window.scale, *window.get_available_space())
+        window.widgets.get_object('image').set_from_pixbuf(window.current_pixbuf)
+        
+        window.next_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index + 1]), window.scale, *window.get_available_space())
+        window.prev_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index - 1]), window.scale, *window.get_available_space())
+        
+        window.lock.release()
+    
+    threading.Thread(target=worker).start()
