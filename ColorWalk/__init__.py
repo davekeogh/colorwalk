@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Color Walk.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os, os.path, gc, subprocess
+import sys, os, os.path, gc, subprocess, threading
 
 import gtk
 
@@ -165,17 +165,23 @@ def preload_images(window, next=True, prev=True):
     the UI'''
     
     def worker():
-        '''Runs in the background to avoid blocking the UI. Opens
-        the required images.'''
+        '''Runs in the background to avoid blocking the UI. Opens the required
+        images.'''
         
         window.lock.acquire()
         
         if next:
-            window.next_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index + 1]), window.scale, *window.get_available_space())
+            try:
+                window.next_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index + 1]), window.scale, *window.get_available_space())
+            except IndexError:
+                window.next_pixbuf = None
         
         if prev:
-            window.prev_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index - 1]), window.scale, *window.get_available_space())
-        
+            try:
+                window.prev_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index - 1]), window.scale, *window.get_available_space())
+            except IndexError:
+                window.prev_pixbuf = False
+            
         window.lock.release()
     
     threading.Thread(target=worker).start()
@@ -186,16 +192,23 @@ def reload_all(window):
     spawns a new thread to avoid blocking the UI'''
     
     def worker():
-        '''Runs in the background to avoid blocking the UI. Opens
-        the required images.'''
+        '''Runs in the background to avoid blocking the UI. Opens the required
+        images.'''
         
         window.lock.acquire()
         
         window.current_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index]), window.scale, *window.get_available_space())
         window.widgets.get_object('image').set_from_pixbuf(window.current_pixbuf)
         
-        window.next_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index + 1]), window.scale, *window.get_available_space())
-        window.prev_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index - 1]), window.scale, *window.get_available_space())
+        try:
+            window.next_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index + 1]), window.scale, *window.get_available_space())
+        except IndexError:
+            window.next_pixbuf = None
+        
+        try:
+            window.prev_pixbuf = new_pixbuf(os.path.join(window.temp_dir, window.images[window.index - 1]), window.scale, *window.get_available_space())
+        except IndexError:
+            window.prev_pixbuf = None
         
         window.lock.release()
     

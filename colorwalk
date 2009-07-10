@@ -21,7 +21,7 @@ import glib, gobject, gtk
 
 from ColorWalk import IMAGE_EXTENSIONS, DEFAULT_SIZE, FIT_BY_WIDTH, LICENSE
 
-from ColorWalk import choose_file, find_average_border_color, find_executable, find_ui_definition, new_pixbuf, open_email, open_url
+from ColorWalk import choose_file, find_average_border_color, find_executable, find_ui_definition, new_pixbuf, open_email, open_url, preload_images, reload_all
 
 
 class AboutDialog(gtk.AboutDialog):
@@ -367,32 +367,11 @@ class Window(gtk.Window):
             if index >= 0 and index < len(self.images):
                 self.index = index
                 
-                def worker():
-                    '''Runs in the background to avoid blocking the UI. Opens
-                    the required images.'''
-                    
-                    self.lock.acquire()
-                    
-                    self.reset_scrollbars()
-                    self.set_widget_state()
-                    
-                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
-                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-                    
-                    try:
-                        self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
-                    except IndexError:
-                        self.next_pixbuf = None
-                    
-                    try:
-                        self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
-                    except IndexError:
-                        self.prev_pixbuf = None
-                    
-                    self.lock.release()
+                self.reset_scrollbars()
+                self.set_widget_state()
                 
-                self.worker = threading.Thread(target=worker)
-                self.worker.start()
+                reload_all(self)
+                
             else:
                 # The number falls outside the actual number of images.
                 fail()
@@ -437,19 +416,7 @@ class Window(gtk.Window):
                 
                 self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                 
-                def worker():
-                    '''Runs in the background to avoid blocking the UI. Opens
-                    the required images.'''
-                    
-                    self.lock.acquire()
-                    
-                    if self.index > 0:
-                        self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
-                    
-                    self.lock.release()
-                
-                self.worker = threading.Thread(target=worker)
-                self.worker.start()
+                preload_images(self, next=False, prev=True)
     
     def go_forward(self, button):
         '''A callback connected to the forward button's clicked signal. Displays
@@ -468,19 +435,7 @@ class Window(gtk.Window):
                 
                 self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
                 
-                if self.index != len(self.images) - 1:
-                    def worker():
-                        '''Runs in the background to avoid blocking the UI.
-                        Opens the required images.'''
-                        
-                        self.lock.acquire()
-                        
-                        self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
-                        
-                        self.lock.release()
-                    
-                    self.worker = threading.Thread(target=worker)
-                    self.worker.start()
+                preload_images(self, next=True, prev=False)
     
     def go_to_index(self, index):
         '''Displays the page refered to by the value of index. This is only used
@@ -489,28 +444,10 @@ class Window(gtk.Window):
         
         self.index = index
         
-        def worker():
-            '''Runs in the background to avoid blocking the UI. Opens the
-            required images.'''
-            
-            self.lock.acquire()
-            
-            self.reset_scrollbars()
-            self.set_widget_state()
-            
-            self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
-            self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-            
-            if self.index != len(self.images) - 1:
-                self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
-            
-            if self.index > 0:
-                self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
-            
-            self.lock.release()
+        self.reset_scrollbars()
+        self.set_widget_state()
         
-        self.worker = threading.Thread(target=worker)
-        self.worker.start()
+        reload_all(self)
     
     def help(self, widget):
         '''A callback connected to the help button's clicked signal. Displays a
@@ -839,22 +776,7 @@ class Window(gtk.Window):
                 self.scale = FIT_BY_WIDTH
             
             if self.scale != old_scale:
-                def worker():
-                    '''Runs in the background to avoid blocking the UI. Opens
-                    the required images.'''
-                    
-                    self.lock.acquire()
-                    
-                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
-                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-                    
-                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
-                    self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
-                    
-                    self.lock.release()
-                
-                self.worker = threading.Thread(target=worker)
-                self.worker.start()
+                reload_all(self)
     
     def unfocus(self):
         '''Focus the forward button so that spacebar presses don't activate any
@@ -872,22 +794,7 @@ class Window(gtk.Window):
             self.height = allocation.height
             
             if self.open_file:
-                def worker():
-                    '''Runs in the background to avoid blocking the UI. Opens
-                    the required images.'''
-                    
-                    self.lock.acquire()
-                    
-                    self.current_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index]), self.scale, *self.get_available_space())
-                    self.widgets.get_object('image').set_from_pixbuf(self.current_pixbuf)
-                    
-                    self.next_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index + 1]), self.scale, *self.get_available_space())
-                    self.prev_pixbuf = new_pixbuf(os.path.join(self.temp_dir, self.images[self.index - 1]), self.scale, *self.get_available_space())
-                    
-                    self.lock.release()
-                
-                self.worker = threading.Thread(target=worker)
-                self.worker.start()
+                reload_all(self)
     
 
 if __name__ == '__main__':
