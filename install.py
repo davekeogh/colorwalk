@@ -26,10 +26,12 @@ REMOVE = False
 DIRECTORIES = ('share/colorwalk', 'lib/python%s.%s/dist-packages/ColorWalk' % (sys.version_info[0], sys.version_info[1]))
 
 FILES = {
-    'colorwalk.ui'          : DIRECTORIES[0],
-    'colorwalk.desktop'     : 'share/applications',
-    'colorwalk'             : 'bin',
-    'ColorWalk/__init__.py' : os.path.split(DIRECTORIES[1])[0]
+    'colorwalk.ui'              : DIRECTORIES[0],
+    'colorwalk.desktop'         : 'share/applications',
+    'colorwalk'                 : 'bin',
+    'ColorWalk/__init__.py'     : os.path.split(DIRECTORIES[1])[0],
+    'ColorWalk/dialogs.py'      : os.path.split(DIRECTORIES[1])[0],
+    'ColorWalk/preferences.py'  : os.path.split(DIRECTORIES[1])[0],
 }
 
 
