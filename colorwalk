@@ -15,104 +15,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Color Walk.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys, os, subprocess, threading, tempfile, shutil, time, ConfigParser, optparse
+import sys, os, subprocess, threading, tempfile, shutil, time, optparse
 
-import glib, gobject, gtk
+import glib, gtk
 
-from ColorWalk import IMAGE_EXTENSIONS, DEFAULT_SIZE, FIT_BY_WIDTH, LICENSE
-
-from ColorWalk import choose_file, find_average_border_color, find_executable, find_ui_definition, new_pixbuf, open_email, open_url, preload_images, reload_all
+import ColorWalk
 
 
-class AboutDialog(gtk.AboutDialog):
-    
-    def __init__(self):
-        '''A GTK+ about dialog that displays the license a link to the website
-        etc.'''
-        
-        # This is as good a spot as any to set these hooks.
-        gtk.about_dialog_set_email_hook(open_email, None)
-        gtk.about_dialog_set_url_hook(open_url, None)
-        
-        # We don't use gtk.LinkButton, but gtk.AboutDialog does. In gtk 2.16.0
-        # without this, the about uri opens twice:
-        gtk.link_button_set_uri_hook(lambda *args:None)
+from ColorWalk import IMAGE_EXTENSIONS, DEFAULT_SIZE, FIT_BY_WIDTH
 
-        gtk.AboutDialog.__init__(self)
-        
-        self.set_logo_icon_name('image')
-        self.set_name('Color Walk')
-        self.set_version('0.1.0')
-        self.set_comments('A really simple comic book reading application')
-        self.set_copyright('Copyright (c) 2009 David Keogh')
-        self.set_authors(['David Keogh <davekeogh@shaw.ca>'])
-        self.set_license(LICENSE)
-        self.set_wrap_license(True)
-        self.set_website('http://members.shaw.ca/davekeogh/')
+from ColorWalk import choose_file, find_average_border_color, find_executable
 
-
-class FloatingToolbar(gtk.Window):
-    
-    parent = None
-    toolbar = None
-    
-    def __init__(self, parent, toolbar):
-        '''A copy of Color Walk's toolbar in a undecorated gtk.Window. This
-        allows us to position it overtop of the displayed image and show and
-        hide it easily.'''
-        
-        self.parent = parent
-        self.toolbar = toolbar
-        
-        gtk.Window.__init__(self)
-        self.add(toolbar)
-        
-        self.set_decorated(False)
-        self.set_keep_above(True)
-        self.set_property('skip-taskbar-hint', True)
-        self.set_property('skip-pager-hint', True)
-        
-        self.resize(self.get_screen().get_width(), 32)
-        self.move(0, self.get_screen().get_height() + 32)
-
-
-class Preferences(ConfigParser.SafeConfigParser):
-    
-    config_file = os.path.expanduser('~/.config/colorwalk/config')
-    
-    def __init__(self):
-        '''Represents a configuration file at ~/.config/colorwalk/config. 
-        Creates one with the default values if it does not exist.'''
-        
-        # TODO: Some sort of fallback if the file or directory can't be created
-        
-        ConfigParser.SafeConfigParser.__init__(self)
-        
-        if not os.path.exists(os.path.split(self.config_file)[0]):
-            os.mkdir(os.path.split(self.config_file)[0])
-        
-        if os.path.exists(self.config_file):
-            self.read(self.config_file)
-        
-        else:
-            # Set some reasonable default values
-            self.add_section('Window')
-            self.set('Window', 'width', str(800))
-            self.set('Window', 'height', str(800))
-            self.set('Window', 'fullscreen', str(False))
-            self.set('Window', 'maximized', str(False))
-            self.set('Window', 'show_toolbar', str(True))
-            
-            self.add_section('Image')
-            self.set('Image', 'scale', str(FIT_BY_WIDTH))
-            
-            self.add_section('Preferences')
-            self.set('Preferences', 'editor', '')
-            self.set('Preferences', 'background', 'theme')
-    
-    def save(self):
-        with open(self.config_file, 'w') as f:
-            self.write(f)
+from ColorWalk import find_ui_definition, new_pixbuf, preload_images, reload_all
 
 
 class Window(gtk.Window):
@@ -120,7 +34,7 @@ class Window(gtk.Window):
     widgets = None
     worker = None
     lock = threading.Lock()
-    preferences = Preferences()
+    preferences = ColorWalk.Preferences()
     
     default_background = None
     
@@ -246,7 +160,7 @@ class Window(gtk.Window):
         '''A callback connected to the about button's clicked signal. Shows the
         about dialog.'''
         
-        dialog = AboutDialog()
+        dialog = ColorWalk.AboutDialog()
         if dialog.run():
             dialog.destroy()
     
@@ -393,6 +307,9 @@ class Window(gtk.Window):
         
         # TODO: Find a way to get the scrollbar's actual width.
         scrollbar = 20
+        
+        # TODO: If scrollbars aren't actually going to be displayed, account for
+        # that.
         
         height = self.height - self.widgets.get_object('toolbar').size_request()[0]
         width = self.width - scrollbar

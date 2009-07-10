@@ -20,15 +20,14 @@ import sys, os, os.path, gc, subprocess, threading
 import gtk
 
 
+from dialogs import AboutDialog
+
+from preferences import Preferences
+
+
 IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.gif', '.png', '.bmp')
 DEFAULT_SIZE = 123
 FIT_BY_WIDTH = 456
-
-LICENSE = '''This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.'''
 
 
 def choose_file(path=None):
@@ -146,18 +145,6 @@ def new_pixbuf(path, mode, width=-1, height=-1):
     
     # Pixbufs don't get collected properly with older versions of pygtk:
     gc.collect()
-
-
-def open_email(dialog, link, user_data):
-    '''Attempts to open the default email program to send an email.'''
-    
-    subprocess.call(['xdg-open', 'mailto:%s' % link])
-
-
-def open_url(dialog, link, user_data):
-    '''Opens a url in the default web browser.'''
-    
-    subprocess.call(['xdg-open', link])
 
 
 def preload_images(window, next=True, prev=True):
