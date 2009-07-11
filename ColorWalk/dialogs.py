@@ -108,6 +108,37 @@ class FloatingToolbar(gtk.Window):
         self.move(0, self.get_screen().get_height() + 32)
 
 
+class HelpDialog(gtk.Dialog):
+    
+    parent = None
+    widgets = None
+    
+    def __init__(self, parent):
+        '''A dialog that displays a list of keyboard shortcuts.'''
+        
+        self.parent = parent
+        self.widgets = parent.widgets
+        
+        gtk.Dialog.__init__(self, 'Color Walk Help', parent,
+                            gtk.DIALOG_MODAL | gtk.DIALOG_NO_SEPARATOR, ())
+        
+        self.get_content_area().add((parent.widgets.get_object('dialog-vbox')))
+        
+        button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        button.grab_default()
+        button.grab_focus()
+        
+        self.set_icon_name('help')
+        self.resize(350, 200)
+    
+    def destroy(self):
+        '''A custom destroy method that removes the widgets first so that they
+        can be added to another dialog later if necessary.'''
+        
+        self.get_content_area().remove(self.widgets.get_object('dialog-vbox'))
+        gtk.Dialog.destroy(self)
+
+
 class PreferencesDialog(gtk.Dialog):
     
     parent = None
@@ -122,13 +153,15 @@ class PreferencesDialog(gtk.Dialog):
         self.preferences = parent.preferences
         self.widgets = parent.widgets
         
-        gtk.Dialog.__init__(self, 'Color Walk Preferences', self,
+        gtk.Dialog.__init__(self, 'Color Walk Preferences', parent,
                             gtk.DIALOG_MODAL | gtk.DIALOG_NO_SEPARATOR, ())
         
         self.get_content_area().add((self.widgets.get_object('prefs-vbox')))
+        
         button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
         button.grab_default()
         button.grab_focus()
+        
         self.set_icon_name('preferences-desktop')
         
         self.widgets.get_object('editor_entry').connect('changed', self.editor_text_changed)

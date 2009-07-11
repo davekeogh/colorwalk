@@ -316,17 +316,9 @@ class Window(gtk.Window):
         '''A callback connected to the help button's clicked signal. Displays a
         dialog listing all the keyboard shortcuts.'''
         
-        dialog = gtk.Dialog('Color Walk Help', self,
-                            gtk.DIALOG_MODAL | gtk.DIALOG_NO_SEPARATOR, ())
-        dialog.get_content_area().add((self.widgets.get_object('dialog-vbox')))
-        button = dialog.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
-        button.grab_default()
-        button.grab_focus()
-        dialog.set_icon_name('help')
-        dialog.resize(350, 200)
+        dialog = ColorWalk.HelpDialog(self)
         
         if dialog.run():
-            dialog.get_content_area().remove(self.widgets.get_object('dialog-vbox'))
             dialog.destroy()
     
     def image_clicked(self, viewport, event):

@@ -20,7 +20,7 @@ import sys, os, os.path, gc, subprocess, threading
 import gtk
 
 
-from dialogs import AboutDialog, PreferencesDialog
+from dialogs import AboutDialog, PreferencesDialog, HelpDialog
 
 from preferences import Preferences
 
