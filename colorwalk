@@ -588,15 +588,13 @@ class Window(gtk.Window):
             self.widgets.get_object('status_box').hide()
             return False
         
-        glib.clickedtimeout_add_seconds(timeout, statusbar_hide)
+        glib.timeout_add_seconds(timeout, statusbar_hide)
     
     def state_changed(self, widget, event):
         '''A callback connected to the window's window-state-event signal. This
         is used to keep track of whether the window is maximized or not.'''
         
-        state = event.new_window_state
-        
-        if state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
+        if event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
             self.maximized = True
         else:
             self.maximized = False
