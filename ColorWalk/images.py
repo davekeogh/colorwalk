@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Color Walk.  If not, see <http://www.gnu.org/licenses/>.
 
-import os, os.path, threading
+import gc, os, os.path, threading
 
 import gtk
 
@@ -44,6 +44,7 @@ def find_average_border_color(pixels, width, height):
     b = int(average([c1[2], c2[2], c3[2], c4[2]]))
     
     return '#%02x%02x%02x' % (r, g, b)
+
 
 def new_pixbuf(path, mode, width=-1, height=-1):
     '''Returns a gtk.gdk.Pixbuf object at the appropriate size.'''
