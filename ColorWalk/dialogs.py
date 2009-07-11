@@ -19,6 +19,8 @@ import os, os.path, subprocess
 
 import gtk
 
+import utilities
+
 
 LICENSE = '''This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
@@ -27,33 +29,36 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU General Public License along with this program; if not, see <http://www.gnu.org/licenses/>.'''
 
 
-def find_executable(name):
-    '''Tries to find an executable that's being used by as a helper application.
-    If the program is found anywhere in PATH it returns true; otherwise it
-    returns false.'''
+def choose_file(path=None):
+    '''Creates a gtk.FileChooser and returns the value when the dialog is 
+    destroyed.'''
     
-    paths = os.environ['PATH'].split(':')
-    found = False
+    dialog = gtk.FileChooserDialog(title='Open File', buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
     
-    for path in paths:
-        full_path = os.path.join(path, name)
-        
-        if os.path.exists(full_path):
-            found = True
+    if path:
+        dialog.set_current_folder(path)
     
-    return found
-
-
-def open_email(dialog, link, user_data):
-    '''Attempts to open the default email program to send an email.'''
+    filter = gtk.FileFilter()
+    filter.set_name('All supported files')
+    filter.add_pattern('*.cbz')
+    filter.add_pattern('*.cbr')
+    filter.add_pattern('*.zip')
+    filter.add_pattern('*.rar')
+    dialog.add_filter(filter)
+    filter = gtk.FileFilter()
+    filter.set_name('All files')
+    filter.add_pattern('*')
+    dialog.add_filter(filter)
     
-    subprocess.call(['xdg-open', 'mailto:%s' % link])
-
-
-def open_url(dialog, link, user_data):
-    '''Opens a url in the default web browser.'''
+    if dialog.run() == gtk.RESPONSE_ACCEPT:
+        file = dialog.get_filename()
     
-    subprocess.call(['xdg-open', link])
+    else:
+        file = None
+    
+    dialog.destroy()
+    
+    return file
 
 
 class AboutDialog(gtk.AboutDialog):
@@ -63,8 +68,8 @@ class AboutDialog(gtk.AboutDialog):
         etc.'''
         
         # This is as good a spot as any to set these hooks.
-        gtk.about_dialog_set_email_hook(open_email, None)
-        gtk.about_dialog_set_url_hook(open_url, None)
+        gtk.about_dialog_set_email_hook(utilities.open_email, None)
+        gtk.about_dialog_set_url_hook(utilities.open_url, None)
         
         # We don't use gtk.LinkButton, but gtk.AboutDialog does. In gtk 2.16+
         # without this, the about uri opens twice:
@@ -182,7 +187,7 @@ class PreferencesDialog(gtk.Dialog):
         if not self.widgets.get_object('editor_entry').get_text():
                 self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
         else:
-            if find_executable(self.widgets.get_object('editor_entry').get_text()):
+            if utilities.find_executable(self.widgets.get_object('editor_entry').get_text()):
                 self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_YES, gtk.ICON_SIZE_BUTTON)
             else:
                 self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
