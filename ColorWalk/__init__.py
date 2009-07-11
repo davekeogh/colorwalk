@@ -20,7 +20,7 @@ import sys, os, os.path, gc, subprocess, threading
 import gtk
 
 
-from dialogs import AboutDialog
+from dialogs import AboutDialog, PreferencesDialog
 
 from preferences import Preferences
 
@@ -84,23 +84,6 @@ def find_average_border_color(pixels, width, height):
     b = int(average([c1[2], c2[2], c3[2], c4[2]]))
     
     return '#%02x%02x%02x' % (r, g, b)
-
-
-def find_executable(name):
-    '''Tries to find an executable that's being used by as a helper application.
-    If the program is found anywhere in PATH it returns true; otherwise it
-    returns false.'''
-    
-    paths = os.environ['PATH'].split(':')
-    found = False
-    
-    for path in paths:
-        full_path = os.path.join(path, name)
-        
-        if os.path.exists(full_path):
-            found = True
-    
-    return found
 
 
 def find_ui_definition():

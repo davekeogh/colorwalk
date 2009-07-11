@@ -24,7 +24,7 @@ import ColorWalk
 
 from ColorWalk import IMAGE_EXTENSIONS, DEFAULT_SIZE, FIT_BY_WIDTH
 
-from ColorWalk import choose_file, find_average_border_color, find_executable
+from ColorWalk import choose_file, find_average_border_color
 
 from ColorWalk import find_ui_definition, new_pixbuf, preload_images, reload_all
 
@@ -203,65 +203,11 @@ class Window(gtk.Window):
         '''A callback connected to the preferences button's clicked signal.
         Displays a dialog containing the application's options.'''
         
-        dialog = gtk.Dialog('Color Walk Preferences', self,
-                            gtk.DIALOG_MODAL | gtk.DIALOG_NO_SEPARATOR, ())
-        dialog.get_content_area().add((self.widgets.get_object('prefs-vbox')))
-        button = dialog.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
-        button.grab_default()
-        button.grab_focus()
-        dialog.set_icon_name('preferences-desktop')
-        
-        def update_icon():
-            if not self.widgets.get_object('editor_entry').get_text():
-                self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
-            else:
-                if find_executable(self.widgets.get_object('editor_entry').get_text()):
-                    self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_YES, gtk.ICON_SIZE_BUTTON)
-                else:
-                    self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
-        
-        def editor_text_changed(entry):
-            update_icon()
-        
-        self.widgets.get_object('editor_entry').connect('changed', editor_text_changed)
-        
-        if self.preferences.get('Preferences', 'editor'):
-            self.widgets.get_object('editor_entry').set_text(self.preferences.get('Preferences', 'editor'))
-            
-            update_icon()
-        
-        self.widgets.get_object('toolbar_checkbutton').set_active(self.preferences.getboolean('Window', 'show_toolbar'))
-        self.widgets.get_object('fullscreen_checkbutton').set_active(self.preferences.getboolean('Window', 'fullscreen'))
-        
-        bg = self.preferences.get('Preferences', 'background')
-        
-        if bg == 'match':
-            self.widgets.get_object('match_radiobutton').set_active(True)
-        
-        elif bg == 'theme':
-            self.widgets.get_object('theme_radiobutton').set_active(True)
-        
-        else:
-                self.widgets.get_object('custom_radiobutton').set_active(True)
-                self.widgets.get_object('colorbutton').set_color(gtk.gdk.color_parse(bg))
+        dialog = ColorWalk.PreferencesDialog(self)
         
         if dialog.run():
-            dialog.get_content_area().remove(self.widgets.get_object('prefs-vbox'))
+            dialog.save()
             dialog.destroy()
-            
-            self.preferences.set('Preferences', 'editor', self.widgets.get_object('editor_entry').get_text())
-            self.preferences.set('Window', 'show_toolbar', str(self.widgets.get_object('toolbar_checkbutton').get_active()))
-            self.preferences.set('Window', 'fullscreen', str(self.widgets.get_object('fullscreen_checkbutton').get_active()))
-            
-            if self.widgets.get_object('match_radiobutton').get_active():
-                self.preferences.set('Preferences', 'background', 'match')
-            
-            elif self.widgets.get_object('theme_radiobutton').get_active():
-                self.preferences.set('Preferences', 'background', 'theme')
-            
-            else:
-                self.preferences.set('Preferences', 'background', self.widgets.get_object('colorbutton').get_color().to_string())
-            
             self.reload_preferences()
     
     def entry_activated(self, entry):
