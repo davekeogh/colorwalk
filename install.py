@@ -32,6 +32,9 @@ FILES = {
     'ColorWalk/__init__.py'     : os.path.split(DIRECTORIES[1])[0],
     'ColorWalk/dialogs.py'      : os.path.split(DIRECTORIES[1])[0],
     'ColorWalk/preferences.py'  : os.path.split(DIRECTORIES[1])[0],
+    'ColorWalk/images.py'       : os.path.split(DIRECTORIES[1])[0],
+    'ColorWalk/utilities.py'    : os.path.split(DIRECTORIES[1])[0],
+    'ColorWalk/globals.py'    : os.path.split(DIRECTORIES[1])[0],
 }
 
 
