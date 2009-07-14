@@ -19,6 +19,13 @@ import os, os.path, subprocess
 
 import gtk
 
+
+try:
+    import numpy
+except ImportError:
+    numpy = None
+
+
 import utilities
 
 
@@ -170,6 +177,10 @@ class PreferencesDialog(gtk.Dialog):
         self.set_icon_name('preferences-desktop')
         
         self.widgets.get_object('editor_entry').connect('changed', self.editor_text_changed)
+        
+        if not numpy:
+            self.widgets.get_object('match_radiobutton').set_sensitive(False)
+            self.widgets.get_object('match_radiobutton').set_tooltip_markup('This feature requires the <b>numpy</b> module. Check your package manager to see if it can be installed.')
         
         self.load()
     

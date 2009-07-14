@@ -19,8 +19,14 @@ import sys, os, subprocess, threading, tempfile, shutil, time, optparse
 
 import glib, gtk
 
-import ColorWalk
 
+try:
+    import numpy
+except ImportError:
+    numpy = None
+
+
+import ColorWalk
 
 from ColorWalk import IMAGE_EXTENSIONS, DEFAULT_SIZE, FIT_BY_WIDTH
 
@@ -523,8 +529,14 @@ class Window(gtk.Window):
         pref = self.preferences.get('Preferences', 'background')
         
         if pref == 'match':
-            if self.open_file:
-                self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(find_average_border_color(self.current_pixbuf.get_pixels_array(), self.current_pixbuf.get_width(), self.current_pixbuf.get_height())))
+            if numpy:
+                if self.open_file:
+                    self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(find_average_border_color(self.current_pixbuf.get_pixels_array(), self.current_pixbuf.get_width(), self.current_pixbuf.get_height())))
+            
+            # Bit of a hack. Avoid a segfault if numpy isn't installed but the
+            # preference is set ot 'match'.
+            else:
+                pref = 'theme'
         
         elif pref == 'theme':
             self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.default_background))
