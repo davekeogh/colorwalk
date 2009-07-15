@@ -9,10 +9,12 @@ GTK+ bindings to draw the user interface.
 Dependencies
 ============
 
-Python 2.x
-GTK+ 2.16
-PyGTK 2.16
-NumPy
+python              2.x
+libgtk2             2.14
+python-gtk2         2.14
+numpy (optional)    ?
+unrar-nonfree       ?
+unzip               ?
 
 
 How to get it?
