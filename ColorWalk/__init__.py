@@ -22,6 +22,8 @@ import gtk
 
 from dialogs import AboutDialog, PreferencesDialog, HelpDialog, choose_file
 
+from dialogs import FloatingToolbar
+
 from images import *
 
 from globals import DEFAULT_SIZE, FIT_BY_WIDTH, IMAGE_EXTENSIONS

@@ -60,6 +60,7 @@ class Window(gtk.Window):
     height = 800
     height_old = None
     maximized = False
+    is_fullscreen = False
     
     def __init__(self, ui, file=None):
         '''The Color Walk main window. Arguments: ui is the file path of a XML 
@@ -74,7 +75,6 @@ class Window(gtk.Window):
         
         # Window events:
         self.connect('delete-event', self.quit)
-        self.connect('configure-event', self.window_resized)
         self.connect('key-press-event', self.key_pressed)
         self.connect('window-state-event', self.state_changed)
         
@@ -82,8 +82,8 @@ class Window(gtk.Window):
         self.widgets.get_object('open_button').connect('clicked', self.open)
         self.widgets.get_object('close_button').connect('clicked', self.close)
         self.widgets.get_object('forward_button').connect('clicked', self.go_forward)
-        self.widgets.get_object('fullscreen_button').connect('toggled', self.toggle_fullscreen)
         self.widgets.get_object('back_button').connect('clicked', self.go_back)
+        self.widgets.get_object('fullscreen_button').connect('toggled', self.toggle_fullscreen)
         self.widgets.get_object('normal_button').connect('toggled', self.toggle_scale)
         self.widgets.get_object('fit_button').connect('toggled', self.toggle_scale)
         self.widgets.get_object('about_button').connect('clicked', self.about)
@@ -135,6 +135,8 @@ class Window(gtk.Window):
         
         if self.preferences.getboolean('Window', 'fullscreen'):
             self.widgets.get_object('fullscreen_button').set_active(True)
+        
+        self.connect('configure-event', self.window_resized)
         
         if not self.preferences.getboolean('Window', 'show_toolbar'):
             self.widgets.get_object('toolbar').hide()
@@ -475,6 +477,13 @@ class Window(gtk.Window):
             self.preferences.set('Window', 'width', str(self.width))
             self.preferences.set('Window', 'height', str(self.height))
         
+        if self.is_fullscreen:
+            self.preferences.set('Window', 'fullscreen', str(True))
+            self.preferences.set('Window', 'width', str(800))
+            self.preferences.set('Window', 'height', str(800))
+        else:
+            self.preferences.set('Window', 'fullscreen', str(False))
+        
         self.preferences.set('Window', 'maximized', str(self.maximized))
         self.preferences.set('Image', 'scale', str(self.scale))
         self.preferences.save()
@@ -620,10 +629,15 @@ class Window(gtk.Window):
             self.width_old = self.width
             self.height_old = self.height
             
+            self.is_fullscreen = True
+            
             self.fullscreen()
+            
         else:
             self.width_old = None
             self.height_old = None
+            
+            self.is_fullscreen = False
             
             self.unfullscreen()
     

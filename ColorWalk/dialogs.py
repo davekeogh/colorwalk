@@ -224,6 +224,17 @@ class PreferencesDialog(gtk.Dialog):
         else:
             self.widgets.get_object('custom_radiobutton').set_active(True)
             self.widgets.get_object('colorbutton').set_color(gtk.gdk.color_parse(bg))
+        
+        toolbar_mode = self.preferences.get('Window', 'toolbar_mode')
+        
+        if toolbar_mode == 'show':
+            self.widgets.get_object('visible_radiobutton').set_active(True)
+        
+        elif toolbar_mode == 'auto':
+            self.widgets.get_object('auto-hide_radiobutton').set_active(True)
+        
+        else:
+            self.widgets.get_object('hidden_radiobutton').set_active(True)
     
     def save(self):
         '''Copy values marked in the dialog into the Preferences object.'''
@@ -240,3 +251,12 @@ class PreferencesDialog(gtk.Dialog):
         
         else:
             self.preferences.set('Preferences', 'background', self.widgets.get_object('colorbutton').get_color().to_string())
+        
+        if self.widgets.get_object('visible_radiobutton').get_active():
+            self.preferences.set('Window', 'toolbar_mode', 'show')
+        
+        elif self.widgets.get_object('auto-hide_radiobutton').get_active():
+            self.preferences.set('Window', 'toolbar_mode', 'auto')
+        
+        else:
+            self.preferences.set('Window', 'toolbar_mode', 'hide')
