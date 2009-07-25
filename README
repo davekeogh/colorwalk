@@ -10,7 +10,6 @@ Dependencies
 ============
 
 python              2.x
-libgtk2             2.14
 python-gtk2         2.14
 numpy (optional)    ?
 unrar-nonfree       ?
