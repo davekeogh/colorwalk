@@ -26,6 +26,8 @@ def find_executable(name):
     for path in os.environ['PATH'].split(':'):
         if os.path.exists(os.path.join(path, name)):
             return True
+    
+    return False
 
 
 def open_email(dialog, link, user_data):
