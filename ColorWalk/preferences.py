@@ -43,7 +43,6 @@ class Preferences(ConfigParser.SafeConfigParser):
             self.add_section('Window')
             self.set('Window', 'width', str(800))
             self.set('Window', 'height', str(800))
-            self.set('Window', 'fullscreen', str(False))
             self.set('Window', 'maximized', str(False))
             self.set('Window', 'show_toolbar', str(True))
             self.set('Window', 'toolbar_mode', 'auto')

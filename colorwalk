@@ -134,9 +134,6 @@ class Window(gtk.Window):
         if self.preferences.getboolean('Window', 'maximized'):
             self.maximize()
         
-        if self.preferences.getboolean('Window', 'fullscreen'):
-            self.widgets.get_object('fullscreen_button').set_active(True)
-        
         if not self.preferences.getboolean('Window', 'show_toolbar'):
             self.widgets.get_object('toolbar').hide()
         
@@ -476,13 +473,6 @@ class Window(gtk.Window):
             self.preferences.set('Window', 'width', str(self.width))
             self.preferences.set('Window', 'height', str(self.height))
         
-        if self.is_fullscreen:
-            self.preferences.set('Window', 'fullscreen', str(True))
-            self.preferences.set('Window', 'width', str(800))
-            self.preferences.set('Window', 'height', str(800))
-        else:
-            self.preferences.set('Window', 'fullscreen', str(False))
-        
         self.preferences.set('Window', 'maximized', str(self.maximized))
         self.preferences.set('Image', 'scale', str(self.scale))
         self.preferences.save()
@@ -641,9 +631,8 @@ class Window(gtk.Window):
             
             self.is_fullscreen = False
             
-            if self.preferences.get('Window', 'toolbar_mode') in ('auto', 'hide'):
+            if self.preferences.get('Window', 'toolbar_mode') in ('auto', 'hide') and self.preferences.getboolean('Window', 'show_toolbar'):
                 self.widgets.get_object('toolbar').show()
-                self.widgets.get_object('fullscreen_button').stop_emission('toggled')
             
             self.unfullscreen()
     

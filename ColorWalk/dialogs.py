@@ -211,7 +211,6 @@ class PreferencesDialog(gtk.Dialog):
             self.widgets.get_object('editor_entry').set_text(self.preferences.get('Preferences', 'editor'))
         
         self.widgets.get_object('toolbar_checkbutton').set_active(self.preferences.getboolean('Window', 'show_toolbar'))
-        self.widgets.get_object('fullscreen_checkbutton').set_active(self.preferences.getboolean('Window', 'fullscreen'))
         
         bg = self.preferences.get('Preferences', 'background')
         
@@ -241,7 +240,6 @@ class PreferencesDialog(gtk.Dialog):
         
         self.preferences.set('Preferences', 'editor', self.widgets.get_object('editor_entry').get_text())
         self.preferences.set('Window', 'show_toolbar', str(self.widgets.get_object('toolbar_checkbutton').get_active()))
-        self.preferences.set('Window', 'fullscreen', str(self.widgets.get_object('fullscreen_checkbutton').get_active()))
         
         if self.widgets.get_object('match_radiobutton').get_active():
             self.preferences.set('Preferences', 'background', 'match')
