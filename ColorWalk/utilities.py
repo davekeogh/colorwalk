@@ -23,16 +23,9 @@ def find_executable(name):
     If the program is found anywhere in PATH it returns true; otherwise it
     returns false.'''
     
-    paths = os.environ['PATH'].split(':')
-    found = False
-    
-    for path in paths:
-        full_path = os.path.join(path, name)
-        
-        if os.path.exists(full_path):
-            found = True
-    
-    return found
+    for path in os.environ['PATH'].split(':'):
+        if os.path.exists(os.path.join(path, name)):
+            return True
 
 
 def open_email(dialog, link, user_data):
