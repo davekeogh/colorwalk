@@ -1,5 +1,8 @@
+Color Walk
+==========
+
 What is it?
-===========
+-----------
 
 Color Walk is a really simple comic book reading application. The main design
 goals were to make it fast and easy to use. It's written in Python and uses the
