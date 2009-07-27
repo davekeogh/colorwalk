@@ -21,7 +21,7 @@ How to get it?
 
 The latest stable version of Color Walk can always be found here:
     
-    [http://davekeogh.github.com/] (http://davekeogh.github.com/)
+[http://davekeogh.github.com/](http://davekeogh.github.com/)
 
 The development version can be checked out with this command:
     
@@ -44,5 +44,5 @@ How to report bugs?
 
 You can add bug reports, patches, or feature requests to the issue tracker:
 
-    [http://github.com/davekeogh/colorwalk/issues] (http://github.com/davekeogh/colorwalk/issues)
+[http://github.com/davekeogh/colorwalk/issues](http://github.com/davekeogh/colorwalk/issues)
 
