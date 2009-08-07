@@ -41,6 +41,7 @@ class Window(gtk.Window):
     worker = None
     lock = threading.Lock()
     preferences = ColorWalk.Preferences()
+    floating_toolbar = None
     
     default_background = None
     
@@ -620,9 +621,6 @@ class Window(gtk.Window):
             
             self.is_fullscreen = True
             
-            if self.preferences.get('Window', 'toolbar_mode') in ('auto', 'hide'):
-                self.widgets.get_object('toolbar').hide()
-            
             self.fullscreen()
             
         else:
@@ -630,9 +628,6 @@ class Window(gtk.Window):
             self.height_old = None
             
             self.is_fullscreen = False
-            
-            if self.preferences.get('Window', 'toolbar_mode') in ('auto', 'hide') and self.preferences.getboolean('Window', 'show_toolbar'):
-                self.widgets.get_object('toolbar').show()
             
             self.unfullscreen()
     

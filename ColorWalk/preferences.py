@@ -45,7 +45,6 @@ class Preferences(ConfigParser.SafeConfigParser):
             self.set('Window', 'height', str(800))
             self.set('Window', 'maximized', str(False))
             self.set('Window', 'show_toolbar', str(True))
-            self.set('Window', 'toolbar_mode', 'auto')
             
             self.add_section('Image')
             self.set('Image', 'scale', str(FIT_BY_WIDTH))

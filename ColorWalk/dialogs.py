@@ -95,29 +95,38 @@ class AboutDialog(gtk.AboutDialog):
         self.set_website('http://members.shaw.ca/davekeogh/')
 
 
-class FloatingToolbar(gtk.Window):
+class FloatingToolbar(gtk.Dialog):
     
     parent = None
-    toolbar = None
+    widgets = None
     
-    def __init__(self, parent, toolbar):
+    def __init__(self, parent):
         '''A copy of Color Walk's toolbar in a undecorated gtk.Window. This
         allows us to position it overtop of the displayed image and show and
         hide it easily.'''
         
         self.parent = parent
-        self.toolbar = toolbar
+        self.widgets = parent.widgets
         
         gtk.Window.__init__(self)
-        self.add(toolbar)
+        self.get_content_area().add(parent.widgets.get_object('fullscreen_toolbar'))
         
         self.set_decorated(False)
         self.set_keep_above(True)
+        self.set_transient_for(parent)
         self.set_property('skip-taskbar-hint', True)
         self.set_property('skip-pager-hint', True)
+        self.set_has_separator(False)
         
         self.resize(self.get_screen().get_width(), 32)
         self.move(0, self.get_screen().get_height() + 32)
+    
+    def destroy(self):
+        '''A custom destroy method that removes the widgets first so that they
+        can be added to another dialog later if necessary.'''
+        
+        self.get_content_area().remove(self.widgets.get_object('fullscreen_toolbar'))
+        gtk.Dialog.destroy(self)
 
 
 class HelpDialog(gtk.Dialog):
@@ -223,17 +232,6 @@ class PreferencesDialog(gtk.Dialog):
         else:
             self.widgets.get_object('custom_radiobutton').set_active(True)
             self.widgets.get_object('colorbutton').set_color(gtk.gdk.color_parse(bg))
-        
-        toolbar_mode = self.preferences.get('Window', 'toolbar_mode')
-        
-        if toolbar_mode == 'show':
-            self.widgets.get_object('visible_radiobutton').set_active(True)
-        
-        elif toolbar_mode == 'auto':
-            self.widgets.get_object('auto-hide_radiobutton').set_active(True)
-        
-        else:
-            self.widgets.get_object('hidden_radiobutton').set_active(True)
     
     def save(self):
         '''Copy values marked in the dialog into the Preferences object.'''
@@ -249,12 +247,3 @@ class PreferencesDialog(gtk.Dialog):
         
         else:
             self.preferences.set('Preferences', 'background', self.widgets.get_object('colorbutton').get_color().to_string())
-        
-        if self.widgets.get_object('visible_radiobutton').get_active():
-            self.preferences.set('Window', 'toolbar_mode', 'show')
-        
-        elif self.widgets.get_object('auto-hide_radiobutton').get_active():
-            self.preferences.set('Window', 'toolbar_mode', 'auto')
-        
-        else:
-            self.preferences.set('Window', 'toolbar_mode', 'hide')
