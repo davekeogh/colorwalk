@@ -384,7 +384,7 @@ class Window(gtk.Window):
                 pass
         
         if file:
-            ext = os.path.splitext(file)[1]
+            ext = os.path.splitext(file)[1].lower()
             
             if ext == '.zip' or ext == '.cbz':
                 self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
