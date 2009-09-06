@@ -667,18 +667,18 @@
     <property name="visible">True</property>
     <property name="orientation">vertical</property>
     <child>
-      <object class="GtkAlignment" id="alignment1">
+      <object class="GtkAlignment" id="alignment9">
         <property name="visible">True</property>
         <property name="top_padding">6</property>
         <property name="bottom_padding">2</property>
         <property name="left_padding">6</property>
         <property name="right_padding">6</property>
         <child>
-          <object class="GtkNotebook" id="notebook1">
+          <object class="GtkNotebook" id="notebook9">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
-              <object class="GtkAlignment" id="alignment2">
+              <object class="GtkAlignment" id="alignment0">
                 <property name="visible">True</property>
                 <property name="top_padding">6</property>
                 <property name="bottom_padding">6</property>
@@ -729,7 +729,7 @@
                             <property name="top_padding">8</property>
                             <property name="left_padding">8</property>
                             <child>
-                              <object class="GtkHBox" id="hbox1">
+                              <object class="GtkHBox" id="hbox9">
                                 <property name="visible">True</property>
                                 <property name="spacing">8</property>
                                 <child>
@@ -888,7 +888,7 @@
               </object>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label1">
+              <object class="GtkLabel" id="label0">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">General</property>
               </object>
@@ -1040,7 +1040,7 @@
           <object class="GtkToolItem" id="toolbutton0">
             <property name="visible">True</property>
             <child>
-              <object class="GtkHBox" id="hbox9">
+              <object class="GtkHBox" id="hbox0">
                 <property name="visible">True</property>
                 <property name="spacing">3</property>
                 <child>
