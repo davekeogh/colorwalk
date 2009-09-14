@@ -8,7 +8,7 @@ def make_readme():
 
 
 setup(
-    version = '0.1.1',
+    version = '0.1.0',
     name = 'colorwalk',
     
     description = 'A GTK+ comicbook reader written in Python',
