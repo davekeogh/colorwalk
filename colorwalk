@@ -669,16 +669,7 @@ class Window(gtk.Window):
 if __name__ == '__main__':
     
     parser = optparse.OptionParser(usage='Usage: %prog [options] FILE')
-    parser.add_option('--generate-thumbnail', action='store_true', dest='thumbnail', help='create a thumbnail file for a comic book')
     options, args = parser.parse_args()
-    
-    if options.thumbnail:
-        if not args:
-            print 'Usage: colorwalk --generate-thumbnail FILE\n\nYou must specify a file'
-        else:
-            print 'Do something here'
-        
-        sys.exit(0)
     
     gtk.gdk.threads_init()
     
