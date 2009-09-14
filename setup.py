@@ -32,5 +32,6 @@ setup(
     
     data_files = [
         ('share/applications', ['colorwalk.desktop']),
+        ('share/colorwalk', ['colorwalk.ui']),
     ],
 )
