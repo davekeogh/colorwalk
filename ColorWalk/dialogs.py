@@ -17,7 +17,7 @@
 
 import os, os.path, subprocess
 
-import gtk
+from gi.repository import Gtk as gtk
 
 
 try:
@@ -26,7 +26,7 @@ except ImportError:
     numpy = None
 
 
-import utilities
+from .utilities import open_email, open_url, find_executable
 
 
 LICENSE = '''This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
@@ -40,7 +40,7 @@ def choose_file(path=None):
     '''Creates a gtk.FileChooser and returns the value when the dialog is 
     destroyed.'''
     
-    dialog = gtk.FileChooserDialog(title='Open File', buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    dialog = gtk.FileChooserDialog(title='Open File', buttons=(gtk.STOCK_CANCEL, gtk.ResponseType.REJECT, gtk.STOCK_OPEN, gtk.ResponseType.ACCEPT))
     
     if path:
         dialog.set_current_folder(path)
@@ -57,7 +57,7 @@ def choose_file(path=None):
     filter.add_pattern('*')
     dialog.add_filter(filter)
     
-    if dialog.run() == gtk.RESPONSE_ACCEPT:
+    if dialog.run() == gtk.ResponseType.ACCEPT:
         file = dialog.get_filename()
     
     else:
@@ -75,12 +75,12 @@ class AboutDialog(gtk.AboutDialog):
         etc.'''
         
         # This is as good a spot as any to set these hooks.
-        gtk.about_dialog_set_email_hook(utilities.open_email, None)
-        gtk.about_dialog_set_url_hook(utilities.open_url, None)
+        #gtk.about_dialog_set_email_hook(open_email, None)
+        #gtk.about_dialog_set_url_hook(open_url, None)
         
         # We don't use gtk.LinkButton, but gtk.AboutDialog does. In gtk 2.16+
         # without this, the about uri opens twice:
-        gtk.link_button_set_uri_hook(lambda *args:None)
+        #gtk.link_button_set_uri_hook(lambda *args:None)
 
         gtk.AboutDialog.__init__(self)
         
@@ -140,12 +140,11 @@ class HelpDialog(gtk.Dialog):
         self.parent = parent
         self.widgets = parent.widgets
         
-        gtk.Dialog.__init__(self, 'Color Walk Help', parent,
-                            gtk.DIALOG_MODAL | gtk.DIALOG_NO_SEPARATOR, ())
+        gtk.Dialog.__init__(self, 'Color Walk Help', parent)
         
         self.get_content_area().add((parent.widgets.get_object('dialog-vbox')))
         
-        button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        button = self.add_button(gtk.STOCK_CLOSE, gtk.ResponseType.CLOSE)
         button.grab_default()
         button.grab_focus()
         
@@ -174,12 +173,11 @@ class PreferencesDialog(gtk.Dialog):
         self.preferences = parent.preferences
         self.widgets = parent.widgets
         
-        gtk.Dialog.__init__(self, 'Color Walk Preferences', parent,
-                            gtk.DIALOG_MODAL | gtk.DIALOG_NO_SEPARATOR, ())
+        gtk.Dialog.__init__(self, 'Color Walk Preferences', parent)
         
         self.get_content_area().add((self.widgets.get_object('prefs-vbox')))
         
-        button = self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        button = self.add_button(gtk.STOCK_CLOSE, gtk.ResponseType.CLOSE)
         button.grab_default()
         button.grab_focus()
         
@@ -205,12 +203,12 @@ class PreferencesDialog(gtk.Dialog):
         that the entered executable does in fact exists and displays an icon.'''
         
         if not self.widgets.get_object('editor_entry').get_text():
-                self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
+                self.widgets.get_object('editor_image').set_from_icon_name('dialog-no', gtk.IconSize.BUTTON)
         else:
-            if utilities.find_executable(self.widgets.get_object('editor_entry').get_text()):
-                self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_YES, gtk.ICON_SIZE_BUTTON)
+            if find_executable(self.widgets.get_object('editor_entry').get_text()):
+                self.widgets.get_object('editor_image').set_from_icon_name('dialog-yes', gtk.IconSize.BUTTON)
             else:
-                self.widgets.get_object('editor_image').set_from_stock(gtk.STOCK_NO, gtk.ICON_SIZE_BUTTON)
+                self.widgets.get_object('editor_image').set_from_icon_name('dialog-no', gtk.IconSize.BUTTON)
     
     def load(self):
         '''Gets the values from the Preferences object and inputs them into the

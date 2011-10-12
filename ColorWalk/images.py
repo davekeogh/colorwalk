@@ -17,9 +17,13 @@
 
 import gc, os, os.path, threading
 
-import gtk
+from gi.repository import Gtk as gtk 
 
-from globals import DEFAULT_SIZE, FIT_BY_WIDTH
+from gi.repository import Gdk as gdk
+
+from gi.repository import GdkPixbuf
+
+from .globals import DEFAULT_SIZE, FIT_BY_WIDTH
 
 
 def find_average_border_color(pixels, width, height):
@@ -50,13 +54,13 @@ def new_pixbuf(path, mode, width=-1, height=-1):
     '''Returns a gtk.gdk.Pixbuf object at the appropriate size.'''
     
     if mode == DEFAULT_SIZE:
-        return gtk.gdk.pixbuf_new_from_file(path)
+        return GdkPixbuf.Pixbuf.new_from_file(path)
     elif mode == FIT_BY_WIDTH:
-        temp = gtk.gdk.pixbuf_new_from_file(path)
+        temp = GdkPixbuf.Pixbuf.new_from_file(path)
         
         if temp.get_width() > width:
             del temp
-            return gtk.gdk.pixbuf_new_from_file_at_size(path, width, -1)
+            return GdkPixbuf.Pixbuf.new_from_file_at_size(path, width, -1)
         else:
             return temp
     

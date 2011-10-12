@@ -17,8 +17,11 @@
 
 import sys, os, subprocess, threading, tempfile, shutil, time, optparse
 
-import glib, gtk
+from gi.repository import Gtk as gtk
 
+from gi.repository import GLib as glib 
+
+from gi.repository import Gdk as gdk
 
 try:
     import numpy
@@ -112,19 +115,19 @@ class Window(gtk.Window):
         self.add_accel_group(accel_group)
         
         # Key values = o, w, q:
-        self.widgets.get_object('context-menu-open').add_accelerator('activate', accel_group, 111, gtk.gdk.CONTROL_MASK, (gtk.ACCEL_LOCKED))
-        self.widgets.get_object('context-menu-close').add_accelerator('activate', accel_group, 119, gtk.gdk.CONTROL_MASK, (gtk.ACCEL_LOCKED))
-        self.widgets.get_object('context-menu-quit').add_accelerator('activate', accel_group, 113, gtk.gdk.CONTROL_MASK, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('context-menu-open').add_accelerator('activate', accel_group, 111, gdk.ModifierType.CONTROL_MASK, (gtk.AccelFlags.LOCKED))
+        self.widgets.get_object('context-menu-close').add_accelerator('activate', accel_group, 119, gdk.ModifierType.CONTROL_MASK, (gtk.AccelFlags.LOCKED))
+        self.widgets.get_object('context-menu-quit').add_accelerator('activate', accel_group, 113, gdk.ModifierType.CONTROL_MASK, (gtk.AccelFlags.LOCKED))
         
         # Key values = backspace, page up, back arrow:
-        self.widgets.get_object('context-menu-back').add_accelerator('activate', accel_group, 65288, 0, (gtk.ACCEL_LOCKED))
-        self.widgets.get_object('context-menu-back').add_accelerator('activate', accel_group, 65365, 0, (gtk.ACCEL_LOCKED))
-        self.widgets.get_object('context-menu-back').add_accelerator('activate', accel_group, 65361, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('context-menu-back').add_accelerator('activate', accel_group, 65288, 0, (gtk.AccelFlags.LOCKED))
+        self.widgets.get_object('context-menu-back').add_accelerator('activate', accel_group, 65365, 0, (gtk.AccelFlags.LOCKED))
+        self.widgets.get_object('context-menu-back').add_accelerator('activate', accel_group, 65361, 0, (gtk.AccelFlags.LOCKED))
         
         # Key values = spacebar, page down, forward arrow:
-        self.widgets.get_object('context-menu-forward').add_accelerator('activate', accel_group, 32, 0, (gtk.ACCEL_LOCKED))
-        self.widgets.get_object('context-menu-forward').add_accelerator('activate', accel_group, 65366, 0, (gtk.ACCEL_LOCKED))
-        self.widgets.get_object('context-menu-forward').add_accelerator('activate', accel_group, 65363, 0, (gtk.ACCEL_LOCKED))
+        self.widgets.get_object('context-menu-forward').add_accelerator('activate', accel_group, 32, 0, (gtk.AccelFlags.LOCKED))
+        self.widgets.get_object('context-menu-forward').add_accelerator('activate', accel_group, 65366, 0, (gtk.AccelFlags.LOCKED))
+        self.widgets.get_object('context-menu-forward').add_accelerator('activate', accel_group, 65363, 0, (gtk.AccelFlags.LOCKED))
         
         # See the key_pressed method for more 'pseudo accelerators'
         
@@ -154,8 +157,10 @@ class Window(gtk.Window):
         
         # This allows us to reset the background to the original GTK style 
         # without destroying the widget:
-        self.default_background = self.widgets.get_object('viewport').style.bg[gtk.STATE_NORMAL].to_string()
-        self.set_background_color()
+        
+        # TODO: Figure out what changed here and restore it.
+        #self.default_background = self.widgets.get_object('viewport').style.bg[gtk.StateType.NORMAL].to_string()
+        #self.set_background_color()
         
         # Open a file passed on the command line:
         if file:
@@ -262,7 +267,7 @@ class Window(gtk.Window):
         # TODO: If scrollbars aren't actually going to be displayed, account for
         # that.
         
-        height = self.height - self.widgets.get_object('toolbar').size_request()[0]
+        height = self.height - self.widgets.get_object('toolbar').size_request().height
         width = self.width - scrollbar
         
         return (width, height)
@@ -337,7 +342,7 @@ class Window(gtk.Window):
                 if self.open_file:
                     self.widgets.get_object('context-menu-edit').set_sensitive(True)
             
-            self.widgets.get_object('context-menu').popup(None, None, None, event.button, event.time, None)
+            self.widgets.get_object('context-menu').popup(None, None, None, None, event.button, event.time)
     
     def key_pressed(self, widget, event):
         '''A callback connected to the window's key-pressed-event. Does 
@@ -385,6 +390,8 @@ class Window(gtk.Window):
         
         if file:
             ext = os.path.splitext(file)[1].lower()
+            
+            # TODO: Escape special characters like brackets.
             
             if ext == '.zip' or ext == '.cbz':
                 self.temp_dir = tempfile.mkdtemp(prefix='colorwalk-%s-' % os.environ['USER'])
@@ -500,8 +507,8 @@ class Window(gtk.Window):
         viewport = self.widgets.get_object('scrolledwindow')
         hadj = viewport.get_hadjustment()
         vadj = viewport.get_vadjustment()
-        vadj.set_value(vadj.lower)
-        hadj.set_value(hadj.lower)
+        vadj.set_value(vadj.get_lower())
+        hadj.set_value(hadj.get_lower())
         viewport.set_hadjustment(hadj)
         viewport.set_vadjustment(vadj)
     
@@ -509,12 +516,12 @@ class Window(gtk.Window):
         '''A callback connected to the save context menu item's activate signal.
         This allows the user to save the currently displayed image somewhere.'''
         
-        dialog = gtk.FileChooserDialog(title='Save File', action=gtk.FILE_CHOOSER_ACTION_SAVE, buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_SAVE, gtk.RESPONSE_ACCEPT))
+        dialog = gtk.FileChooserDialog(title='Save File', action=gtk.FileChooserAction.SAVE, buttons=(gtk.ButtonsType.CANCEL, gtk.ResponseType.REJECT, gtk.ButtonsType.SAVE, gtk.ResponseType.ACCEPT))
         dialog.set_current_folder(self.browse_dir)
         dialog.set_current_name(self.images[self.index])
         dialog.set_do_overwrite_confirmation(True)
         
-        if dialog.run() == gtk.RESPONSE_ACCEPT:
+        if dialog.run() == gtk.ResponseType.ACCEPT:
             file = dialog.get_filename()
             
             shutil.copyfile(os.path.join(self.temp_dir, self.images[self.index]), file)
@@ -530,18 +537,19 @@ class Window(gtk.Window):
         if pref == 'match':
             if numpy:
                 if self.open_file:
-                    self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(find_average_border_color(self.current_pixbuf.get_pixels_array(), self.current_pixbuf.get_width(), self.current_pixbuf.get_height())))
+                    self.widgets.get_object('viewport').modify_bg(gtk.StateType.NORMAL, gdk.color_parse(find_average_border_color(self.current_pixbuf.get_pixels(), self.current_pixbuf.get_width(), self.current_pixbuf.get_height())))
             
             # Bit of a hack. Avoid a segfault if numpy isn't installed but the
-            # preference is set ot 'match'.
+            # preference is set to 'match'.
             else:
                 pref = 'theme'
         
         elif pref == 'theme':
-            self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(self.default_background))
+            if self.default_background:
+                self.widgets.get_object('viewport').modify_bg(gtk.StateType.NORMAL, gdk.color_parse(self.default_background))
         
         else:
-            self.widgets.get_object('viewport').modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(pref))
+            self.widgets.get_object('viewport').modify_bg(gtk.StateType.NORMAL, gdk.color_parse(pref))
     
     def set_widget_sensitivity(self, bool):
         '''Calls the toolbar buttons and menu items set_sensitive methods with
@@ -605,7 +613,7 @@ class Window(gtk.Window):
         '''A callback connected to the window's window-state-event signal. This
         is used to keep track of whether the window is maximized or not.'''
         
-        if event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
+        if event.new_window_state == gdk.WindowState.MAXIMIZED:
             self.maximized = True
         else:
             self.maximized = False
@@ -671,7 +679,7 @@ if __name__ == '__main__':
     parser = optparse.OptionParser(usage='Usage: %prog [options] FILE')
     options, args = parser.parse_args()
     
-    gtk.gdk.threads_init()
+    gdk.threads_init()
     
     ui = find_ui_definition()
     

@@ -17,20 +17,20 @@
 
 import os, os.path
 
-import gtk
+from gi.repository import Gtk as gtk
 
 
-from dialogs import AboutDialog, PreferencesDialog, HelpDialog, choose_file
+from .dialogs import AboutDialog, PreferencesDialog, HelpDialog, choose_file
 
-from dialogs import FloatingToolbar
+from .dialogs import FloatingToolbar
 
-from images import *
+from .images import *
 
-from globals import DEFAULT_SIZE, FIT_BY_WIDTH, IMAGE_EXTENSIONS
+from .globals import DEFAULT_SIZE, FIT_BY_WIDTH, IMAGE_EXTENSIONS
 
-from preferences import Preferences
+from .preferences import Preferences
 
-from utilities import *
+from .utilities import *
 
 
 def find_ui_definition():

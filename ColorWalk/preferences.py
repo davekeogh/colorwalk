@@ -15,12 +15,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Color Walk.  If not, see <http://www.gnu.org/licenses/>.
 
-import os, os.path, ConfigParser
+import os, os.path, configparser
 
-from globals import FIT_BY_WIDTH
+from .globals import FIT_BY_WIDTH
 
 
-class Preferences(ConfigParser.SafeConfigParser):
+class Preferences(configparser.SafeConfigParser):
     
     config_file = os.path.expanduser('~/.config/colorwalk/config')
     
@@ -30,7 +30,7 @@ class Preferences(ConfigParser.SafeConfigParser):
         
         # TODO: Some sort of fallback if the file or directory can't be created
         
-        ConfigParser.SafeConfigParser.__init__(self)
+        configparser.SafeConfigParser.__init__(self)
         
         if not os.path.exists(os.path.split(self.config_file)[0]):
             os.mkdir(os.path.split(self.config_file)[0])
